@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGO v24 - Wheaton</title>
+    <title>SGO v27 - Wheaton</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         :root { 
@@ -12,45 +12,39 @@
             --ferias: #fff3cd; --ferias-text: #856404;
             --falta: #f8d7da; --falta-text: #842029;
         }
-        body { background-color: #f4f7f6; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: #f4f7f6; font-family: 'Segoe UI', sans-serif; font-size: 0.9rem; }
         .card { border-radius: 12px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
         
-        /* Legenda de Cores */
-        .legenda-container { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; padding: 10px; background: white; border-radius: 8px; border: 1px solid #eee; }
-        .legenda-item { display: flex; align-items: center; font-size: 0.75rem; font-weight: bold; }
-        .box-cor { width: 12px; height: 12px; border-radius: 3px; margin-right: 5px; border: 1px solid rgba(0,0,0,0.1); }
+        .legenda-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; padding: 10px; background: white; border-radius: 8px; }
+        .legenda-item { display: flex; align-items: center; font-size: 0.7rem; font-weight: bold; }
+        .box-cor { width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; }
         
-        /* Calendário */
         .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background: #dee2e6; border: 1px solid #dee2e6; border-radius: 8px; overflow: hidden; }
-        .cal-header { background: #212529; color: white; text-align: center; padding: 10px; font-weight: bold; font-size: 0.75rem; text-transform: uppercase; }
-        .cal-day { background: white; min-height: 110px; padding: 8px; cursor: pointer; }
-        .cal-day:hover { background: #f0f7ff; }
-        .cal-day.out { background: #f8f9fa; color: #ccc; cursor: default; }
-        .cal-date { font-weight: 800; font-size: 0.9rem; color: #495057; display: block; text-align: right; margin-bottom: 8px; border-bottom: 1px solid #eee; }
+        .cal-header { background: #212529; color: white; text-align: center; padding: 8px; font-weight: bold; font-size: 0.7rem; }
+        .cal-day { background: white; min-height: 100px; padding: 5px; cursor: pointer; }
+        .cal-date { font-weight: 800; font-size: 0.85rem; color: #495057; display: block; text-align: right; margin-bottom: 5px; border-bottom: 1px solid #eee; }
         
-        /* Eventos e Status */
-        .emp-event { font-size: 0.65rem; padding: 2px 6px; margin-bottom: 3px; border-radius: 4px; font-weight: 700; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .emp-event { font-size: 0.6rem; padding: 2px 4px; margin-bottom: 2px; border-radius: 3px; font-weight: 700; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .ev-trabalho, .bg-trabalho { background: var(--trabalho) !important; color: var(--trabalho-text) !important; }
         .ev-folga, .bg-folga { background: var(--folga) !important; color: var(--folga-text) !important; }
         .ev-ferias, .bg-ferias { background: var(--ferias) !important; color: var(--ferias-text) !important; }
         .ev-falta, .bg-falta { background: var(--falta) !important; color: var(--falta-text) !important; }
 
-        .nav-pills .nav-link { color: #555; font-weight: 600; cursor: pointer; padding: 10px 15px; font-size: 0.85rem; }
-        .nav-pills .nav-link.active { background-color: #0d6efd; box-shadow: 0 4px 10px rgba(13,110,253,0.3); }
-        #previewZap { background: #f8fff9; font-family: 'Consolas', monospace; font-size: 0.9rem; white-space: pre-wrap; padding: 20px; border: 1px solid #d4edda; border-radius: 8px; }
-        .backup-zone { border: 2px dashed #ccc; padding: 30px 20px; text-align: center; border-radius: 10px; background: #fff; cursor: pointer; transition: 0.3s; }
-        .backup-zone:hover { border-color: #0d6efd; background: #f0f7ff; }
+        .nav-pills .nav-link { color: #555; font-weight: 600; cursor: pointer; padding: 8px 12px; font-size: 0.8rem; }
+        .nav-pills .nav-link.active { background-color: #0d6efd; }
+        #previewZap { background: #f8fff9; font-family: 'Consolas', monospace; font-size: 0.85rem; white-space: pre-wrap; padding: 15px; border: 1px solid #d4edda; border-radius: 8px; }
+        .backup-zone { border: 2px dashed #ccc; padding: 20px; text-align: center; border-radius: 10px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<div class="container-fluid py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4 px-2">
-        <h3 class="fw-bold m-0 text-primary">🟢🔵 Gestão Escala Wheaton</h3>
-        <div id="relogio" class="h5 fw-bold text-secondary"></div>
+<div class="container-fluid py-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold m-0 text-primary">🏭 SGO Wheaton v27</h4>
+        <div id="relogio" class="small fw-bold text-secondary"></div>
     </div>
 
-    <ul class="nav nav-pills mb-4 bg-white p-2 rounded shadow-sm border overflow-auto flex-nowrap">
+    <ul class="nav nav-pills mb-3 bg-white p-2 rounded shadow-sm border overflow-auto flex-nowrap">
         <li class="nav-item"><a class="nav-link active" id="tab-mensal" onclick="navegar('mensal')">📅 Calendário</a></li>
         <li class="nav-item"><a class="nav-link" id="tab-agenda" onclick="navegar('agenda')">📋 Lista</a></li>
         <li class="nav-item"><a class="nav-link" id="tab-whatsapp" onclick="navegar('whatsapp')">📲 WhatsApp</a></li>
@@ -62,40 +56,45 @@
         <li class="nav-item"><a class="nav-link" id="tab-backup" onclick="navegar('backup')">⚙️ Sistema</a></li>
     </ul>
 
-    <section id="sec-eventos" style="display:none;">
-        <div class="card p-4">
-            <h5>⚠️ Registro de Ausências</h5>
-            <form id="formEvento" class="row g-2 mb-3">
-                <input type="hidden" id="editEventoIdx" value="-1">
-                <div class="col-md-3"><label class="small fw-bold">Quem?</label><select id="evFunc" class="form-select" required></select></div>
-                <div class="col-md-3"><label class="small fw-bold">Tipo</label><select id="evTipo" class="form-select" required><option>Férias</option><option value="Falta">Falta</option><option value="Afastado">Afastado</option></select></div>
-                <div class="col-md-3"><label class="small fw-bold">Data início</label><input type="date" id="evInicio" class="form-control" required></div> <div class="col-md-3"><label class="small fw-bold">Data final</label><input type="date" id="evFim" class="form-control" required></div> <div class="col-12 mt-3"><button type="submit" id="btnEvento" class="btn btn-warning w-100 fw-bold">SALVAR AUSÊNCIA</button></div>
-            </form>
-            <table class="table table-sm"><thead><tr><th>Quem</th><th>Status</th><th class="text-end">Ações</th></tr></thead><tbody id="listaEventosView"></tbody></table>
+    <section id="sec-agenda" style="display:none;">
+        <div class="card p-3 mb-2"><input type="date" id="agendaData" class="form-control" style="width:180px" onchange="renderAgenda()"></div>
+        <div class="card table-responsive">
+            <table class="table table-hover align-middle mb-0" id="tabelaListaPrincipal">
+                <thead class="table-dark" id="headLista">
+                    </thead>
+                <tbody id="listaAgenda"></tbody>
+            </table>
         </div>
     </section>
 
-    <section id="sec-mensal">
-        <div class="card p-3 mb-3">
-            <div class="row g-2 mb-2 align-items-end"><div class="col-md-3"><input type="month" id="mesFiltro" class="form-control" onchange="renderCalendario()"></div><div class="col-md-3"><select id="turnoFiltroMensal" class="form-select" onchange="renderCalendario()"><option value="Todos">Todos</option><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div></div>
-            <div class="legenda-container">
-                <div class="legenda-item"><div class="box-cor bg-trabalho"></div> Trabalho</div>
-                <div class="legenda-item"><div class="box-cor bg-folga"></div> Folga</div>
-                <div class="legenda-item"><div class="box-cor bg-ferias"></div> Férias</div>
-                <div class="legenda-item"><div class="box-cor bg-falta"></div> Falta/Ausência</div>
-            </div>
+    <section id="sec-eventos" style="display:none;">
+        <div class="card p-3">
+            <h6 class="fw-bold">⚠️ Ausências</h6>
+            <form id="formEvento" class="row g-2 mb-3">
+                <input type="hidden" id="editEventoIdx" value="-1">
+                <div class="col-6"><label class="small fw-bold">Quem?</label><select id="evFunc" class="form-select form-select-sm" required></select></div>
+                <div class="col-6"><label class="small fw-bold">Tipo</label><select id="evTipo" class="form-select form-select-sm" required><option>Férias</option><option>Falta</option><option>Afastado</option></select></div>
+                <div class="col-6"><label class="small fw-bold">Data início</label><input type="date" id="evInicio" class="form-control form-control-sm" required></div>
+                <div class="col-6"><label class="small fw-bold">Data final</label><input type="date" id="evFim" class="form-control form-control-sm" required></div>
+                <div class="col-12"><button type="submit" id="btnEvento" class="btn btn-warning btn-sm w-100 fw-bold">SALVAR</button></div>
+            </form>
+            <table class="table table-sm small"><thead><tr><th>Quem</th><th>Status</th><th class="text-end">Ações</th></tr></thead><tbody id="listaEventosView"></tbody></table>
         </div>
+    </section>
+
+    <section id="sec-whatsapp" style="display:none;"><div class="row g-3"><div class="col-md-7"><div class="card p-3"><h6>📲 WhatsApp</h6><div class="row g-2 mb-2"><div class="col-6"><input type="date" id="zapData" class="form-control form-control-sm" onchange="renderWhatsAppList()"></div><div class="col-6"><select id="zapTurno" class="form-select form-select-sm" onchange="renderWhatsAppList()"><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div></div><div id="listaTrabalhando" class="border-top pt-2"></div></div></div><div class="col-md-5"><div class="card p-3"><h6>Preview</h6><div id="previewZap" class="mb-2"></div><button class="btn btn-success w-100 btn-sm fw-bold" onclick="copiarTextoZap()">COPIAR TEXTO</button></div></div></div></section>
+
+    <section id="sec-escalas" style="display:none;"><div class="card p-3"><h6>🔢 Turmas</h6><form id="formEscala" class="row g-2 mb-3"><input type="hidden" id="editEscalaIdx" value="-1"><div class="col-7"><label class="small fw-bold">Nome</label><input type="text" id="escNome" class="form-control form-control-sm" required></div><div class="col-5"><label class="small fw-bold">1º dia ciclo</label><input type="date" id="escInicio" class="form-control form-control-sm" required></div><div class="col-12"><button type="submit" id="btnEscala" class="btn btn-primary btn-sm w-100">GRAVAR TURMA</button></div></form><table class="table table-sm small"><thead><tr><th>Turma</th><th>Início</th><th class="text-end">Ações</th></tr></thead><tbody id="listaEscalasView"></tbody></table></div></section>
+
+    <section id="sec-mensal">
+        <div class="card p-3 mb-2"><div class="row g-2 mb-2"><div class="col-6"><input type="month" id="mesFiltro" class="form-control form-control-sm" onchange="renderCalendario()"></div><div class="col-6"><select id="turnoFiltroMensal" class="form-select form-select-sm" onchange="renderCalendario()"><option value="Todos">Todos</option><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div></div><div class="legenda-container"><div class="legenda-item"><div class="box-cor bg-trabalho"></div> Trab.</div><div class="legenda-item"><div class="box-cor bg-folga"></div> Folga</div><div class="legenda-item"><div class="box-cor bg-ferias"></div> Férias</div><div class="legenda-item"><div class="box-cor bg-falta"></div> Ausên.</div></div></div>
         <div class="card overflow-hidden"><div class="cal-grid" id="calendarioGrid"></div></div>
     </section>
 
-    <section id="sec-whatsapp" style="display:none;"><div class="row"><div class="col-md-7"><div class="card p-4"><h5>📲 WhatsApp</h5><div class="row g-2 mb-3"><div class="col-md-6"><label class="small fw-bold">Data</label><input type="date" id="zapData" class="form-control" onchange="renderWhatsAppList()"></div><div class="col-md-6"><label class="small fw-bold">Turno</label><select id="zapTurno" class="form-select" onchange="renderWhatsAppList()"><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div></div><div id="listaTrabalhando" class="border-top pt-3"></div></div></div><div class="col-md-5"><div class="card p-4"><h5>Preview</h5><div id="previewZap" class="mb-3"></div><button class="btn btn-success w-100 fw-bold" onclick="copiarTextoZap()">COPIAR ESCALA</button></div></div></div></section>
-
-    <section id="sec-agenda" style="display:none;"><div class="card p-3 mb-2"><input type="date" id="agendaData" class="form-control" style="width:200px" onchange="renderAgenda()"></div><div class="card table-responsive"><table class="table table-hover align-middle mb-0"><thead class="table-dark"><tr><th>DRT</th><th>Nome</th><th>Turno</th><th>Status</th></tr></thead><tbody id="listaAgenda"></tbody></table></div></section>
-    <section id="sec-funcionarios" style="display:none;"><div class="card p-4"><h5>👥 Equipe</h5><form id="formFunc" class="row g-2 mb-3"><input type="hidden" id="editFuncIdx" value="-1"><div class="col-md-2"><label class="small fw-bold">DRT</label><input type="text" id="fDrt" class="form-control" placeholder="DRT" required></div><div class="col-md-3"><label class="small fw-bold">Nome</label><input type="text" id="fNome" class="form-control" placeholder="Nome" required></div><div class="col-md-2"><label class="small fw-bold">Turno</label><select id="fTurno" class="form-select"><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div><div class="col-md-3"><label class="small fw-bold">Escala/Turma</label><select id="fEscala" class="form-select" required></select></div><div class="col-md-2 d-flex align-items-end"><button type="submit" id="btnFunc" class="btn btn-success w-100">Salvar</button></div></form><table class="table table-sm"><thead><tr><th>Nome</th><th>Turno</th><th class="text-end">Ações</th></tr></thead><tbody id="listaFuncView"></tbody></table></div></section>
-    <section id="sec-escalas" style="display:none;"><div class="card p-4"><h5>🔢 Turmas</h5><form id="formEscala" class="row g-2 mb-3"><input type="hidden" id="editEscalaIdx" value="-1"><div class="col-md-5"><label class="small fw-bold">Nome da Turma</label><input type="text" id="escNome" class="form-control" placeholder="Turma" required></div><div class="col-md-4"><label class="small fw-bold">1º dia do ciclo</label><input type="date" id="escInicio" class="form-control" required></div><div class="col-md-3 d-flex align-items-end"><button type="submit" id="btnEscala" class="btn btn-primary w-100">Salvar</button></div></form><table class="table table-sm"><thead><tr><th>Turma</th><th>Início</th><th class="text-end">Ações</th></tr></thead><tbody id="listaEscalasView"></tbody></table></div></section>
-    <section id="sec-maquinas" style="display:none;"><div class="card p-4"><h5>🔷️ Máquinas</h5><form id="formMaq" class="row g-2 mb-4"><input type="hidden" id="editMaqIdx" value="-1"><div class="col-md-7"><input type="text" id="maqNome" class="form-control" placeholder="M13" required></div><div class="col-md-5 d-flex align-items-end"><button type="submit" id="btnMaq" class="btn btn-primary w-100">Salvar</button></div></form><table class="table table-sm"><thead><tr><th>Máquina</th><th class="text-end">Ações</th></tr></thead><tbody id="listaMaquinasView"></tbody></table></div></section>
-    <section id="sec-trocas" style="display:none;"><div class="card p-4"><h5>🔄 Trocas</h5><form id="formTroca" class="row g-2 mb-3"><input type="hidden" id="editTrocaIdx" value="-1"><div class="col-md-3"><input type="text" id="trocaSigla" class="form-control" placeholder="Sigla" required></div><div class="col-md-6"><input type="text" id="trocaDesc" class="form-control" placeholder="Descrição" required></div><div class="col-md-3 d-flex align-items-end"><button type="submit" id="btnTroca" class="btn btn-primary w-100">Salvar</button></div></form><table class="table table-sm"><thead><tr><th>Sigla</th><th>Descrição</th><th class="text-end">Ações</th></tr></thead><tbody id="listaTrocasView"></tbody></table></div></section>
-    <section id="sec-backup" style="display:none;"><div class="row g-3"><div class="col-md-6"><div class="card p-4 text-center"><h5>💾 Exportar</h5><button class="btn btn-primary w-100" onclick="exportarBackup()">BAIXAR JSON</button></div></div><div class="col-md-6"><div class="card p-4 text-center"><h5>📂 Abrir</h5><div class="backup-zone" onclick="document.getElementById('inputBackup').click()"><p>Selecionar Arquivo</p><input type="file" id="inputBackup" hidden accept=".json" onchange="importarBackup(event)"></div></div></div><div class="col-12"><button class="btn btn-outline-danger btn-sm" onclick="limparTudo()">Limpar Tudo</button></div></div></section>
+    <section id="sec-funcionarios" style="display:none;"><div class="card p-3"><h6>👥 Equipe</h6><form id="formFunc" class="row g-2 mb-2"><input type="hidden" id="editFuncIdx" value="-1"><div class="col-3"><input type="text" id="fDrt" class="form-control form-control-sm" placeholder="DRT" required></div><div class="col-5"><input type="text" id="fNome" class="form-control form-control-sm" placeholder="Nome" required></div><div class="col-4"><select id="fTurno" class="form-select form-select-sm"><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div><div class="col-8"><select id="fEscala" class="form-select form-select-sm" required></select></div><div class="col-4"><button type="submit" class="btn btn-success btn-sm w-100">OK</button></div></form><table class="table table-sm small"><thead><tr><th>Nome</th><th>Turno</th><th class="text-end">Ações</th></tr></thead><tbody id="listaFuncView"></tbody></table></div></section>
+    <section id="sec-maquinas" style="display:none;"><div class="card p-3"><h6>🔷️ Máquinas</h6><form id="formMaq" class="row g-2 mb-2"><input type="hidden" id="editMaqIdx" value="-1"><div class="col-8"><input type="text" id="maqNome" class="form-control form-control-sm" required></div><div class="col-4"><button type="submit" class="btn btn-primary btn-sm w-100">SALVAR</button></div></form><table class="table table-sm small"><tbody id="listaMaquinasView"></tbody></table></div></section>
+    <section id="sec-trocas" style="display:none;"><div class="card p-3"><h6>🔄 Trocas</h6><form id="formTroca" class="row g-2 mb-2"><input type="hidden" id="editTrocaIdx" value="-1"><div class="col-4"><input type="text" id="trocaSigla" class="form-control form-control-sm" placeholder="Sigla"></div><div class="col-8"><input type="text" id="trocaDesc" class="form-control form-control-sm" placeholder="Desc"></div><div class="col-12"><button type="submit" class="btn btn-primary btn-sm w-100">OK</button></div></form><table class="table table-sm small"><tbody id="listaTrocasView"></tbody></table></div></section>
+    <section id="sec-backup" style="display:none;"><div class="row g-2"><div class="col-6"><button class="btn btn-primary btn-sm w-100" onclick="exportarBackup()">SALVAR JSON</button></div><div class="col-6"><div class="backup-zone" onclick="document.getElementById('inputBackup').click()"><small>Abrir Arquivo</small><input type="file" id="inputBackup" hidden accept=".json" onchange="importarBackup(event)"></div></div><div class="col-12"><button class="btn btn-outline-danger btn-xs w-100" onclick="limparTudo()">RESET TOTAL</button></div></div></section>
 </div>
 
 <script>
@@ -126,12 +125,31 @@
         if (ev) return { status: ev.tipo, classe: 'ev-' + ev.tipo.toLowerCase() };
         const esc = escalas.find(e => e.nome === f.escalaNome);
         if (esc) {
-            const dInicio = new Date(esc.inicio + 'T00:00:00');
+            const dInic = new Date(esc.inicio + 'T00:00:00');
             const dAlvo = new Date(dataStr + 'T00:00:00');
-            const diff = Math.floor((dAlvo - dInicio) / 86400000);
+            const diff = Math.floor((dAlvo - dInic) / 86400000);
             if (diff >= 0 && (diff % 8) < 6) return { status: 'Trabalhando', classe: 'ev-trabalho' };
         }
         return { status: 'Folga', classe: 'ev-folga' };
+    }
+
+    // --- RENDER LISTA COM CABEÇALHO FORÇADO ---
+    function renderAgenda() {
+        const dataStr = document.getElementById('agendaData').value;
+        const head = document.getElementById('headLista');
+        const corpo = document.getElementById('listaAgenda');
+        if (!corpo || !head) return;
+        
+        // Força a re-escrita do cabeçalho
+        head.innerHTML = '<tr><th>DRT</th><th>Nome</th><th>Turno</th><th>Turma</th><th>Status</th></tr>';
+        
+        corpo.innerHTML = '';
+        funcionarios.forEach(f => {
+            const res = obterStatusNoDia(dataStr, f);
+            const badgeC = res.classe.replace('ev-', 'bg-');
+            const turma = f.escalaNome || 'S/T';
+            corpo.innerHTML += `<tr><td>${f.drt}</td><td><strong>${f.nome}</strong></td><td>${f.turno}</td><td>${turma}</td><td><span class="badge ${badgeC}">${res.status}</span></td></tr>`;
+        });
     }
 
     function renderWhatsAppList() {
@@ -141,7 +159,7 @@
         if(!container) return; container.innerHTML = '';
         const ativos = funcionarios.filter(f => f.turno === turno && obterStatusNoDia(dataStr, f).status === 'Trabalhando');
         ativos.forEach(f => {
-            container.innerHTML += `<div class="row g-1 mb-2 align-items-center border-bottom pb-2"><div class="col-12 small fw-bold mb-1">${f.nome}</div><div class="col-6"><select class="form-select form-select-sm maq-zap-input" onchange="atualizarPreviewZap()" data-nome="${f.nome}"><option value="">Máquina...</option>${maquinas.map(m => `<option value="${m}">${m}</option>`).join('')}</select></div><div class="col-6"><select class="form-select form-select-sm troca-zap-input" onchange="atualizarPreviewZap()"><option value="">Troca...</option>${tiposTroca.map(t => `<option value="${t.sigla}">${t.sigla}</option>`).join('')}</select></div></div>`;
+            container.innerHTML += `<div class="row g-1 mb-2 align-items-center border-bottom pb-1"><div class="col-12 small fw-bold">${f.nome}</div><div class="col-6"><select class="form-select form-select-sm maq-zap-input" onchange="atualizarPreviewZap()" data-nome="${f.nome}"><option value="">Máq...</option>${maquinas.map(m => `<option value="${m}">${m}</option>`).join('')}</select></div><div class="col-6"><select class="form-select form-select-sm troca-zap-input" onchange="atualizarPreviewZap()"><option value="">Troca...</option>${tiposTroca.map(t => `<option value="${t.sigla}">${t.sigla}</option>`).join('')}</select></div></div>`;
         });
         atualizarPreviewZap();
     }
@@ -151,75 +169,52 @@
         const turno = document.getElementById('zapTurno').value.toUpperCase();
         let texto = `Escala - ${data} (${turno})\n\n`;
         document.querySelectorAll('#listaTrabalhando .row').forEach(row => {
-            const maqSel = row.querySelector('.maq-zap-input');
-            const trocaSel = row.querySelector('.troca-zap-input');
-            const nome = maqSel.dataset.nome;
-            const maq = maqSel.value || '___';
-            const troca = trocaSel.value ? ` (${trocaSel.value})` : '';
-            texto += `${nome} - ${maq}${troca}\n`;
+            const maqS = row.querySelector('.maq-zap-input');
+            const troS = row.querySelector('.troca-zap-input');
+            const maq = maqS.value || '___';
+            const tro = troS.value ? ` (${troS.value})` : '';
+            texto += `${maqS.dataset.nome} - ${maq}${tro}\n`;
         });
-        texto += `\nLegenda:\n`;
-        tiposTroca.forEach(t => { texto += `${t.sigla} - ${t.desc}\n`; });
-        const preview = document.getElementById('previewZap');
-        if(preview) preview.innerText = texto;
-        return texto;
+        texto += `\nLegenda:\n`; tiposTroca.forEach(t => { texto += `${t.sigla} - ${t.desc}\n`; });
+        const preview = document.getElementById('previewZap'); if(preview) preview.innerText = texto; return texto;
     }
 
     function renderCalendario() {
-        const grid = document.getElementById('calendarioGrid');
-        const mesRef = document.getElementById('mesFiltro').value;
-        if (!mesRef || !grid) return;
-        const [ano, mes] = mesRef.split('-').map(Number);
-        const primeiroDia = new Date(ano, mes-1, 1).getDay();
-        const ultimoDia = new Date(ano, mes, 0).getDate();
-        grid.innerHTML = '';
-        ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB'].forEach(d => grid.innerHTML += `<div class="cal-header">${d}</div>`);
-        for (let i = 0; i < primeiroDia; i++) grid.innerHTML += `<div class="cal-day out"></div>`;
-        for (let d = 1; d <= ultimoDia; d++) {
+        const grid = document.getElementById('calendarioGrid'); const mesRef = document.getElementById('mesFiltro').value; if (!mesRef || !grid) return;
+        const [ano, mes] = mesRef.split('-').map(Number); const primDia = new Date(ano, mes-1, 1).getDay(); const ultDia = new Date(ano, mes, 0).getDate(); grid.innerHTML = '';
+        ['D','S','T','Q','Q','S','S'].forEach(d => grid.innerHTML += `<div class="cal-header">${d}</div>`);
+        for (let i = 0; i < primDia; i++) grid.innerHTML += `<div class="cal-day out"></div>`;
+        for (let d = 1; d <= ultDia; d++) {
             const dStr = `${ano}-${String(mes).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-            let htmlEv = '';
-            funcionarios.forEach(f => { const res = obterStatusNoDia(dStr, f); htmlEv += `<div class="emp-event ${res.classe}">${f.nome.split(' ')[0]}</div>`; });
-            grid.innerHTML += `<div class="cal-day" onclick="irParaDia('${dStr}')"><span class="cal-date">${d}</span>${htmlEv}</div>`;
+            let evs = ''; funcionarios.forEach(f => { const res = obterStatusNoDia(dStr, f); evs += `<div class="emp-event ${res.classe}">${f.nome.split(' ')[0]}</div>`; });
+            grid.innerHTML += `<div class="cal-day" onclick="irParaDia('${dStr}')"><span class="cal-date">${d}</span>${evs}</div>`;
         }
     }
 
-    function renderAgenda() {
-        const dataStr = document.getElementById('agendaData').value;
-        const corpo = document.getElementById('listaAgenda');
-        if (!corpo) return; corpo.innerHTML = '';
-        funcionarios.forEach(f => {
-            const res = obterStatusNoDia(dataStr, f);
-            const badgeC = res.classe.replace('ev-', 'bg-');
-            corpo.innerHTML += `<tr><td>${f.drt}</td><td><strong>${f.nome}</strong></td><td>${f.turno}</td><td><span class="badge ${badgeC}">${res.status}</span></td></tr>`;
-        });
-    }
-
-    // CRUD REUTILIZÁVEL
-    function renderMaquinas() { document.getElementById('listaMaquinasView').innerHTML = maquinas.map((m, i) => `<tr><td class="fw-bold">${m}</td><td class="text-end"><button onclick="editarMaq(${i})" class="btn btn-sm btn-outline-primary me-1">Editar</button><button onclick="remover('maquinas', ${i})" class="btn btn-sm btn-link text-danger">X</button></td></tr>`).join(''); }
-    function renderEscalas() { document.getElementById('listaEscalasView').innerHTML = escalas.map((e, i) => `<tr><td>${e.nome}</td><td>${e.inicio}</td><td class="text-end"><button onclick="editarEscala(${i})" class="btn btn-sm btn-outline-primary me-1">Editar</button><button onclick="remover('escalas', ${i})" class="btn btn-sm btn-link text-danger">X</button></td></tr>`).join(''); }
-    function renderFuncionarios() { document.getElementById('listaFuncView').innerHTML = funcionarios.map((f, i) => `<tr><td>${f.nome}</td><td>${f.turno}</td><td class="text-end"><button onclick="editarFunc(${i})" class="btn btn-sm btn-outline-primary me-1">Editar</button><button onclick="remover('funcionarios', ${i})" class="btn btn-sm btn-link text-danger">X</button></td></tr>`).join(''); }
-    function renderTrocas() { document.getElementById('listaTrocasView').innerHTML = tiposTroca.map((t, i) => `<tr><td><b>${t.sigla}</b></td><td>${t.desc}</td><td class="text-end"><button onclick="editarTroca(${i})" class="btn btn-sm btn-outline-primary me-1">Editar</button><button onclick="remover('trocas', ${i})" class="btn btn-sm btn-link text-danger">X</button></td></tr>`).join(''); }
-    function renderEventos() { document.getElementById('listaEventosView').innerHTML = eventos.map((ev, i) => { const f = funcionarios.find(fn => fn.drt === ev.drt); return `<tr><td>${f ? f.nome : ev.drt}</td><td>${ev.tipo}</td><td class="text-end"><button onclick="editarEvento(${i})" class="btn btn-sm btn-outline-primary me-1">Editar</button><button onclick="remover('eventos', ${i})" class="btn btn-sm btn-link text-danger">X</button></td></tr>`; }).join(''); }
+    function renderMaquinas() { document.getElementById('listaMaquinasView').innerHTML = maquinas.map((m, i) => `<tr><td class="fw-bold">${m}</td><td class="text-end"><button onclick="editarMaq(${i})" class="btn btn-xs btn-outline-primary">Editar</button><button onclick="remover('maquinas', ${i})" class="btn btn-xs btn-link text-danger">X</button></td></tr>`).join(''); }
+    function renderEscalas() { document.getElementById('listaEscalasView').innerHTML = escalas.map((e, i) => `<tr><td>${e.nome}</td><td>${e.inicio}</td><td class="text-end"><button onclick="editarEscala(${i})" class="btn btn-xs btn-outline-primary">Editar</button><button onclick="remover('escalas', ${i})" class="btn btn-xs btn-link text-danger">X</button></td></tr>`).join(''); }
+    function renderFuncionarios() { document.getElementById('listaFuncView').innerHTML = funcionarios.map((f, i) => `<tr><td>${f.nome}</td><td>${f.turno}</td><td class="text-end"><button onclick="editarFunc(${i})" class="btn btn-xs btn-outline-primary">Editar</button><button onclick="remover('funcionarios', ${i})" class="btn btn-xs btn-link text-danger">X</button></td></tr>`).join(''); }
+    function renderTrocas() { document.getElementById('listaTrocasView').innerHTML = tiposTroca.map((t, i) => `<tr><td><b>${t.sigla}</b></td><td>${t.desc}</td><td class="text-end"><button onclick="editarTroca(${i})" class="btn btn-xs btn-outline-primary">Ed</button></td></tr>`).join(''); }
+    function renderEventos() { document.getElementById('listaEventosView').innerHTML = eventos.map((ev, i) => { const f = funcionarios.find(fn => fn.drt === ev.drt); return `<tr><td>${f ? f.nome : ev.drt}</td><td>${ev.tipo}</td><td class="text-end"><button onclick="remover('eventos', ${i})" class="btn btn-xs text-danger">X</button></td></tr>`; }).join(''); }
     
-    function remover(t, i) { if(confirm("Remover?")) { if(t==='maquinas') maquinas.splice(i,1); if(t==='escalas') escalas.splice(i,1); if(t==='funcionarios') funcionarios.splice(i,1); if(t==='eventos') eventos.splice(i,1); if(t==='trocas') tiposTroca.splice(i,1); salvar(); renderizarTudo(); } }
-    function atualizarSelects() { const fEsc = document.getElementById('fEscala'); if(fEsc) fEsc.innerHTML = '<option value="">Turma...</option>' + escalas.map(e => `<option value="${e.nome}">${e.nome}</option>`).join(''); const evFn = document.getElementById('evFunc'); if(evFn) evFn.innerHTML = '<option value="">Quem?</option>' + funcionarios.map(f => `<option value="${f.drt}">${f.nome}</option>`).join(''); }
+    function remover(t, i) { if(confirm("Apagar?")) { if(t==='maquinas') maquinas.splice(i,1); if(t==='escalas') escalas.splice(i,1); if(t==='funcionarios') funcionarios.splice(i,1); if(t==='eventos') eventos.splice(i,1); if(t==='trocas') tiposTroca.splice(i,1); salvar(); renderizarTudo(); } }
+    function atualizarSelects() { const fE = document.getElementById('fEscala'); if(fE) fE.innerHTML = '<option value="">Turma...</option>' + escalas.map(e => `<option value="${e.nome}">${e.nome}</option>`).join(''); const eF = document.getElementById('evFunc'); if(eF) eF.innerHTML = '<option value="">Quem?</option>' + funcionarios.map(f => `<option value="${f.drt}">${f.nome}</option>`).join(''); }
     function editarMaq(i) { document.getElementById('editMaqIdx').value = i; document.getElementById('maqNome').value = maquinas[i]; }
     function editarEscala(i) { const e = escalas[i]; document.getElementById('editEscalaIdx').value = i; document.getElementById('escNome').value = e.nome; document.getElementById('escInicio').value = e.inicio; }
     function editarFunc(i) { const f = funcionarios[i]; document.getElementById('editFuncIdx').value = i; document.getElementById('fDrt').value = f.drt; document.getElementById('fNome').value = f.nome; document.getElementById('fTurno').value = f.turno; document.getElementById('fEscala').value = f.escalaNome; }
     function editarTroca(i) { const t = tiposTroca[i]; document.getElementById('editTrocaIdx').value = i; document.getElementById('trocaSigla').value = t.sigla; document.getElementById('trocaDesc').value = t.desc; }
-    function editarEvento(i) { const ev = eventos[i]; document.getElementById('editEventoIdx').value = i; document.getElementById('evFunc').value = ev.drt; document.getElementById('evTipo').value = ev.tipo; document.getElementById('evInicio').value = ev.inicio; document.getElementById('evFim').value = ev.fim; }
     function cancelarEdicao(tipo) { document.getElementById('form' + tipo)?.reset(); document.getElementById('edit' + tipo + 'Idx').value = "-1"; }
     
-    document.getElementById('formMaq').onsubmit = function(e) { e.preventDefault(); const idx = parseInt(document.getElementById('editMaqIdx').value); const n = document.getElementById('maqNome').value; if(idx===-1) maquinas.push(n); else maquinas[idx]=n; salvar(); renderMaquinas(); cancelarEdicao('Maq'); };
-    document.getElementById('formFunc').onsubmit = (e) => { e.preventDefault(); const idx = parseInt(document.getElementById('editFuncIdx').value); const d = {drt:document.getElementById('fDrt').value, nome:document.getElementById('fNome').value, turno:document.getElementById('fTurno').value, escalaNome:document.getElementById('fEscala').value}; if(idx===-1) funcionarios.push(d); else funcionarios[idx]=d; salvar(); renderFuncionarios(); cancelarEdicao('Func'); };
-    document.getElementById('formEscala').onsubmit = (e) => { e.preventDefault(); const idx = parseInt(document.getElementById('editEscalaIdx').value); const d = {nome:document.getElementById('escNome').value, inicio:document.getElementById('escInicio').value}; if(idx===-1) escalas.push(d); else escalas[idx]=d; salvar(); renderEscalas(); cancelarEdicao('Escala'); };
-    document.getElementById('formTroca').onsubmit = (e) => { e.preventDefault(); const idx = parseInt(document.getElementById('editTrocaIdx').value); const d = {sigla:document.getElementById('trocaSigla').value, desc:document.getElementById('trocaDesc').value}; if(idx===-1) tiposTroca.push(d); else tiposTroca[idx]=d; salvar(); renderTrocas(); cancelarEdicao('Troca'); };
-    document.getElementById('formEvento').onsubmit = (e) => { e.preventDefault(); const idx = parseInt(document.getElementById('editEventoIdx').value); const d = {drt:document.getElementById('evFunc').value, tipo:document.getElementById('evTipo').value, inicio:document.getElementById('evInicio').value, fim:document.getElementById('evFim').value}; if(idx===-1) eventos.push(d); else eventos[idx]=d; salvar(); renderEventos(); cancelarEdicao('Evento'); };
+    document.getElementById('formMaq').onsubmit = (e) => { e.preventDefault(); const i = parseInt(document.getElementById('editMaqIdx').value); const n = document.getElementById('maqNome').value; if(i===-1) maquinas.push(n); else maquinas[i]=n; salvar(); renderMaquinas(); cancelarEdicao('Maq'); };
+    document.getElementById('formFunc').onsubmit = (e) => { e.preventDefault(); const i = parseInt(document.getElementById('editFuncIdx').value); const d = {drt:document.getElementById('fDrt').value, nome:document.getElementById('fNome').value, turno:document.getElementById('fTurno').value, escalaNome:document.getElementById('fEscala').value}; if(i===-1) funcionarios.push(d); else funcionarios[i]=d; salvar(); renderFuncionarios(); cancelarEdicao('Func'); };
+    document.getElementById('formEscala').onsubmit = (e) => { e.preventDefault(); const i = parseInt(document.getElementById('editEscalaIdx').value); const d = {nome:document.getElementById('escNome').value, inicio:document.getElementById('escInicio').value}; if(i===-1) escalas.push(d); else escalas[i]=d; salvar(); renderEscalas(); cancelarEdicao('Escala'); };
+    document.getElementById('formTroca').onsubmit = (e) => { e.preventDefault(); const i = parseInt(document.getElementById('editTrocaIdx').value); const d = {sigla:document.getElementById('trocaSigla').value, desc:document.getElementById('trocaDesc').value}; if(i===-1) tiposTroca.push(d); else tiposTroca[i]=d; salvar(); renderTrocas(); cancelarEdicao('Troca'); };
+    document.getElementById('formEvento').onsubmit = (e) => { e.preventDefault(); const d = {drt:document.getElementById('evFunc').value, tipo:document.getElementById('evTipo').value, inicio:document.getElementById('evInicio').value, fim:document.getElementById('evFim').value}; eventos.push(d); salvar(); renderEventos(); e.target.reset(); };
 
     function renderizarTudo() { renderMaquinas(); renderTrocas(); renderEscalas(); renderFuncionarios(); renderEventos(); renderAgenda(); renderCalendario(); renderWhatsAppList(); atualizarSelects(); }
-    function exportarBackup() { const blob = new Blob([JSON.stringify({escalas, funcionarios, eventos, maquinas, tiposTroca})], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "SGO_Backup.json"; a.click(); }
-    function importarBackup(e) { const fr = new FileReader(); fr.onload = (ev) => { const d = JSON.parse(ev.target.result); escalas=d.escalas; funcionarios=d.funcionarios; maquinas=d.maquinas || []; tiposTroca=d.tiposTroca || []; salvar(); location.reload(); }; fr.readAsText(e.target.files[0]); }
-    function limparTudo() { if(confirm("Remover tudo?")) { localStorage.clear(); location.reload(); } }
+    function exportarBackup() { const b = new Blob([JSON.stringify({escalas, funcionarios, eventos, maquinas, tiposTroca})], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = "SGO_Backup.json"; a.click(); }
+    function importarBackup(e) { const fr = new FileReader(); fr.onload = (v) => { const d = JSON.parse(v.target.result); escalas=d.escalas; funcionarios=d.funcionarios; maquinas=d.maquinas || []; tiposTroca=d.tiposTroca || []; salvar(); location.reload(); }; fr.readAsText(e.target.files[0]); }
+    function limparTudo() { if(confirm("Limpar tudo?")) { localStorage.clear(); location.reload(); } }
     function irParaDia(d) { document.getElementById('agendaData').value = d; document.getElementById('zapData').value = d; navegar('agenda'); }
     function copiarTextoZap() { navigator.clipboard.writeText(atualizarPreviewZap()).then(() => alert("Copiado!")); }
     
@@ -228,4 +223,3 @@
 </script>
 </body>
 </html>
- 
