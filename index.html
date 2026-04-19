@@ -262,29 +262,84 @@
         });
     }
 
+    // --- CORREÇÃO DO BUG DO VÍDEO (SALVAMENTO POR NOME) ---
+    function salvarEscalaZap() { 
+        const dataStr = document.getElementById('zapData').value; 
+        const t = document.getElementById('zapTurno').value; 
+        if(!dataStr) return alert("Selecione data!"); 
+        
+        const chave = `${dataStr}-${t}`; 
+        historicoZap[chave] = {}; 
+        
+        document.querySelectorAll('#listaTrabalhando .row').forEach(row => { 
+            const mS = row.querySelector('.maq-zap-input'); 
+            const tS = row.querySelector('.troca-zap-input'); 
+            // Usamos o dataset.nome para identificar o colaborador
+            if(mS) {
+                const nomeColaborador = mS.dataset.nome;
+                historicoZap[chave][nomeColaborador] = { maq: mS.value, tro: tS.value }; 
+            }
+        }); 
+        salvar(); 
+        alert("Escala Salva!"); 
+        atualizarPreviewZap();
+    }
+
     function renderWhatsAppList() {
         const dataStr = document.getElementById('zapData').value;
         const turno = document.getElementById('zapTurno').value;
         const container = document.getElementById('listaTrabalhando');
         if(!container || !dataStr) return; container.innerHTML = '';
+        
         const chave = `${dataStr}-${turno}`;
         const dadosSalvos = historicoZap[chave] || {};
+        
         const ativos = funcionarios.filter(f => f.turno === turno && (obterStatusNoDia(dataStr, f).status === 'Trabalhando' || obterStatusNoDia(dataStr, f).status === 'Extra'));
+        
         ativos.forEach(f => {
-            const mS = dadosSalvos[f.drt]?.maq || ""; const tS = dadosSalvos[f.drt]?.tro || "";
+            // Buscamos pelo nome, conforme solicitado
+            const maqS = dadosSalvos[f.nome]?.maq || ""; 
+            const troS = dadosSalvos[f.nome]?.tro || "";
             const isExtra = obterStatusNoDia(dataStr, f).status === 'Extra';
+            
             container.innerHTML += `<div class="row g-1 mb-2 border-bottom pb-2 ${isExtra ? 'bg-extra rounded' : ''}">
                 <div class="col-12 small fw-bold mb-1">${f.nome} ${isExtra ? '(Extra)' : ''}</div>
-                <div class="col-6"><select class="form-select form-select-sm maq-zap-input" onchange="atualizarPreviewZap()" data-drt="${f.drt}" data-nome="${f.nome}">
-                    <option value="">Máquina...</option>${maquinas.map(m => `<option value="${m}" ${m===mS?'selected':''}>${m}</option>`).join('')}
+                <div class="col-6"><select class="form-select form-select-sm maq-zap-input" onchange="atualizarPreviewZap()" data-nome="${f.nome}">
+                    <option value="">Máquina...</option>${maquinas.map(m => `<option value="${m}" ${m===maqS?'selected':''}>${m}</option>`).join('')}
                 </select></div>
                 <div class="col-6"><select class="form-select form-select-sm troca-zap-input" onchange="atualizarPreviewZap()">
-                    <option value="">Troca...</option>${tiposTroca.map(t => `<option value="${t.sigla}" ${t.sigla===tS?'selected':''}>${t.sigla}</option>`).join('')}
+                    <option value="">Troca...</option>${tiposTroca.map(t => `<option value="${t.sigla}" ${t.sigla===troS?'selected':''}>${t.sigla}</option>`).join('')}
                 </select></div></div>`;
         });
         atualizarPreviewZap();
     }
 
+    function atualizarPreviewZap() { 
+        const zapDataEl = document.getElementById('zapData'); 
+        const zapTurnoEl = document.getElementById('zapTurno');
+        if(!zapDataEl.value) return "";
+        
+        const d = zapDataEl.value.split('-').reverse().join('/'); 
+        const t = zapTurnoEl.value.toUpperCase(); 
+        let txt = `Escala - ${d} (${t})\n\n`; 
+        
+        document.querySelectorAll('#listaTrabalhando .row').forEach(row => { 
+            const mS = row.querySelector('.maq-zap-input'); 
+            const tS = row.querySelector('.troca-zap-input'); 
+            const m = mS?.value || '___'; 
+            const tro = tS?.value ? ` (${tS.value})` : ''; 
+            if(mS) txt += `${mS.dataset.nome} - ${m}${tro}\n`; 
+        }); 
+        
+        txt += `\nLegenda:\n`; 
+        tiposTroca.forEach(t => { txt += `${t.sigla} - ${t.desc}\n`; }); 
+        
+        const p = document.getElementById('previewZap'); 
+        if(p) p.innerText = txt; 
+        return txt; 
+    }
+
+    // --- RENDERIZADORES GERAIS ---
     function renderCalendario() {
         const grid = document.getElementById('calendarioGrid'); const mR = document.getElementById('mesFiltro').value; const tF = document.getElementById('turnoFiltroMensal').value; if (!mR || !grid) return;
         const [ano, mes] = mR.split('-').map(Number); const primDia = new Date(ano, mes-1, 1).getDay(); const ultDia = new Date(ano, mes, 0).getDate();
@@ -305,29 +360,6 @@
     function importarBackup(e) { const fr = new FileReader(); fr.onload = (v) => { const d = JSON.parse(v.target.result); escalas=d.escalas; funcionarios=d.funcionarios; maquinas=d.maquinas || []; tiposTroca=d.tiposTroca || []; eventos=d.eventos || []; extras=d.extras || []; historicoZap=d.historicoZap || {}; salvar(); location.reload(); }; fr.readAsText(e.target.files[0]); }
     function remover(t, i) { if(confirm("Apagar?")) { if(t==='maquinas') maquinas.splice(i,1); if(t==='escalas') escalas.splice(i,1); if(t==='funcionarios') funcionarios.splice(i,1); if(t==='eventos') eventos.splice(i,1); if(t==='extras') extras.splice(i,1); if(t==='trocas') tiposTroca.splice(i,1); salvar(); renderizarTudo(); } }
     
-    function salvarEscalaZap() { 
-        const dataStr = document.getElementById('zapData').value; const t = document.getElementById('zapTurno').value; if(!dataStr) return alert("Selecione data!"); 
-        const chave = `${dataStr}-${t}`; historicoZap[chave] = {}; 
-        document.querySelectorAll('#listaTrabalhando .row').forEach(row => { 
-            const mS = row.querySelector('.maq-zap-input'); const tS = row.querySelector('.troca-zap-input'); 
-            if(mS) historicoZap[chave][mS.dataset.drt] = { maq: mS.value, tro: tS.value }; 
-        }); 
-        salvar(); alert("Salvo!"); 
-    }
-
-    function atualizarPreviewZap() { 
-        const zapDataEl = document.getElementById('zapData'); if(!zapDataEl.value) return "";
-        const d = zapDataEl.value.split('-').reverse().join('/'); const t = document.getElementById('zapTurno').value.toUpperCase(); 
-        let txt = `Escala - ${d} (${t})\n\n`; 
-        document.querySelectorAll('#listaTrabalhando .row').forEach(row => { 
-            const mS = row.querySelector('.maq-zap-input'); const tS = row.querySelector('.troca-zap-input'); 
-            const m = mS?.value || '___'; const tro = tS?.value ? ` (${tS.value})` : ''; 
-            if(mS) txt += `${mS.dataset.nome} - ${m}${tro}\n`; 
-        }); 
-        txt += `\nLegenda:\n`; tiposTroca.forEach(t => { txt += `${t.sigla} - ${t.desc}\n`; }); 
-        const p = document.getElementById('previewZap'); if(p) p.innerText = txt; return txt; 
-    }
-
     function renderEscalas() { const corpo = document.getElementById('listaEscalasView'); if(!corpo) return; corpo.innerHTML = escalas.map((e, i) => `<tr><td>${e.nome}</td><td>${e.inicio.split('-').reverse().join('/')}</td><td class="text-end"><button onclick="editarEscala(${i})" class="btn btn-sm btn-outline-primary me-2">Editar</button><button onclick="remover('escalas', ${i})" class="btn btn-sm btn-link text-danger">X</button></td></tr>`).join(''); }
     function renderFuncionarios() { const corpo = document.getElementById('listaFuncView'); if(!corpo) return; corpo.innerHTML = funcionarios.map((f, i) => `<tr><td>${f.drt}</td><td>${f.nome}</td><td>${f.turno}</td><td>${f.escalaNome || '-'}</td><td class="text-end"><button onclick="editarFunc(${i})" class="btn btn-sm btn-outline-primary me-2">Editar</button><button onclick="remover('funcionarios', ${i})" class="btn btn-sm btn-link text-danger">X</button></td></tr>`).join(''); }
     function renderAgenda() { const dStr = document.getElementById('agendaData').value; const fT = document.getElementById('filtroTurnoAgenda').value; const corpo = document.getElementById('listaAgenda'); if (!corpo) return; corpo.innerHTML = ''; funcionarios.forEach(f => { if (fT !== 'Todos' && f.turno !== fT) return; const res = obterStatusNoDia(dStr, f); const badgeC = res.classe.replace('ev-', 'bg-'); corpo.innerHTML += `<tr><td>${f.drt}</td><td><strong>${f.nome}</strong></td><td>${f.turno}</td><td>${f.escalaNome || '-'}</td><td><span class="badge ${badgeC}">${res.status}</span></td></tr>`; }); }
