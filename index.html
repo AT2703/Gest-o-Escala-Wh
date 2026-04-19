@@ -115,9 +115,35 @@
     <section id="sec-whatsapp" style="display:none;"><div class="row"><div class="col-md-7"><div class="card p-4"><div class="d-flex justify-content-between align-items-center mb-3"><h5>📲 Montar Escala</h5><button class="btn btn-sm btn-primary fw-bold" onclick="salvarEscalaZap()">💾 SALVAR</button></div><div class="row g-2 mb-3"><div class="col-md-6"><input type="date" id="zapData" class="form-control" onchange="renderWhatsAppList()"></div><div class="col-md-6"><select id="zapTurno" class="form-select" onchange="renderWhatsAppList()"><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div></div><div id="listaTrabalhando" class="border-top pt-3"></div></div></div><div class="col-md-5"><div class="card p-4 h-100"><h5>Preview</h5><div id="previewZap" class="mb-3"></div><button class="btn btn-success w-100 fw-bold py-3" onclick="copiarTextoZap()">COPIAR</button></div></div></div></section>
 
     <section id="sec-agenda" style="display:none;"><div class="card p-3 mb-2"><div class="d-flex gap-2"><input type="date" id="agendaData" class="form-control" style="width:180px" onchange="renderAgenda()"><select id="filtroTurnoAgenda" class="form-select" style="width:150px" onchange="renderAgenda()"><option value="Todos">Todos Turnos</option><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div></div><div class="card table-responsive"><table class="table table-hover mb-0 border"><thead class="table-dark"><tr><th>DRT</th><th>Nome</th><th>Turno</th><th>Turma</th><th>Status</th></tr></thead><tbody id="listaAgenda"></tbody></table></div></section>
+    
     <section id="sec-eventos" style="display:none;"><div class="card p-4"><h5>⚠️ Registro de Ausências</h5><form id="formEvento" class="row g-2 mb-4"><input type="hidden" id="editEventoIdx" value="-1"><div class="col-md-3"><label class="small fw-bold">Funcionário</label><select id="evFunc" class="form-select" required></select></div><div class="col-md-2"><label class="small fw-bold">Tipo</label><select id="evTipo" class="form-select" required><option>Férias</option><option>Falta</option><option>Afastado</option></select></div><div class="col-md-2"><label class="small fw-bold">Início</label><input type="date" id="evInicio" class="form-control" required></div><div class="col-md-2"><label class="small fw-bold">Final</label><input type="date" id="evFim" class="form-control" required></div><div class="col-md-3 d-flex align-items-end"><button type="submit" class="btn btn-warning w-100 fw-bold">SALVAR</button></div></form><hr><div class="d-flex justify-content-between mb-3"><h6 class="fw-bold m-0">Histórico</h6><button class="btn btn-sm btn-outline-secondary" onclick="limparFiltrosAusencia()">Limpar</button></div><div class="row g-2 mb-3"><div class="col-6 col-md-3"><label class="small fw-bold text-muted">Tipo</label><select id="filtroTipoAusencia" class="form-select form-select-sm" onchange="renderEventos()"><option value="Todos">Todos</option><option>Férias</option><option>Falta</option><option>Afastado</option></select></div><div class="col-6 col-md-3"><label class="small fw-bold text-muted">Turno</label><select id="filtroTurnoAusencia" class="form-select form-select-sm" onchange="renderEventos()"><option value="Todos">Todos</option><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div><div class="col-6 col-md-3"><label class="small fw-bold text-muted">Início</label><input type="date" id="filtroAusInicio" class="form-control form-control-sm" onchange="renderEventos()"></div><div class="col-6 col-md-3"><label class="small fw-bold text-muted">Final</label><input type="date" id="filtroAusFim" class="form-control form-control-sm" onchange="renderEventos()"></div></div><div class="table-responsive"><table class="table table-sm table-hover border"><thead><tr><th>Nome</th><th>Turno</th><th>Tipo</th><th>Início</th><th>Fim</th><th class="text-end">Ações</th></tr></thead><tbody id="listaEventosView"></tbody></table></div></div></section>
+    
     <section id="sec-funcionarios" style="display:none;"><div class="card p-4"><h5>👥 Equipe</h5><form id="formFunc" class="row g-2 mb-4"><input type="hidden" id="editFuncIdx" value="-1"><div class="col-md-2"><input type="text" id="fDrt" class="form-control" placeholder="DRT" required></div><div class="col-md-3"><input type="text" id="fNome" class="form-control" placeholder="Nome" required></div><div class="col-md-2"><select id="fTurno" class="form-select"><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div><div class="col-md-3"><select id="fEscala" class="form-select" required></select></div><div class="col-md-2 d-flex align-items-end"><button type="submit" class="btn btn-success w-100">Salvar</button></div></form><table class="table table-hover border"><thead><tr><th>DRT</th><th>Nome</th><th>Turno</th><th>Turma</th><th class="text-end">Ações</th></tr></thead><tbody id="listaFuncView"></tbody></table></div></section>
-    <section id="sec-escalas" style="display:none;"><div class="card p-4"><h5>🔢 Gestão de Turmas</h5><form id="formEscala" class="row g-2 mb-3"><input type="hidden" id="editEscalaIdx" value="-1"><div class="col-md-5"><input type="text" id="escNome" class="form-control" placeholder="Ex: Turma A" required></div><div class="col-md-4"><input type="date" id="escInicio" class="form-control" required></div><div class="col-md-3 d-flex align-items-end"><button type="submit" class="btn btn-primary w-100">Salvar</button></div></form><table class="table table-sm table-hover border"><thead><tr><th>Turma</th><th>Início do Ciclo</th><th class="text-end">Ações</th></tr></thead><tbody id="listaEscalasView"></tbody></table></div></section>
+    
+    <section id="sec-escalas" style="display:none;">
+        <div class="card p-4">
+            <h5>🔢 Gestão de Turmas</h5>
+            <form id="formEscala" class="row g-2 mb-3">
+                <input type="hidden" id="editEscalaIdx" value="-1">
+                <div class="col-md-5">
+                    <label class="small fw-bold">Nome da Turma</label>
+                    <input type="text" id="escNome" class="form-control" placeholder="Ex: Turma A" required>
+                </div>
+                <div class="col-md-4">
+                    <label class="small fw-bold">Início do Ciclo</label>
+                    <input type="date" id="escInicio" class="form-control" required>
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">Salvar</button>
+                </div>
+            </form>
+            <table class="table table-sm table-hover border">
+                <thead><tr><th>Turma</th><th>Início do Ciclo</th><th class="text-end">Ações</th></tr></thead>
+                <tbody id="listaEscalasView"></tbody>
+            </table>
+        </div>
+    </section>
+
     <section id="sec-maquinas" style="display:none;"><div class="card p-4"><h5>🔷️ Máquinas</h5><form id="formMaq" class="row g-2 mb-3"><input type="hidden" id="editMaqIdx" value="-1"><div class="col-md-9"><input type="text" id="maqNome" class="form-control" placeholder="Ex: M13" required></div><div class="col-md-3 d-flex align-items-end"><button type="submit" class="btn btn-primary w-100">Gravar</button></div></form><table class="table table-sm"><tbody id="listaMaquinasView"></tbody></table></div></section>
     <section id="sec-trocas" style="display:none;"><div class="card p-4"><h5>🔄 Trocas</h5><form id="formTroca" class="row g-2 mb-3"><input type="hidden" id="editTrocaIdx" value="-1"><div class="col-md-3"><input type="text" id="trocaSigla" class="form-control" placeholder="TC" required></div><div class="col-md-6"><input type="text" id="trocaDesc" class="form-control" placeholder="Descrição" required></div><div class="col-md-3 d-flex align-items-end"><button type="submit" class="btn btn-primary w-100">OK</button></div></form><table class="table table-sm"><tbody id="listaTrocasView"></tbody></table></div></section>
     <section id="sec-backup" style="display:none;"><div class="row g-4"><div class="col-md-6"><div class="card p-4 h-100 text-center"><h5>💾 Exportar</h5><button class="btn btn-primary w-100 py-3 mt-auto" onclick="exportarBackup()">BAIXAR BACKUP</button></div></div><div class="col-md-6"><div class="card p-4 h-100 text-center"><h5>📂 Importar</h5><div class="backup-zone" onclick="document.getElementById('inputBackup').click()"><p>Clique para carregar JSON</p><input type="file" id="inputBackup" hidden accept=".json" onchange="importarBackup(event)"></div></div></div><div class="col-12"><button class="btn btn-outline-danger btn-sm w-100" onclick="limparTudo()">Limpar Dados</button></div></div></section>
@@ -141,6 +167,53 @@
         localStorage.setItem('w_trocas', JSON.stringify(tiposTroca));
         localStorage.setItem('w_historico_zap', JSON.stringify(historicoZap));
     }
+
+    // --- PROCESSAMENTO DE FORMULÁRIOS ---
+    document.getElementById('formEvento').onsubmit = (e) => {
+        e.preventDefault();
+        const idx = parseInt(document.getElementById('editEventoIdx').value);
+        const novo = { drt: document.getElementById('evFunc').value, tipo: document.getElementById('evTipo').value, inicio: document.getElementById('evInicio').value, fim: document.getElementById('evFim').value };
+        if (idx === -1) eventos.push(novo); else eventos[idx] = novo;
+        cancelarEdicao('Evento'); salvar(); renderizarTudo();
+    };
+
+    document.getElementById('formFunc').onsubmit = (e) => {
+        e.preventDefault();
+        const idx = parseInt(document.getElementById('editFuncIdx').value);
+        const novo = { drt: document.getElementById('fDrt').value, nome: document.getElementById('fNome').value, turno: document.getElementById('fTurno').value, escalaNome: document.getElementById('fEscala').value };
+        if (idx === -1) funcionarios.push(novo); else funcionarios[idx] = novo;
+        cancelarEdicao('Func'); salvar(); renderizarTudo();
+    };
+
+    document.getElementById('formExtra').onsubmit = (e) => {
+        e.preventDefault();
+        extras.push({ drt: document.getElementById('exFunc').value, data: document.getElementById('exData').value });
+        salvar(); renderizarTudo(); e.target.reset(); document.getElementById('exFunc').disabled = true;
+    };
+
+    document.getElementById('formEscala').onsubmit = (e) => {
+        e.preventDefault();
+        const idx = parseInt(document.getElementById('editEscalaIdx').value);
+        const novo = { nome: document.getElementById('escNome').value, inicio: document.getElementById('escInicio').value };
+        if (idx === -1) escalas.push(novo); else escalas[idx] = novo;
+        cancelarEdicao('Escala'); salvar(); renderizarTudo();
+    };
+
+    document.getElementById('formMaq').onsubmit = (e) => {
+        e.preventDefault();
+        const idx = parseInt(document.getElementById('editMaqIdx').value);
+        const nome = document.getElementById('maqNome').value;
+        if (idx === -1) maquinas.push(nome); else maquinas[idx] = nome;
+        cancelarEdicao('Maq'); salvar(); renderizarTudo();
+    };
+
+    document.getElementById('formTroca').onsubmit = (e) => {
+        e.preventDefault();
+        const idx = parseInt(document.getElementById('editTrocaIdx').value);
+        const novo = { sigla: document.getElementById('trocaSigla').value, desc: document.getElementById('trocaDesc').value };
+        if (idx === -1) tiposTroca.push(novo); else tiposTroca[idx] = novo;
+        cancelarEdicao('Troca'); salvar(); renderizarTudo();
+    };
 
     function navegar(aba) {
         document.querySelectorAll('section').forEach(s => s.style.display = 'none');
@@ -176,12 +249,8 @@
         if(!dataStr) { select.disabled = true; return; }
         select.innerHTML = '<option value="">Selecione o funcionário...</option>';
         const folguistas = funcionarios.filter(f => obterStatusNoDia(dataStr, f).status === 'Folga');
-        if(folguistas.length === 0) {
-            select.innerHTML = '<option value="">Ninguém de folga neste dia!</option>';
-        } else {
-            folguistas.forEach(f => { select.innerHTML += `<option value="${f.drt}">${f.nome} (${f.turno})</option>`; });
-            select.disabled = false;
-        }
+        if(folguistas.length === 0) { select.innerHTML = '<option value="">Ninguém de folga!</option>'; } 
+        else { folguistas.forEach(f => { select.innerHTML += `<option value="${f.drt}">${f.nome} (${f.turno})</option>`; }); select.disabled = false; }
     }
 
     function renderExtras() {
@@ -193,24 +262,14 @@
         });
     }
 
-    document.getElementById('formExtra').onsubmit = (e) => {
-        e.preventDefault();
-        extras.push({ drt: document.getElementById('exFunc').value, data: document.getElementById('exData').value });
-        salvar(); renderizarTudo(); document.getElementById('formExtra').reset(); document.getElementById('exFunc').disabled = true;
-    };
-
     function renderWhatsAppList() {
         const dataStr = document.getElementById('zapData').value;
         const turno = document.getElementById('zapTurno').value;
         const container = document.getElementById('listaTrabalhando');
-        if(!container) return; container.innerHTML = '';
+        if(!container || !dataStr) return; container.innerHTML = '';
         const chave = `${dataStr}-${turno}`;
         const dadosSalvos = historicoZap[chave] || {};
-        const ativos = funcionarios.filter(f => {
-            if(f.turno !== turno) return false;
-            const res = obterStatusNoDia(dataStr, f);
-            return (res.status === 'Trabalhando' || res.status === 'Extra');
-        });
+        const ativos = funcionarios.filter(f => f.turno === turno && (obterStatusNoDia(dataStr, f).status === 'Trabalhando' || obterStatusNoDia(dataStr, f).status === 'Extra'));
         ativos.forEach(f => {
             const mS = dadosSalvos[f.drt]?.maq || ""; const tS = dadosSalvos[f.drt]?.tro || "";
             const isExtra = obterStatusNoDia(dataStr, f).status === 'Extra';
@@ -245,8 +304,30 @@
     function exportarBackup() { const b = new Blob([JSON.stringify({escalas, funcionarios, eventos, extras, maquinas, tiposTroca, historicoZap})], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = "GE_Backup.json"; a.click(); }
     function importarBackup(e) { const fr = new FileReader(); fr.onload = (v) => { const d = JSON.parse(v.target.result); escalas=d.escalas; funcionarios=d.funcionarios; maquinas=d.maquinas || []; tiposTroca=d.tiposTroca || []; eventos=d.eventos || []; extras=d.extras || []; historicoZap=d.historicoZap || {}; salvar(); location.reload(); }; fr.readAsText(e.target.files[0]); }
     function remover(t, i) { if(confirm("Apagar?")) { if(t==='maquinas') maquinas.splice(i,1); if(t==='escalas') escalas.splice(i,1); if(t==='funcionarios') funcionarios.splice(i,1); if(t==='eventos') eventos.splice(i,1); if(t==='extras') extras.splice(i,1); if(t==='trocas') tiposTroca.splice(i,1); salvar(); renderizarTudo(); } }
-    function salvarEscalaZap() { const dataStr = document.getElementById('zapData').value; const t = document.getElementById('zapTurno').value; if(!dataStr) return alert("Selecione data!"); const chave = `${dataStr}-${t}`; historicoZap[chave] = {}; document.querySelectorAll('#listaTrabalhando .row').forEach(row => { const mS = row.querySelector('.maq-zap-input'); const tS = row.querySelector('.troca-zap-input'); historicoZap[chave][mS.dataset.drt] = { maq: mS.value, tro: tS.value }; }); salvar(); alert("Salvo!"); }
-    function atualizarPreviewZap() { const d = document.getElementById('zapData').value.split('-').reverse().join('/'); const t = document.getElementById('zapTurno').value.toUpperCase(); let txt = `Escala - ${d} (${t})\n\n`; document.querySelectorAll('#listaTrabalhando .row').forEach(row => { const mS = row.querySelector('.maq-zap-input'); const tS = row.querySelector('.troca-zap-input'); const m = mS?.value || '___'; const tro = tS?.value ? ` (${tS.value})` : ''; txt += `${mS.dataset.nome} - ${m}${tro}\n`; }); txt += `\nLegenda:\n`; tiposTroca.forEach(t => { txt += `${t.sigla} - ${t.desc}\n`; }); const p = document.getElementById('previewZap'); if(p) p.innerText = txt; return txt; }
+    
+    function salvarEscalaZap() { 
+        const dataStr = document.getElementById('zapData').value; const t = document.getElementById('zapTurno').value; if(!dataStr) return alert("Selecione data!"); 
+        const chave = `${dataStr}-${t}`; historicoZap[chave] = {}; 
+        document.querySelectorAll('#listaTrabalhando .row').forEach(row => { 
+            const mS = row.querySelector('.maq-zap-input'); const tS = row.querySelector('.troca-zap-input'); 
+            if(mS) historicoZap[chave][mS.dataset.drt] = { maq: mS.value, tro: tS.value }; 
+        }); 
+        salvar(); alert("Salvo!"); 
+    }
+
+    function atualizarPreviewZap() { 
+        const zapDataEl = document.getElementById('zapData'); if(!zapDataEl.value) return "";
+        const d = zapDataEl.value.split('-').reverse().join('/'); const t = document.getElementById('zapTurno').value.toUpperCase(); 
+        let txt = `Escala - ${d} (${t})\n\n`; 
+        document.querySelectorAll('#listaTrabalhando .row').forEach(row => { 
+            const mS = row.querySelector('.maq-zap-input'); const tS = row.querySelector('.troca-zap-input'); 
+            const m = mS?.value || '___'; const tro = tS?.value ? ` (${tS.value})` : ''; 
+            if(mS) txt += `${mS.dataset.nome} - ${m}${tro}\n`; 
+        }); 
+        txt += `\nLegenda:\n`; tiposTroca.forEach(t => { txt += `${t.sigla} - ${t.desc}\n`; }); 
+        const p = document.getElementById('previewZap'); if(p) p.innerText = txt; return txt; 
+    }
+
     function renderEscalas() { const corpo = document.getElementById('listaEscalasView'); if(!corpo) return; corpo.innerHTML = escalas.map((e, i) => `<tr><td>${e.nome}</td><td>${e.inicio.split('-').reverse().join('/')}</td><td class="text-end"><button onclick="editarEscala(${i})" class="btn btn-sm btn-outline-primary me-2">Editar</button><button onclick="remover('escalas', ${i})" class="btn btn-sm btn-link text-danger">X</button></td></tr>`).join(''); }
     function renderFuncionarios() { const corpo = document.getElementById('listaFuncView'); if(!corpo) return; corpo.innerHTML = funcionarios.map((f, i) => `<tr><td>${f.drt}</td><td>${f.nome}</td><td>${f.turno}</td><td>${f.escalaNome || '-'}</td><td class="text-end"><button onclick="editarFunc(${i})" class="btn btn-sm btn-outline-primary me-2">Editar</button><button onclick="remover('funcionarios', ${i})" class="btn btn-sm btn-link text-danger">X</button></td></tr>`).join(''); }
     function renderAgenda() { const dStr = document.getElementById('agendaData').value; const fT = document.getElementById('filtroTurnoAgenda').value; const corpo = document.getElementById('listaAgenda'); if (!corpo) return; corpo.innerHTML = ''; funcionarios.forEach(f => { if (fT !== 'Todos' && f.turno !== fT) return; const res = obterStatusNoDia(dStr, f); const badgeC = res.classe.replace('ev-', 'bg-'); corpo.innerHTML += `<tr><td>${f.drt}</td><td><strong>${f.nome}</strong></td><td>${f.turno}</td><td>${f.escalaNome || '-'}</td><td><span class="badge ${badgeC}">${res.status}</span></td></tr>`; }); }
@@ -254,12 +335,14 @@
     function renderMaquinas() { document.getElementById('listaMaquinasView').innerHTML = maquinas.map((m, i) => `<tr><td class="fw-bold">${m}</td><td class="text-end"><button onclick="editarMaq(${i})" class="btn btn-sm btn-outline-primary me-1">Editar</button><button onclick="remover('maquinas', ${i})" class="btn btn-sm btn-link text-danger">X</button></td></tr>`).join(''); }
     function renderTrocas() { document.getElementById('listaTrocasView').innerHTML = tiposTroca.map((t, i) => `<tr><td><b>${t.sigla}</b></td><td>${t.desc}</td><td class="text-end"><button onclick="editarTroca(${i})" class="btn btn-sm btn-outline-primary me-1">Editar</button><button onclick="remover('trocas', ${i})" class="btn btn-sm btn-link text-danger">X</button></td></tr>`).join(''); }
     function atualizarSelects() { document.getElementById('fEscala').innerHTML = '<option value="">Turma...</option>' + escalas.map(e => `<option value="${e.nome}">${e.nome}</option>`).join(''); document.getElementById('evFunc').innerHTML = '<option value="">Quem?</option>' + funcionarios.map(f => `<option value="${f.drt}">${f.nome}</option>`).join(''); }
+    
     function editarEscala(i) { const e = escalas[i]; document.getElementById('editEscalaIdx').value = i; document.getElementById('escNome').value = e.nome; document.getElementById('escInicio').value = e.inicio; }
     function editarFunc(i) { const f = funcionarios[i]; document.getElementById('editFuncIdx').value = i; document.getElementById('fDrt').value = f.drt; document.getElementById('fNome').value = f.nome; document.getElementById('fTurno').value = f.turno; document.getElementById('fEscala').value = f.escalaNome; }
     function editarEvento(i) { const ev = eventos[i]; document.getElementById('editEventoIdx').value = i; document.getElementById('evFunc').value = ev.drt; document.getElementById('evTipo').value = ev.tipo; document.getElementById('evInicio').value = ev.inicio; document.getElementById('evFim').value = ev.fim; }
     function editarMaq(i) { document.getElementById('editMaqIdx').value = i; document.getElementById('maqNome').value = maquinas[i]; }
     function editarTroca(i) { const t = tiposTroca[i]; document.getElementById('editTrocaIdx').value = i; document.getElementById('trocaSigla').value = t.sigla; document.getElementById('trocaDesc').value = t.desc; }
-    function cancelarEdicao(tipo) { document.getElementById('form' + tipo)?.reset(); document.getElementById('edit' + tipo + 'Idx').value = "-1"; }
+    
+    function cancelarEdicao(tipo) { const f = document.getElementById('form' + tipo); if(f) f.reset(); const idx = document.getElementById('edit' + tipo + 'Idx'); if(idx) idx.value = "-1"; }
     function limparFiltrosAusencia() { document.getElementById('filtroTipoAusencia').value = 'Todos'; document.getElementById('filtroTurnoAusencia').value = 'Todos'; document.getElementById('filtroAusInicio').value = ''; document.getElementById('filtroAusFim').value = ''; renderEventos(); }
     function irParaDia(d) { document.getElementById('agendaData').value = d; document.getElementById('zapData').value = d; navegar('agenda'); }
     function copiarTextoZap() { navigator.clipboard.writeText(atualizarPreviewZap()).then(() => alert("Copiado!")); }
