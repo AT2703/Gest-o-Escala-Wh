@@ -56,7 +56,7 @@
     <ul class="nav nav-pills mb-4 bg-white p-2 rounded shadow-sm border overflow-auto flex-nowrap">
         <li class="nav-item"><a class="nav-link active" id="tab-mensal" onclick="navegar('mensal')">📅 Calendário</a></li>
         <li class="nav-item"><a class="nav-link" id="tab-agenda" onclick="navegar('agenda')">📋 Diário</a></li>
-        <li class="nav-item"><a class="nav-link" id="tab-whatsapp" onclick="navegar('whatsapp')">📲 Escala</a></li>
+        <li class="nav-item"><a class="nav-link" id="tab-whatsapp" onclick="navegar('whatsapp')">📲 Escalas</a></li>
         <li class="nav-item"><a class="nav-link" id="tab-funcionarios" onclick="navegar('funcionarios')">👥 Equipe</a></li>
         <li class="nav-item"><a class="nav-link" id="tab-escalas" onclick="navegar('escalas')">🔢 Turmas</a></li>
         <li class="nav-item"><a class="nav-link" id="tab-maquinas" onclick="navegar('maquinas')">🔷️ Máquinas</a></li>
@@ -65,18 +65,17 @@
         <li class="nav-item"><a class="nav-link" id="tab-backup" onclick="navegar('backup')">⚙️ Sistema</a></li>
     </ul>
 
-    <section id="sec-whatsapp" style="display:none;">
-        <div class="row"><div class="col-md-7"><div class="card p-4"><div class="d-flex justify-content-between align-items-center mb-3"><h5 class="m-0">📲 Montar Escala</h5><button class="btn btn-sm btn-primary fw-bold" onclick="salvarEscalaZap()">💾 SALVAR</button></div><div class="row g-2 mb-3"><div class="col-md-6"><input type="date" id="zapData" class="form-control" onchange="renderWhatsAppList()"></div><div class="col-md-6"><select id="zapTurno" class="form-select" onchange="renderWhatsAppList()"><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div></div><div id="listaTrabalhando" class="border-top pt-3"></div></div></div><div class="col-md-5"><div class="card p-4 h-100"><h5>Preview</h5><div id="previewZap" class="mb-3"></div><button class="btn btn-success w-100 fw-bold py-3" onclick="copiarTextoZap()">COPIAR</button></div></div></div>
-    </section>
-
     <section id="sec-mensal">
         <div class="card p-3 mb-3"><div class="row g-2 mb-3 align-items-end"><div class="col-md-3"><input type="month" id="mesFiltro" class="form-control" onchange="renderCalendario()"></div><div class="col-md-3"><select id="turnoFiltroMensal" class="form-select" onchange="renderCalendario()"><option value="Todos">Todos Turnos</option><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div></div><div class="legenda-container"><div class="legenda-item"><div class="box-cor bg-trabalho"></div> Trabalho</div><div class="legenda-item"><div class="box-cor bg-folga"></div> Folga</div><div class="legenda-item"><div class="box-cor bg-ferias"></div> Férias</div><div class="legenda-item"><div class="box-cor bg-falta"></div> Ausência</div></div></div>
         <div class="card p-1"><div class="cal-wrapper"><div class="cal-grid" id="calendarioGrid"></div></div></div>
     </section>
 
-    <section id="sec-escalas" style="display:none;"><div class="card p-4"><h5>🔢 Gestão de Turmas</h5><form id="formEscala" class="row g-2 mb-3"><input type="hidden" id="editEscalaIdx" value="-1"><div class="col-md-5"><input type="text" id="escNome" class="form-control" placeholder="Ex: Turma A" required></div><div class="col-md-4"><input type="date" id="escInicio" class="form-control" required></div><div class="col-md-3 d-flex align-items-end"><button type="submit" class="btn btn-primary w-100">Salvar</button></div></form><table class="table table-sm table-hover border"><thead><tr><th>Turma</th><th>Início do Ciclo</th><th class="text-end">Ações</th></tr></thead><tbody id="listaEscalasView"></tbody></table></div></section>
     <section id="sec-agenda" style="display:none;"><div class="card p-3 mb-2"><div class="d-flex gap-2"><input type="date" id="agendaData" class="form-control" style="width:180px" onchange="renderAgenda()"><select id="filtroTurnoAgenda" class="form-select" style="width:150px" onchange="renderAgenda()"><option value="Todos">Todos Turnos</option><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div></div><div class="card table-responsive"><table class="table table-hover mb-0 border"><thead class="table-dark"><tr><th>DRT</th><th>Nome</th><th>Turno</th><th>Turma</th><th>Status</th></tr></thead><tbody id="listaAgenda"></tbody></table></div></section>
+    
+    <section id="sec-whatsapp" style="display:none;"><div class="row"><div class="col-md-7"><div class="card p-4"><div class="d-flex justify-content-between align-items-center mb-3"><h5 class="m-0">📲 Montar Escala</h5><button class="btn btn-sm btn-primary fw-bold" onclick="salvarEscalaZap()">💾 SALVAR</button></div><div class="row g-2 mb-3"><div class="col-md-6"><input type="date" id="zapData" class="form-control" onchange="renderWhatsAppList()"></div><div class="col-md-6"><select id="zapTurno" class="form-select" onchange="renderWhatsAppList()"><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div></div><div id="listaTrabalhando" class="border-top pt-3"></div></div></div><div class="col-md-5"><div class="card p-4 h-100"><h5>Preview</h5><div id="previewZap" class="mb-3"></div><button class="btn btn-success w-100 fw-bold py-3" onclick="copiarTextoZap()">COPIAR</button></div></div></div></section>
+
     <section id="sec-funcionarios" style="display:none;"><div class="card p-4"><h5>👥 Equipe</h5><form id="formFunc" class="row g-2 mb-4"><input type="hidden" id="editFuncIdx" value="-1"><div class="col-md-2"><input type="text" id="fDrt" class="form-control" placeholder="DRT" required></div><div class="col-md-3"><input type="text" id="fNome" class="form-control" placeholder="Nome" required></div><div class="col-md-2"><select id="fTurno" class="form-select"><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div><div class="col-md-3"><select id="fEscala" class="form-select" required></select></div><div class="col-md-2 d-flex align-items-end"><button type="submit" class="btn btn-success w-100">Salvar</button></div></form><table class="table table-hover border"><thead><tr><th>DRT</th><th>Nome</th><th>Turno</th><th>Turma</th><th class="text-end">Ações</th></tr></thead><tbody id="listaFuncView"></tbody></table></div></section>
+    <section id="sec-escalas" style="display:none;"><div class="card p-4"><h5>🔢 Gestão de Turmas</h5><form id="formEscala" class="row g-2 mb-3"><input type="hidden" id="editEscalaIdx" value="-1"><div class="col-md-5"><input type="text" id="escNome" class="form-control" placeholder="Ex: Turma A" required></div><div class="col-md-4"><input type="date" id="escInicio" class="form-control" required></div><div class="col-md-3 d-flex align-items-end"><button type="submit" class="btn btn-primary w-100">Salvar</button></div></form><table class="table table-sm table-hover border"><thead><tr><th>Turma</th><th>Início do Ciclo</th><th class="text-end">Ações</th></tr></thead><tbody id="listaEscalasView"></tbody></table></div></section>
     <section id="sec-maquinas" style="display:none;"><div class="card p-4"><h5>🔷️ Máquinas</h5><form id="formMaq" class="row g-2 mb-3"><input type="hidden" id="editMaqIdx" value="-1"><div class="col-md-9"><input type="text" id="maqNome" class="form-control" placeholder="Ex: M13" required></div><div class="col-md-3 d-flex align-items-end"><button type="submit" class="btn btn-primary w-100">Gravar</button></div></form><table class="table table-sm"><tbody id="listaMaquinasView"></tbody></table></div></section>
     <section id="sec-trocas" style="display:none;"><div class="card p-4"><h5>🔄 Trocas</h5><form id="formTroca" class="row g-2 mb-3"><input type="hidden" id="editTrocaIdx" value="-1"><div class="col-md-3"><input type="text" id="trocaSigla" class="form-control" placeholder="TC" required></div><div class="col-md-6"><input type="text" id="trocaDesc" class="form-control" placeholder="Descrição" required></div><div class="col-md-3 d-flex align-items-end"><button type="submit" class="btn btn-primary w-100">OK</button></div></form><table class="table table-sm"><tbody id="listaTrocasView"></tbody></table></div></section>
     <section id="sec-eventos" style="display:none;"><div class="card p-4"><h5>⚠️ Ausências</h5><form id="formEvento" class="row g-2 mb-4"><input type="hidden" id="editEventoIdx" value="-1"><div class="col-md-3"><label class="small fw-bold">Funcionário</label><select id="evFunc" class="form-select" required></select></div><div class="col-md-2"><label class="small fw-bold">Tipo</label><select id="evTipo" class="form-select" required><option>Férias</option><option>Falta</option><option>Afastado</option></select></div><div class="col-md-2"><label class="small fw-bold">Início</label><input type="date" id="evInicio" class="form-control" required></div><div class="col-md-2"><label class="small fw-bold">Final</label><input type="date" id="evFim" class="form-control" required></div><div class="col-md-3 d-flex align-items-end"><button type="submit" class="btn btn-warning w-100 fw-bold">SALVAR</button></div></form><hr><div class="d-flex justify-content-between mb-3"><h6 class="fw-bold m-0">Histórico</h6><button class="btn btn-sm btn-outline-secondary" onclick="limparFiltrosAusencia()">Limpar</button></div><div class="row g-2 mb-3"><div class="col-6 col-md-3"><label class="small fw-bold text-muted">Tipo</label><select id="filtroTipoAusencia" class="form-select form-select-sm" onchange="renderEventos()"><option value="Todos">Todos</option><option>Férias</option><option>Falta</option><option>Afastado</option></select></div><div class="col-6 col-md-3"><label class="small fw-bold text-muted">Turno</label><select id="filtroTurnoAusencia" class="form-select form-select-sm" onchange="renderEventos()"><option value="Todos">Todos</option><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div><div class="col-6 col-md-3"><label class="small fw-bold text-muted">Início</label><input type="date" id="filtroAusInicio" class="form-control form-control-sm" onchange="renderEventos()"></div><div class="col-6 col-md-3"><label class="small fw-bold text-muted">Final</label><input type="date" id="filtroAusFim" class="form-control form-control-sm" onchange="renderEventos()"></div></div><div class="table-responsive"><table class="table table-sm table-hover border"><thead><tr><th>Nome</th><th>Turno</th><th>Tipo</th><th>Início</th><th>Fim</th><th class="text-end">Ações</th></tr></thead><tbody id="listaEventosView"></tbody></table></div></div></section>
@@ -180,10 +179,7 @@
         const [ano, mes] = mR.split('-').map(Number);
         const primDia = new Date(ano, mes-1, 1).getDay();
         const ultDia = new Date(ano, mes, 0).getDate();
-        
-        // CORREÇÃO FUSO HORÁRIO: Pega hoje no horário local YYYY-MM-DD
         const hojeStr = new Date().toLocaleDateString('en-CA');
-
         grid.innerHTML = '';
         ['DOM','SEG','TER','QUA','QUI','SEX','SÁB'].forEach(d => grid.innerHTML += `<div class="cal-header">${d}</div>`);
         for (let i = 0; i < primDia; i++) grid.innerHTML += `<div class="cal-day out"></div>`;
@@ -194,6 +190,13 @@
             let hEv = ''; funcionarios.forEach(f => { if (tF !== 'Todos' && f.turno !== tF) return; const res = obterStatusNoDia(dStr, f); hEv += `<div class="emp-event ${res.classe}">${f.nome.split(' ')[0]}</div>`; });
             grid.innerHTML += `<div class="cal-day ${isToday}" onclick="irParaDia('${dStr}')"><div class="cal-day-top"><span class="cal-folga-indicador">${tFolga}</span><span class="cal-date">${d}</span></div>${hEv}</div>`;
         }
+    }
+
+    // CORREÇÃO DA NAVEGAÇÃO: IR PARA DIÁRIO (AGENDA)
+    function irParaDia(d) {
+        document.getElementById('agendaData').value = d;
+        document.getElementById('zapData').value = d;
+        navegar('agenda'); // O ID interno da aba "Diário" é agenda
     }
 
     function renderEscalas() { const corpo = document.getElementById('listaEscalasView'); if(!corpo) return; corpo.innerHTML = escalas.map((e, i) => `<tr><td>${e.nome}</td><td>${e.inicio.split('-').reverse().join('/')}</td><td class="text-end"><button onclick="editarEscala(${i})" class="btn btn-sm btn-outline-primary me-2">Editar</button><button onclick="remover('escalas', ${i})" class="btn btn-sm btn-link text-danger">X</button></td></tr>`).join(''); }
@@ -223,15 +226,11 @@
     function exportarBackup() { const b = new Blob([JSON.stringify({escalas, funcionarios, eventos, maquinas, tiposTroca, historicoZap})], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = "GE_Backup.json"; a.click(); }
     function importarBackup(e) { const fr = new FileReader(); fr.onload = (v) => { const d = JSON.parse(v.target.result); escalas=d.escalas; funcionarios=d.funcionarios; maquinas=d.maquinas || []; tiposTroca=d.tiposTroca || []; eventos=d.eventos || []; historicoZap=d.historicoZap || {}; salvar(); location.reload(); }; fr.readAsText(e.target.files[0]); }
     function limparTudo() { if(confirm("Limpar dados?")) { localStorage.clear(); location.reload(); } }
-    function irParaDia(d) { document.getElementById('zapData').value = d; document.getElementById('agendaData').value = d; navegar('whatsapp'); }
-    function copiarTextoZap() { navigator.clipboard.writeText(atualizarPreviewZap()).then(() => alert("Copiado!")); }
 
-    // INICIALIZAÇÃO CORRIGIDA PARA LOCAL
-    const hj = new Date();
-    const hjLocal = hj.toLocaleDateString('en-CA');
+    const hj = new Date(); const hjL = hj.toLocaleDateString('en-CA');
     document.getElementById('mesFiltro').value = hj.toISOString().slice(0, 7);
-    document.getElementById('agendaData').value = hjLocal;
-    document.getElementById('zapData').value = hjLocal;
+    document.getElementById('agendaData').value = hjL;
+    document.getElementById('zapData').value = hjL;
 
     navegar('mensal'); setInterval(() => document.getElementById('relogio').innerText = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString(), 1000);
 </script>
