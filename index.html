@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -67,66 +66,20 @@
     </ul>
 
     <section id="sec-whatsapp" style="display:none;">
-        <div class="row">
-            <div class="col-md-7">
-                <div class="card p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="m-0">📲 Montar Escala </h5>
-                        <button class="btn btn-sm btn-primary fw-bold" onclick="salvarEscalaZap()">💾 SALVAR</button>
-                    </div>
-                    <div class="row g-2 mb-3">
-                        <div class="col-md-6"><input type="date" id="zapData" class="form-control" onchange="renderWhatsAppList()"></div>
-                        <div class="col-md-6"><select id="zapTurno" class="form-select" onchange="renderWhatsAppList()"><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div>
-                    </div>
-                    <div id="listaTrabalhando" class="border-top pt-3"></div>
-                </div>
-            </div>
-            <div class="col-md-5">
-                <div class="card p-4 h-100">
-                    <h5>Preview</h5>
-                    <div id="previewZap" class="mb-3"></div>
-                    <button class="btn btn-success w-100 fw-bold py-3" onclick="copiarTextoZap()">COPIAR</button>
-                </div>
-            </div>
-        </div>
+        <div class="row"><div class="col-md-7"><div class="card p-4"><div class="d-flex justify-content-between align-items-center mb-3"><h5 class="m-0">📲 Montar Escala</h5><button class="btn btn-sm btn-primary fw-bold" onclick="salvarEscalaZap()">💾 SALVAR</button></div><div class="row g-2 mb-3"><div class="col-md-6"><input type="date" id="zapData" class="form-control" onchange="renderWhatsAppList()"></div><div class="col-md-6"><select id="zapTurno" class="form-select" onchange="renderWhatsAppList()"><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div></div><div id="listaTrabalhando" class="border-top pt-3"></div></div></div><div class="col-md-5"><div class="card p-4 h-100"><h5>Preview</h5><div id="previewZap" class="mb-3"></div><button class="btn btn-success w-100 fw-bold py-3" onclick="copiarTextoZap()">COPIAR</button></div></div></div>
     </section>
 
     <section id="sec-mensal">
-        <div class="card p-3 mb-3">
-            <div class="row g-2 mb-3 align-items-end"><div class="col-md-3"><input type="month" id="mesFiltro" class="form-control" onchange="renderCalendario()"></div><div class="col-md-3"><select id="turnoFiltroMensal" class="form-select" onchange="renderCalendario()"><option value="Todos">Todos Turnos</option><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div></div>
-            <div class="legenda-container">
-                <div class="legenda-item"><div class="box-cor bg-trabalho"></div> Trabalho</div>
-                <div class="legenda-item"><div class="box-cor bg-folga"></div> Folga</div>
-                <div class="legenda-item"><div class="box-cor bg-ferias"></div> Férias</div>
-                <div class="legenda-item"><div class="box-cor bg-falta"></div> Ausência</div>
-            </div>
-        </div>
+        <div class="card p-3 mb-3"><div class="row g-2 mb-3 align-items-end"><div class="col-md-3"><input type="month" id="mesFiltro" class="form-control" onchange="renderCalendario()"></div><div class="col-md-3"><select id="turnoFiltroMensal" class="form-select" onchange="renderCalendario()"><option value="Todos">Todos Turnos</option><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div></div><div class="legenda-container"><div class="legenda-item"><div class="box-cor bg-trabalho"></div> Trabalho</div><div class="legenda-item"><div class="box-cor bg-folga"></div> Folga</div><div class="legenda-item"><div class="box-cor bg-ferias"></div> Férias</div><div class="legenda-item"><div class="box-cor bg-falta"></div> Ausência</div></div></div>
         <div class="card p-1"><div class="cal-wrapper"><div class="cal-grid" id="calendarioGrid"></div></div></div>
     </section>
 
-    <section id="sec-escalas" style="display:none;">
-        <div class="card p-4">
-            <h5>🔢 Gestão de Turmas (6x2)</h5>
-            <form id="formEscala" class="row g-2 mb-3">
-                <input type="hidden" id="editEscalaIdx" value="-1">
-                <div class="col-md-5"><label class="small fw-bold">Nome da Turma</label><input type="text" id="escNome" class="form-control" placeholder="Ex: Turma A" required></div>
-                <div class="col-md-4"><label class="small fw-bold">1º dia do ciclo</label><input type="date" id="escInicio" class="form-control" required></div>
-                <div class="col-md-3 d-flex align-items-end"><button type="submit" class="btn btn-primary w-100">Salvar</button></div>
-            </form>
-            <div class="table-responsive">
-                <table class="table table-sm table-hover border">
-                    <thead class="table-light"><tr><th>Turma</th><th>Início do Ciclo</th><th class="text-end">Ações</th></tr></thead>
-                    <tbody id="listaEscalasView"></tbody>
-                </table>
-            </div>
-        </div>
-    </section>
-
+    <section id="sec-escalas" style="display:none;"><div class="card p-4"><h5>🔢 Gestão de Turmas</h5><form id="formEscala" class="row g-2 mb-3"><input type="hidden" id="editEscalaIdx" value="-1"><div class="col-md-5"><input type="text" id="escNome" class="form-control" placeholder="Ex: Turma A" required></div><div class="col-md-4"><input type="date" id="escInicio" class="form-control" required></div><div class="col-md-3 d-flex align-items-end"><button type="submit" class="btn btn-primary w-100">Salvar</button></div></form><table class="table table-sm table-hover border"><thead><tr><th>Turma</th><th>Início do Ciclo</th><th class="text-end">Ações</th></tr></thead><tbody id="listaEscalasView"></tbody></table></div></section>
     <section id="sec-agenda" style="display:none;"><div class="card p-3 mb-2"><div class="d-flex gap-2"><input type="date" id="agendaData" class="form-control" style="width:180px" onchange="renderAgenda()"><select id="filtroTurnoAgenda" class="form-select" style="width:150px" onchange="renderAgenda()"><option value="Todos">Todos Turnos</option><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div></div><div class="card table-responsive"><table class="table table-hover mb-0 border"><thead class="table-dark"><tr><th>DRT</th><th>Nome</th><th>Turno</th><th>Turma</th><th>Status</th></tr></thead><tbody id="listaAgenda"></tbody></table></div></section>
-    <section id="sec-funcionarios" style="display:none;"><div class="card p-4"><h5>👥 Equipe</h5><form id="formFunc" class="row g-2 mb-4"><input type="hidden" id="editFuncIdx" value="-1"><div class="col-md-2"><label class="small fw-bold">DRT</label><input type="text" id="fDrt" class="form-control" required></div><div class="col-md-3"><label class="small fw-bold">Nome</label><input type="text" id="fNome" class="form-control" required></div><div class="col-md-2"><label class="small fw-bold">Turno</label><select id="fTurno" class="form-select"><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div><div class="col-md-3"><label class="small fw-bold">Turma</label><select id="fEscala" class="form-select" required></select></div><div class="col-md-2 d-flex align-items-end"><button type="submit" class="btn btn-success w-100">Salvar</button></div></form><table class="table table-hover border"><thead><tr><th>DRT</th><th>Nome</th><th>Turno</th><th>Turma</th><th class="text-end">Ações</th></tr></thead><tbody id="listaFuncView"></tbody></table></div></section>
+    <section id="sec-funcionarios" style="display:none;"><div class="card p-4"><h5>👥 Equipe</h5><form id="formFunc" class="row g-2 mb-4"><input type="hidden" id="editFuncIdx" value="-1"><div class="col-md-2"><input type="text" id="fDrt" class="form-control" placeholder="DRT" required></div><div class="col-md-3"><input type="text" id="fNome" class="form-control" placeholder="Nome" required></div><div class="col-md-2"><select id="fTurno" class="form-select"><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div><div class="col-md-3"><select id="fEscala" class="form-select" required></select></div><div class="col-md-2 d-flex align-items-end"><button type="submit" class="btn btn-success w-100">Salvar</button></div></form><table class="table table-hover border"><thead><tr><th>DRT</th><th>Nome</th><th>Turno</th><th>Turma</th><th class="text-end">Ações</th></tr></thead><tbody id="listaFuncView"></tbody></table></div></section>
     <section id="sec-maquinas" style="display:none;"><div class="card p-4"><h5>🔷️ Máquinas</h5><form id="formMaq" class="row g-2 mb-3"><input type="hidden" id="editMaqIdx" value="-1"><div class="col-md-9"><input type="text" id="maqNome" class="form-control" placeholder="Ex: M13" required></div><div class="col-md-3 d-flex align-items-end"><button type="submit" class="btn btn-primary w-100">Gravar</button></div></form><table class="table table-sm"><tbody id="listaMaquinasView"></tbody></table></div></section>
     <section id="sec-trocas" style="display:none;"><div class="card p-4"><h5>🔄 Trocas</h5><form id="formTroca" class="row g-2 mb-3"><input type="hidden" id="editTrocaIdx" value="-1"><div class="col-md-3"><input type="text" id="trocaSigla" class="form-control" placeholder="TC" required></div><div class="col-md-6"><input type="text" id="trocaDesc" class="form-control" placeholder="Descrição" required></div><div class="col-md-3 d-flex align-items-end"><button type="submit" class="btn btn-primary w-100">OK</button></div></form><table class="table table-sm"><tbody id="listaTrocasView"></tbody></table></div></section>
-    <section id="sec-eventos" style="display:none;"><div class="card p-4"><h5>⚠️ Ausências</h5><form id="formEvento" class="row g-2 mb-4"><input type="hidden" id="editEventoIdx" value="-1"><div class="col-md-3"><label class="small fw-bold">Funcionário</label><select id="evFunc" class="form-select" required></select></div><div class="col-md-2"><label class="small fw-bold">Tipo</label><select id="evTipo" class="form-select" required><option>Férias</option><option>Falta</option><option>Afastado</option></select></div><div class="col-md-2"><label class="small fw-bold">Início</label><input type="date" id="evInicio" class="form-control" required></div><div class="col-md-2"><label class="small fw-bold">Final</label><input type="date" id="evFim" class="form-control" required></div><div class="col-md-3 d-flex align-items-end"><button type="submit" class="btn btn-warning w-100 fw-bold">SALVAR</button></div></form><hr><div class="d-flex justify-content-between mb-3 align-items-center flex-wrap gap-2"><h6 class="fw-bold m-0">Histórico</h6><button class="btn btn-sm btn-outline-secondary" onclick="limparFiltrosAusencia()">Limpar Filtros</button></div><div class="row g-2 mb-3"><div class="col-6 col-md-3"><label class="small fw-bold text-muted">Tipo</label><select id="filtroTipoAusencia" class="form-select form-select-sm" onchange="renderEventos()"><option value="Todos">Todos</option><option>Férias</option><option>Falta</option><option>Afastado</option></select></div><div class="col-6 col-md-3"><label class="small fw-bold text-muted">Turno</label><select id="filtroTurnoAusencia" class="form-select form-select-sm" onchange="renderEventos()"><option value="Todos">Todos</option><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div><div class="col-6 col-md-3"><label class="small fw-bold text-muted">Início</label><input type="date" id="filtroAusInicio" class="form-control form-control-sm" onchange="renderEventos()"></div><div class="col-6 col-md-3"><label class="small fw-bold text-muted">Final</label><input type="date" id="filtroAusFim" class="form-control form-control-sm" onchange="renderEventos()"></div></div><div class="table-responsive"><table class="table table-sm table-hover border"><thead><tr><th>Nome</th><th>Turno</th><th>Tipo</th><th>Início</th><th>Fim</th><th class="text-end">Ações</th></tr></thead><tbody id="listaEventosView"></tbody></table></div></div></section>
+    <section id="sec-eventos" style="display:none;"><div class="card p-4"><h5>⚠️ Ausências</h5><form id="formEvento" class="row g-2 mb-4"><input type="hidden" id="editEventoIdx" value="-1"><div class="col-md-3"><label class="small fw-bold">Funcionário</label><select id="evFunc" class="form-select" required></select></div><div class="col-md-2"><label class="small fw-bold">Tipo</label><select id="evTipo" class="form-select" required><option>Férias</option><option>Falta</option><option>Afastado</option></select></div><div class="col-md-2"><label class="small fw-bold">Início</label><input type="date" id="evInicio" class="form-control" required></div><div class="col-md-2"><label class="small fw-bold">Final</label><input type="date" id="evFim" class="form-control" required></div><div class="col-md-3 d-flex align-items-end"><button type="submit" class="btn btn-warning w-100 fw-bold">SALVAR</button></div></form><hr><div class="d-flex justify-content-between mb-3"><h6 class="fw-bold m-0">Histórico</h6><button class="btn btn-sm btn-outline-secondary" onclick="limparFiltrosAusencia()">Limpar</button></div><div class="row g-2 mb-3"><div class="col-6 col-md-3"><label class="small fw-bold text-muted">Tipo</label><select id="filtroTipoAusencia" class="form-select form-select-sm" onchange="renderEventos()"><option value="Todos">Todos</option><option>Férias</option><option>Falta</option><option>Afastado</option></select></div><div class="col-6 col-md-3"><label class="small fw-bold text-muted">Turno</label><select id="filtroTurnoAusencia" class="form-select form-select-sm" onchange="renderEventos()"><option value="Todos">Todos</option><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div><div class="col-6 col-md-3"><label class="small fw-bold text-muted">Início</label><input type="date" id="filtroAusInicio" class="form-control form-control-sm" onchange="renderEventos()"></div><div class="col-6 col-md-3"><label class="small fw-bold text-muted">Final</label><input type="date" id="filtroAusFim" class="form-control form-control-sm" onchange="renderEventos()"></div></div><div class="table-responsive"><table class="table table-sm table-hover border"><thead><tr><th>Nome</th><th>Turno</th><th>Tipo</th><th>Início</th><th>Fim</th><th class="text-end">Ações</th></tr></thead><tbody id="listaEventosView"></tbody></table></div></div></section>
     <section id="sec-backup" style="display:none;"><div class="row g-4"><div class="col-md-6"><div class="card p-4 h-100 text-center"><h5>💾 Exportar</h5><button class="btn btn-primary w-100 py-3 mt-auto" onclick="exportarBackup()">BAIXAR BACKUP</button></div></div><div class="col-md-6"><div class="card p-4 h-100 text-center"><h5>📂 Importar</h5><div class="backup-zone" onclick="document.getElementById('inputBackup').click()"><p>Clique para carregar JSON</p><input type="file" id="inputBackup" hidden accept=".json" onchange="importarBackup(event)"></div></div></div><div class="col-12"><button class="btn btn-outline-danger btn-sm w-100" onclick="limparTudo()">Limpar Dados</button></div></div></section>
 </div>
 
@@ -182,57 +135,71 @@
         const dadosSalvos = historicoZap[chave] || {};
         const ativos = funcionarios.filter(f => f.turno === turno && obterStatusNoDia(dataStr, f).status === 'Trabalhando');
         ativos.forEach(f => {
-            const maqSalva = dadosSalvos[f.drt]?.maq || "";
-            const troSalva = dadosSalvos[f.drt]?.tro || "";
-            container.innerHTML += `<div class="row g-1 mb-2 align-items-center border-bottom pb-2">
+            const mS = dadosSalvos[f.drt]?.maq || ""; const tS = dadosSalvos[f.drt]?.tro || "";
+            container.innerHTML += `<div class="row g-1 mb-2 border-bottom pb-2">
                 <div class="col-12 small fw-bold mb-1">${f.nome}</div>
                 <div class="col-6"><select class="form-select form-select-sm maq-zap-input" onchange="atualizarPreviewZap()" data-drt="${f.drt}" data-nome="${f.nome}">
-                    <option value="">Máquina...</option>
-                    ${maquinas.map(m => `<option value="${m}" ${m === maqSalva ? 'selected' : ''}>${m}</option>`).join('')}
+                    <option value="">Máquina...</option>${maquinas.map(m => `<option value="${m}" ${m===mS?'selected':''}>${m}</option>`).join('')}
                 </select></div>
                 <div class="col-6"><select class="form-select form-select-sm troca-zap-input" onchange="atualizarPreviewZap()">
-                    <option value="">Troca...</option>
-                    ${tiposTroca.map(t => `<option value="${t.sigla}" ${t.sigla === troSalva ? 'selected' : ''}>${t.sigla}</option>`).join('')}
-                </select></div>
-            </div>`;
+                    <option value="">Troca...</option>${tiposTroca.map(t => `<option value="${t.sigla}" ${t.sigla===tS?'selected':''}>${t.sigla}</option>`).join('')}
+                </select></div></div>`;
         });
         atualizarPreviewZap();
     }
 
     function salvarEscalaZap() {
-        const dataStr = document.getElementById('zapData').value;
-        const turno = document.getElementById('zapTurno').value;
+        const dataStr = document.getElementById('zapData').value; const t = document.getElementById('zapTurno').value;
         if(!dataStr) return alert("Selecione data!");
-        const chave = `${dataStr}-${turno}`;
-        historicoZap[chave] = {};
+        const chave = `${dataStr}-${t}`; historicoZap[chave] = {};
         document.querySelectorAll('#listaTrabalhando .row').forEach(row => {
-            const maqS = row.querySelector('.maq-zap-input');
-            const troS = row.querySelector('.troca-zap-input');
-            historicoZap[chave][maqS.dataset.drt] = { maq: maqS.value, tro: troS.value };
+            const mS = row.querySelector('.maq-zap-input'); const tS = row.querySelector('.troca-zap-input');
+            historicoZap[chave][mS.dataset.drt] = { maq: mS.value, tro: tS.value };
         });
-        salvar(); alert("Escala salva!");
+        salvar(); alert("Salvo!");
     }
 
     function atualizarPreviewZap() {
-        const data = document.getElementById('zapData').value.split('-').reverse().join('/');
-        const turno = document.getElementById('zapTurno').value.toUpperCase();
-        let texto = `Escala - ${data} (${turno})\n\n`;
+        const d = document.getElementById('zapData').value.split('-').reverse().join('/');
+        const t = document.getElementById('zapTurno').value.toUpperCase();
+        let txt = `Escala - ${d} (${t})\n\n`;
         document.querySelectorAll('#listaTrabalhando .row').forEach(row => {
-            const maqS = row.querySelector('.maq-zap-input');
-            const troS = row.querySelector('.troca-zap-input');
-            const maq = maqS ? (maqS.value || '___') : '___';
-            const tro = troS && troS.value ? ` (${troS.value})` : '';
-            texto += `${maqS.dataset.nome} - ${maq}${tro}\n`;
+            const mS = row.querySelector('.maq-zap-input'); const tS = row.querySelector('.troca-zap-input');
+            const m = mS?.value || '___'; const tro = tS?.value ? ` (${tS.value})` : '';
+            txt += `${mS.dataset.nome} - ${m}${tro}\n`;
         });
-        texto += `\nLegenda:\n`; tiposTroca.forEach(t => { texto += `${t.sigla} - ${t.desc}\n`; });
-        const preview = document.getElementById('previewZap'); if(preview) preview.innerText = texto; return texto;
+        txt += `\nLegenda:\n`; tiposTroca.forEach(t => { txt += `${t.sigla} - ${t.desc}\n`; });
+        const p = document.getElementById('previewZap'); if(p) p.innerText = txt; return txt;
+    }
+
+    function renderCalendario() {
+        const grid = document.getElementById('calendarioGrid'); 
+        const mR = document.getElementById('mesFiltro').value; 
+        const tF = document.getElementById('turnoFiltroMensal').value; 
+        if (!mR || !grid) return;
+        const [ano, mes] = mR.split('-').map(Number);
+        const primDia = new Date(ano, mes-1, 1).getDay();
+        const ultDia = new Date(ano, mes, 0).getDate();
+        
+        // CORREÇÃO FUSO HORÁRIO: Pega hoje no horário local YYYY-MM-DD
+        const hojeStr = new Date().toLocaleDateString('en-CA');
+
+        grid.innerHTML = '';
+        ['DOM','SEG','TER','QUA','QUI','SEX','SÁB'].forEach(d => grid.innerHTML += `<div class="cal-header">${d}</div>`);
+        for (let i = 0; i < primDia; i++) grid.innerHTML += `<div class="cal-day out"></div>`;
+        for (let d = 1; d <= ultDia; d++) {
+            const dStr = `${ano}-${String(mes).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+            const isToday = (dStr === hojeStr) ? 'today' : '';
+            let tFolga = escalas.filter(esc => { const dInic = new Date(esc.inicio + 'T00:00:00'); const dAlvo = new Date(dStr + 'T00:00:00'); const diff = Math.floor((dAlvo - dInic) / 86400000); return diff >= 0 && (diff % 8) >= 6; }).map(esc => esc.nome).join(' & ');
+            let hEv = ''; funcionarios.forEach(f => { if (tF !== 'Todos' && f.turno !== tF) return; const res = obterStatusNoDia(dStr, f); hEv += `<div class="emp-event ${res.classe}">${f.nome.split(' ')[0]}</div>`; });
+            grid.innerHTML += `<div class="cal-day ${isToday}" onclick="irParaDia('${dStr}')"><div class="cal-day-top"><span class="cal-folga-indicador">${tFolga}</span><span class="cal-date">${d}</span></div>${hEv}</div>`;
+        }
     }
 
     function renderEscalas() { const corpo = document.getElementById('listaEscalasView'); if(!corpo) return; corpo.innerHTML = escalas.map((e, i) => `<tr><td>${e.nome}</td><td>${e.inicio.split('-').reverse().join('/')}</td><td class="text-end"><button onclick="editarEscala(${i})" class="btn btn-sm btn-outline-primary me-2">Editar</button><button onclick="remover('escalas', ${i})" class="btn btn-sm btn-link text-danger">X</button></td></tr>`).join(''); }
     function renderFuncionarios() { const corpo = document.getElementById('listaFuncView'); if(!corpo) return; corpo.innerHTML = funcionarios.map((f, i) => `<tr><td>${f.drt}</td><td>${f.nome}</td><td>${f.turno}</td><td>${f.escalaNome || '-'}</td><td class="text-end"><button onclick="editarFunc(${i})" class="btn btn-sm btn-outline-primary me-2">Editar</button><button onclick="remover('funcionarios', ${i})" class="btn btn-sm btn-link text-danger">X</button></td></tr>`).join(''); }
     function renderAgenda() { const dStr = document.getElementById('agendaData').value; const fT = document.getElementById('filtroTurnoAgenda').value; const corpo = document.getElementById('listaAgenda'); if (!corpo) return; corpo.innerHTML = ''; funcionarios.forEach(f => { if (fT !== 'Todos' && f.turno !== fT) return; const res = obterStatusNoDia(dStr, f); const badgeC = res.classe.replace('ev-', 'bg-'); corpo.innerHTML += `<tr><td>${f.drt}</td><td><strong>${f.nome}</strong></td><td>${f.turno}</td><td>${f.escalaNome || '-'}</td><td><span class="badge ${badgeC}">${res.status}</span></td></tr>`; }); }
     function renderEventos() { const fTipo = document.getElementById('filtroTipoAusencia').value; const fTurno = document.getElementById('filtroTurnoAusencia').value; const fInicio = document.getElementById('filtroAusInicio').value; const fFim = document.getElementById('filtroAusFim').value; const corpo = document.getElementById('listaEventosView'); if(!corpo) return; corpo.innerHTML = ''; eventos.forEach((ev, i) => { const f = funcionarios.find(fn => fn.drt === ev.drt); if (!f) return; if (fTipo !== 'Todos' && ev.tipo !== fTipo) return; if (fTurno !== 'Todos' && f.turno !== fTurno) return; if (fInicio && ev.fim < fInicio) return; if (fFim && ev.inicio > fFim) return; corpo.innerHTML += `<tr><td>${f.nome}</td><td>${f.turno}</td><td><span class="badge ${ev.tipo.toLowerCase().includes('fér') ? 'bg-ferias' : 'bg-falta'}">${ev.tipo}</span></td><td>${ev.inicio.split('-').reverse().join('/')}</td><td>${ev.fim.split('-').reverse().join('/')}</td><td class="text-end"><button onclick="editarEvento(${i})" class="btn btn-sm btn-outline-primary me-1">Editar</button><button onclick="remover('eventos', ${i})" class="btn btn-sm btn-link text-danger">X</button></td></tr>`; }); }
-    function renderCalendario() { const grid = document.getElementById('calendarioGrid'); const mR = document.getElementById('mesFiltro').value; const tF = document.getElementById('turnoFiltroMensal').value; if (!mR || !grid) return; const [ano, mes] = mR.split('-').map(Number); const primDia = new Date(ano, mes-1, 1).getDay(); const ultDia = new Date(ano, mes, 0).getDate(); const hojeStr = new Date().toISOString().slice(0,10); grid.innerHTML = ''; ['DOM','SEG','TER','QUA','QUI','SEX','SÁB'].forEach(d => grid.innerHTML += `<div class="cal-header">${d}</div>`); for (let i = 0; i < primDia; i++) grid.innerHTML += `<div class="cal-day out"></div>`; for (let d = 1; d <= ultDia; d++) { const dStr = `${ano}-${String(mes).padStart(2, '0')}-${String(d).padStart(2, '0')}`; const isToday = (dStr === hojeStr) ? 'today' : ''; let tFolga = escalas.filter(esc => { const dInic = new Date(esc.inicio + 'T00:00:00'); const dAlvo = new Date(dStr + 'T00:00:00'); const diff = Math.floor((dAlvo - dInic) / 86400000); return diff >= 0 && (diff % 8) >= 6; }).map(esc => esc.nome).join(' & '); let hEv = ''; funcionarios.forEach(f => { if (tF !== 'Todos' && f.turno !== tF) return; const res = obterStatusNoDia(dStr, f); hEv += `<div class="emp-event ${res.classe}">${f.nome.split(' ')[0]}</div>`; }); grid.innerHTML += `<div class="cal-day ${isToday}" onclick="irParaDia('${dStr}')"><div class="cal-day-top"><span class="cal-folga-indicador">${tFolga}</span><span class="cal-date">${d}</span></div>${hEv}</div>`; } }
     function renderMaquinas() { document.getElementById('listaMaquinasView').innerHTML = maquinas.map((m, i) => `<tr><td class="fw-bold">${m}</td><td class="text-end"><button onclick="editarMaq(${i})" class="btn btn-sm btn-outline-primary me-1">Editar</button><button onclick="remover('maquinas', ${i})" class="btn btn-sm btn-link text-danger">X</button></td></tr>`).join(''); }
     function renderTrocas() { document.getElementById('listaTrocasView').innerHTML = tiposTroca.map((t, i) => `<tr><td><b>${t.sigla}</b></td><td>${t.desc}</td><td class="text-end"><button onclick="editarTroca(${i})" class="btn btn-sm btn-outline-primary me-1">Editar</button><button onclick="remover('trocas', ${i})" class="btn btn-sm btn-link text-danger">X</button></td></tr>`).join(''); }
 
@@ -259,7 +226,13 @@
     function irParaDia(d) { document.getElementById('zapData').value = d; document.getElementById('agendaData').value = d; navegar('whatsapp'); }
     function copiarTextoZap() { navigator.clipboard.writeText(atualizarPreviewZap()).then(() => alert("Copiado!")); }
 
-    const hj = new Date(); document.getElementById('mesFiltro').value = hj.toISOString().slice(0, 7); document.getElementById('agendaData').valueAsDate = hj; document.getElementById('zapData').valueAsDate = hj;
+    // INICIALIZAÇÃO CORRIGIDA PARA LOCAL
+    const hj = new Date();
+    const hjLocal = hj.toLocaleDateString('en-CA');
+    document.getElementById('mesFiltro').value = hj.toISOString().slice(0, 7);
+    document.getElementById('agendaData').value = hjLocal;
+    document.getElementById('zapData').value = hjLocal;
+
     navegar('mensal'); setInterval(() => document.getElementById('relogio').innerText = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString(), 1000);
 </script>
 </body>
