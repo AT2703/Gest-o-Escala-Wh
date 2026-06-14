@@ -13,6 +13,7 @@
             --falta: #f8d7da; --falta-text: #842029;
             --extra: #e0cffc; --extra-text: #6610f2;
             --acerto: #cff4fc; --acerto-text: #055160;
+            --licenca: #ffebd6; --licenca-text: #e85d04; /* Nova cor Laranja */
             --hoje-border: #0d6efd;
             --hoje-bg: #f0f7ff;
         }
@@ -42,6 +43,7 @@
         .ev-falta, .bg-falta, .ev-afastado, .bg-afastado { background: var(--falta) !important; color: var(--falta-text) !important; }
         .ev-extra, .bg-extra { background: var(--extra) !important; color: var(--extra-text) !important; }
         .ev-acerto, .bg-acerto { background: var(--acerto) !important; color: var(--acerto-text) !important; }
+        .ev-licenca, .bg-licenca { background: var(--licenca) !important; color: var(--licenca-text) !important; border: 1px solid rgba(232, 93, 4, 0.2); }
 
         .nav-pills .nav-link { color: #555; font-weight: 600; cursor: pointer; padding: 10px 15px; font-size: 0.85rem; }
         .nav-pills .nav-link.active { background-color: #0d6efd; box-shadow: 0 4px 10px rgba(13,110,253,0.3); color: white !important; }
@@ -110,6 +112,7 @@
                 <div class="legenda-item"><div class="box-cor bg-ferias"></div> Férias</div>
                 <div class="legenda-item"><div class="box-cor bg-falta"></div> Ausência</div>
                 <div class="legenda-item"><div class="box-cor bg-acerto"></div> F. Acerto</div>
+                <div class="legenda-item"><div class="box-cor bg-licenca"></div> Licença</div>
                 <div class="legenda-item"><div class="box-cor bg-extra"></div> Extra</div>
             </div>
         </div>
@@ -159,6 +162,7 @@
                         <option>Férias</option>
                         <option>Falta</option>
                         <option>Afastado</option>
+                        <option>Licença</option>
                     </select>
                 </div>
                 <div class="col-md-2"><label class="small fw-bold">Início</label><input type="date" id="evInicio" class="form-control" required></div>
@@ -171,7 +175,7 @@
                 <div class="col-6 col-md-3">
                     <label class="small fw-bold text-muted">Tipo</label>
                     <select id="filtroTipoAusencia" class="form-select form-select-sm" onchange="renderEventos()">
-                        <option value="Todos">Todos</option><option>Férias</option><option>Falta</option><option>Afastado</option><option>Folga de Acerto</option>
+                        <option value="Todos">Todos</option><option>Férias</option><option>Falta</option><option>Afastado</option><option>Folga de Acerto</option><option>Licença</option>
                     </select>
                 </div>
                 <div class="col-6 col-md-3"><label class="small fw-bold text-muted">Turno</label><select id="filtroTurnoAusencia" class="form-select form-select-sm" onchange="renderEventos()"><option value="Todos">Todos</option><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div>
@@ -216,6 +220,7 @@
         <div class="card p-4">
             <h5>🔀 Mudança de Turma / Turno</h5>
             <form id="formMudanca" class="row g-2 mb-4">
+                <input type="hidden" id="editMudancaIdx" value="-1">
                 <div class="col-12 col-md-3">
                     <label class="small fw-bold text-muted">Funcionário</label>
                     <select id="mudDrt" class="form-select" required></select>
@@ -238,7 +243,6 @@
                     <input type="date" id="mudData" class="form-control" required>
                 </div>
                 
-                <!-- Campos de Folga de Acerto diretamente abaixo -->
                 <div class="col-12 col-md-4 mt-3">
                     <label class="small fw-bold text-primary">Data da Folga de Acerto (Opcional)</label>
                     <input type="date" id="mudAcertoInicio" class="form-control">
@@ -248,7 +252,7 @@
                     <input type="date" id="mudAcertoFim" class="form-control">
                 </div>
                 <div class="col-12 col-md-4 mt-3 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary w-100 fw-bold py-2">CONFIRMAR MUDANÇA</button>
+                    <button type="submit" class="btn btn-primary w-100 fw-bold py-2">SALVAR MUDANÇA</button>
                 </div>
             </form>
             
@@ -313,6 +317,7 @@
             if(ev.tipo.toLowerCase().includes('fér')) classe = 'ev-ferias';
             if(ev.tipo === 'Afastado') classe = 'ev-afastado';
             if(ev.tipo === 'Folga de Acerto') classe = 'ev-acerto'; 
+            if(ev.tipo === 'Licença') classe = 'ev-licenca';
             return { status: ev.tipo, classe: classe };
         }
         
@@ -374,18 +379,26 @@
         cancelarEdicao('Troca'); salvar(); renderizarTudo();
     };
 
-    // MUDANÇA COM FOLGA DE ACERTO INTEGRADA
+    // MUDANÇA COM FOLGA DE ACERTO INTEGRADA E MODO EDIÇÃO
     document.getElementById('formMudanca').onsubmit = (e) => {
         e.preventDefault();
+        const idx = parseInt(document.getElementById('editMudancaIdx').value);
         const drt = document.getElementById('mudDrt').value;
         const dataMudanca = document.getElementById('mudData').value;
         
-        mudancas.push({ 
+        const novaMudanca = { 
             drt: drt, 
             novaTurma: document.getElementById('mudTurma').value, 
             novoTurno: document.getElementById('mudTurno').value,
             data: dataMudanca 
-        });
+        };
+
+        if (idx === -1) {
+            mudancas.push(novaMudanca);
+        } else {
+            mudancas[idx] = novaMudanca;
+            document.getElementById('editMudancaIdx').value = "-1"; // reseta edição
+        }
 
         const acertoIn = document.getElementById('mudAcertoInicio').value;
         const acertoFim = document.getElementById('mudAcertoFim').value;
@@ -393,9 +406,9 @@
         if (acertoIn) {
             const dataFimReal = acertoFim ? acertoFim : acertoIn;
             eventos.push({ drt: drt, tipo: 'Folga de Acerto', inicio: acertoIn, fim: dataFimReal });
-            alert("Mudança registrada com Folga de Acerto incluída!");
+            alert(idx === -1 ? "Mudança registrada com Folga de Acerto incluída!" : "Mudança atualizada com Folga de Acerto incluída!");
         } else {
-            alert("Mudança de Turma e Turno Registrada!");
+            alert(idx === -1 ? "Mudança de Turma e Turno Registrada!" : "Mudança Atualizada!");
         }
 
         salvar(); 
@@ -587,7 +600,7 @@
         document.getElementById('mudDrt').innerHTML = funcOpts;
         document.getElementById('mudTurma').innerHTML = '<option value="">Nova Turma...</option>' + escalas.map(e => `<option value="${e.nome}">${e.nome}</option>`).join('');
         
-        document.getElementById('listaMudancasView').innerHTML = mudancas.map((m, i) => `<tr><td>${m.data.split('-').reverse().join('/')}</td><td>${funcionarios.find(f=>f.drt===m.drt)?.nome}</td><td>${m.novaTurma}</td><td>${m.novoTurno || '-'}</td><td class="text-end"><button onclick="removerMudanca(${i})" class="btn btn-sm btn-link text-danger">X</button></td></tr>`).join('');
+        document.getElementById('listaMudancasView').innerHTML = mudancas.map((m, i) => `<tr><td>${m.data.split('-').reverse().join('/')}</td><td>${funcionarios.find(f=>f.drt===m.drt)?.nome}</td><td>${m.novaTurma}</td><td>${m.novoTurno || '-'}</td><td class="text-end text-nowrap"><button onclick="editarMudanca(${i})" class="btn btn-sm btn-outline-primary me-2 py-0">Editar</button><button onclick="removerMudanca(${i})" class="btn btn-sm btn-link text-danger p-0">X</button></td></tr>`).join('');
     }
 
     function exportarBackup() { const b = new Blob([JSON.stringify({escalas, funcionarios, eventos, extras, maquinas, tiposTroca, historicoZap, mudancas})], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = "GE_Backup.json"; a.click(); }
@@ -631,8 +644,9 @@
             let badgeEv = 'bg-falta';
             if(ev.tipo.toLowerCase().includes('fér')) badgeEv = 'bg-ferias';
             if(ev.tipo === 'Folga de Acerto') badgeEv = 'bg-acerto';
+            if(ev.tipo === 'Licença') badgeEv = 'bg-licenca';
 
-            corpo.innerHTML += `<tr><td>${f.nome}</td><td>${turnoNoEv}</td><td><span class="badge ${badgeEv}">${ev.tipo}</span></td><td>${ev.inicio.split('-').reverse().join('/')}</td><td>${ev.fim.split('-').reverse().join('/')}</td><td class="text-end"><button onclick="editarEvento(${i})" class="btn btn-sm btn-outline-primary me-1">Editar</button><button onclick="remover('eventos', ${i})" class="btn btn-sm btn-link text-danger">X</button></td></tr>`; 
+            corpo.innerHTML += `<tr><td>${f.nome}</td><td>${turnoNoEv}</td><td><span class="badge ${badgeEv}">${ev.tipo}</span></td><td>${ev.inicio.split('-').reverse().join('/')}</td><td>${ev.fim.split('-').reverse().join('/')}</td><td class="text-end"><button onclick="editarEvento(${i})" class="btn btn-sm btn-outline-primary me-1 py-0">Editar</button><button onclick="remover('eventos', ${i})" class="btn btn-sm btn-link text-danger py-0">X</button></td></tr>`; 
         }); 
     }
     function renderMaquinas() { document.getElementById('listaMaquinasView').innerHTML = maquinas.map((m, i) => `<tr><td class="fw-bold">${m}</td><td class="text-end"><button onclick="editarMaq(${i})" class="btn btn-sm btn-outline-primary me-1">Editar</button><button onclick="remover('maquinas', ${i})" class="btn btn-sm btn-link text-danger">X</button></td></tr>`).join(''); }
@@ -644,7 +658,17 @@
     function editarEvento(i) { const ev = eventos[i]; document.getElementById('editEventoIdx').value = i; document.getElementById('evFunc').value = ev.drt; document.getElementById('evTipo').value = ev.tipo; document.getElementById('evInicio').value = ev.inicio; document.getElementById('evFim').value = ev.fim; }
     function editarMaq(i) { document.getElementById('editMaqIdx').value = i; document.getElementById('maqNome').value = maquinas[i]; }
     function editarTroca(i) { const t = tiposTroca[i]; document.getElementById('editTrocaIdx').value = i; document.getElementById('trocaSigla').value = t.sigla; document.getElementById('trocaDesc').value = t.desc; }
-    
+    function editarMudanca(i) {
+        const m = mudancas[i];
+        document.getElementById('editMudancaIdx').value = i;
+        document.getElementById('mudDrt').value = m.drt;
+        document.getElementById('mudTurma').value = m.novaTurma;
+        document.getElementById('mudTurno').value = m.novoTurno;
+        document.getElementById('mudData').value = m.data;
+        document.getElementById('mudAcertoInicio').value = '';
+        document.getElementById('mudAcertoFim').value = '';
+    }
+
     function cancelarEdicao(tipo) { const f = document.getElementById('form' + tipo); if(f) f.reset(); const idx = document.getElementById('edit' + tipo + 'Idx'); if(idx) idx.value = "-1"; }
     function limparFiltrosAusencia() { document.getElementById('filtroTipoAusencia').value = 'Todos'; document.getElementById('filtroTurnoAusencia').value = 'Todos'; document.getElementById('filtroAusInicio').value = ''; document.getElementById('filtroAusFim').value = ''; renderEventos(); }
     function irParaDia(d) { document.getElementById('agendaData').value = d; document.getElementById('zapData').value = d; navegar('agenda'); }
