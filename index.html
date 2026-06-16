@@ -78,7 +78,7 @@
     <section id="sec-tarefas" style="display:none;">
         <div class="card p-4">
             <h5 class="fw-bold">✅ Tarefas e Lembretes</h5>
-            <p class="small text-muted">A máquina não é mais obrigatória. Você pode criar apenas um lembrete por período se quiser!</p>
+            <p class="small text-muted">Se a tarefa tiver data, ela aparecerá na escala naquele dia independentemente da máquina selecionada.</p>
             <form id="formTarefa" class="row g-2 mb-4">
                 <input type="hidden" id="editTarefaIdx" value="-1">
                 <div class="col-12 col-md-2">
@@ -438,11 +438,11 @@
         cancelarEdicao('Troca'); salvar(); renderizarTudo();
     };
 
-    // TAREFAS COM PERÍODO (INÍCIO E FIM) E MÁQUINA OPCIONAL
+    // TAREFAS COM PERÍODO E MÁQUINA OPCIONAL
     document.getElementById('formTarefa').onsubmit = (e) => {
         e.preventDefault();
         const idx = parseInt(document.getElementById('editTarefaIdx').value);
-        const maq = document.getElementById('tarMaq').value; // Pode ser vazio
+        const maq = document.getElementById('tarMaq').value;
         const desc = document.getElementById('tarDesc').value;
         const dIn = document.getElementById('tarDataInicio').value;
         const dFi = document.getElementById('tarDataFim').value;
@@ -611,6 +611,7 @@
         renderTarefasEscala(dadosSalvos.tarefasSalvas);
     }
 
+    // NOVA LÓGICA INTELIGENTE DE FILTRAGEM
     function renderTarefasEscala(tarefasSalvasAnteriores = null) {
         const bloco = document.getElementById('blocoTarefasEscala');
         const container = document.getElementById('listaTarefasEscala');
@@ -624,16 +625,29 @@
         const tarefasExibiveis = tarefas.filter(t => {
             if (t.status !== 'Aberta') return false;
             
-            const isMaquinaValida = (!t.maquina || t.maquina === '' || t.maquina === 'Geral' || maquinasSelecionadas.includes(t.maquina));
-            if (!isMaquinaValida) return false;
-            
-            const dIn = t.dataInicio || t.data; // Pega inicio (ou 'data' para tarefas legadas)
+            const dIn = t.dataInicio || t.data; 
             const dFi = t.dataFim;
+            
+            let temData = (dIn || dFi);
+            let estaNoPeriodo = false;
 
-            if (!dIn && !dFi) return true; // Sem data = Mostra sempre
-            if (dIn && !dFi) return dataEscala === dIn; // Só inicio = Mostra só no dia
-            if (!dIn && dFi) return dataEscala <= dFi; // Só fim = Mostra até o dia
-            if (dIn && dFi) return dataEscala >= dIn && dataEscala <= dFi; // Período = Mostra se estiver no meio
+            if (temData) {
+                if (dIn && !dFi) estaNoPeriodo = (dataEscala === dIn);
+                else if (!dIn && dFi) estaNoPeriodo = (dataEscala <= dFi);
+                else if (dIn && dFi) estaNoPeriodo = (dataEscala >= dIn && dataEscala <= dFi);
+            }
+
+            const isMaquinaValida = (!t.maquina || t.maquina === '' || t.maquina === 'Geral' || maquinasSelecionadas.includes(t.maquina));
+
+            // REGRA 1: Se tem data e a escala está nesse dia -> MOSTRA SEMPRE (Ignora máquina)
+            if (temData && estaNoPeriodo) return true;
+            
+            // REGRA 2: Se tem data mas a escala NÃO É nesse dia -> ESCONDE
+            if (temData && !estaNoPeriodo) return false;
+
+            // REGRA 3: Se NÃO tem data -> MOSTRA APENAS se a máquina for válida ou selecionada
+            if (!temData && isMaquinaValida) return true;
+
             return false;
         });
 
