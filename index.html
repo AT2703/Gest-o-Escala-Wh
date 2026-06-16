@@ -74,28 +74,36 @@
         <li class="nav-item"><a class="nav-link" id="tab-backup" onclick="navegar('backup')">⚙️ Sistema</a></li>
     </ul>
 
-    <!-- ABA DE TAREFAS -->
+    <!-- ABA DE TAREFAS / LEMBRETES -->
     <section id="sec-tarefas" style="display:none;">
         <div class="card p-4">
-            <h5 class="fw-bold">✅ Gerenciar Tarefas</h5>
-            <p class="small text-muted">Defina uma máquina ou escolha "Geral" para avisos que valem para todo o turno.</p>
+            <h5 class="fw-bold">✅ Tarefas e Lembretes</h5>
+            <p class="small text-muted">A máquina não é mais obrigatória. Você pode criar apenas um lembrete por período se quiser!</p>
             <form id="formTarefa" class="row g-2 mb-4">
                 <input type="hidden" id="editTarefaIdx" value="-1">
-                <div class="col-md-3">
-                    <label class="small fw-bold">Máquina / Tipo</label>
-                    <select id="tarMaq" class="form-select" required></select>
+                <div class="col-12 col-md-2">
+                    <label class="small fw-bold">Máquina (Opcional)</label>
+                    <select id="tarMaq" class="form-select"></select>
                 </div>
-                <div class="col-md-7">
-                    <label class="small fw-bold">Descrição da Tarefa</label>
+                <div class="col-12 col-md-4">
+                    <label class="small fw-bold">Descrição da Tarefa / Aviso</label>
                     <input type="text" id="tarDesc" class="form-control" placeholder="O que precisa ser feito?" required>
                 </div>
-                <div class="col-md-2 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary w-100 fw-bold">SALVAR TAREFA</button>
+                <div class="col-6 col-md-2">
+                    <label class="small fw-bold text-primary">Início (Opc.)</label>
+                    <input type="date" id="tarDataInicio" class="form-control">
+                </div>
+                <div class="col-6 col-md-2">
+                    <label class="small fw-bold text-primary">Fim (Opc.)</label>
+                    <input type="date" id="tarDataFim" class="form-control">
+                </div>
+                <div class="col-12 col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100 fw-bold">SALVAR</button>
                 </div>
             </form>
             <hr>
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h6 class="fw-bold m-0">Lista de Tarefas</h6>
+                <h6 class="fw-bold m-0">Lista de Tarefas/Lembretes</h6>
                 <select id="filtroStatusTarefa" class="form-select form-select-sm w-auto" onchange="renderTarefas()">
                     <option value="Aberta">Mostrar Abertas</option>
                     <option value="Concluida">Mostrar Concluídas</option>
@@ -104,14 +112,12 @@
             </div>
             <div class="table-responsive">
                 <table class="table table-sm table-hover border">
-                    <thead class="table-light"><tr><th>Máquina / Tipo</th><th>Descrição</th><th>Status</th><th class="text-end">Ações</th></tr></thead>
+                    <thead class="table-light"><tr><th>Máquina / Tipo</th><th>Período</th><th>Descrição</th><th>Status</th><th class="text-end">Ações</th></tr></thead>
                     <tbody id="listaTarefasView"></tbody>
                 </table>
             </div>
         </div>
     </section>
-
-    <!-- ... (RESTO DAS ABAS MANTIDO IGUAL) ... -->
 
     <section id="sec-extra" style="display:none;">
         <div class="card p-4">
@@ -176,8 +182,8 @@
 
                     <!-- BLOCO DE TAREFAS NA ESCALA -->
                     <div id="blocoTarefasEscala" class="border-top pt-3 mb-3" style="display:none; background-color: #f8f9fa; padding: 10px; border-radius: 8px;">
-                        <label class="small fw-bold text-primary">📋 Tarefas Pendentes</label>
-                        <p class="small text-muted mb-2">Marque as tarefas (Geral ou por Máquina) para o preview.</p>
+                        <label class="small fw-bold text-primary">📋 Lembretes e Tarefas Pendentes</label>
+                        <p class="small text-muted mb-2">Marque as tarefas para incluir no preview da escala.</p>
                         <div id="listaTarefasEscala" class="d-flex flex-column gap-1"></div>
                     </div>
 
@@ -432,17 +438,22 @@
         cancelarEdicao('Troca'); salvar(); renderizarTudo();
     };
 
+    // TAREFAS COM PERÍODO (INÍCIO E FIM) E MÁQUINA OPCIONAL
     document.getElementById('formTarefa').onsubmit = (e) => {
         e.preventDefault();
         const idx = parseInt(document.getElementById('editTarefaIdx').value);
-        const maq = document.getElementById('tarMaq').value;
+        const maq = document.getElementById('tarMaq').value; // Pode ser vazio
         const desc = document.getElementById('tarDesc').value;
+        const dIn = document.getElementById('tarDataInicio').value;
+        const dFi = document.getElementById('tarDataFim').value;
         
         if (idx === -1) {
-            tarefas.push({ id: generateId(), maquina: maq, descricao: desc, status: 'Aberta' });
+            tarefas.push({ id: generateId(), maquina: maq, descricao: desc, dataInicio: dIn, dataFim: dFi, status: 'Aberta' });
         } else {
             tarefas[idx].maquina = maq;
             tarefas[idx].descricao = desc;
+            tarefas[idx].dataInicio = dIn;
+            tarefas[idx].dataFim = dFi;
             document.getElementById('editTarefaIdx').value = "-1";
         }
         cancelarEdicao('Tarefa'); salvar(); renderizarTudo(); e.target.reset();
@@ -603,13 +614,28 @@
     function renderTarefasEscala(tarefasSalvasAnteriores = null) {
         const bloco = document.getElementById('blocoTarefasEscala');
         const container = document.getElementById('listaTarefasEscala');
+        const dataEscala = document.getElementById('zapData').value;
         if(!bloco || !container) return;
 
         const maquinasSelecionadas = Array.from(document.querySelectorAll('.maq-zap-input'))
                                         .map(sel => sel.value)
                                         .filter(v => v !== '');
 
-        const tarefasExibiveis = tarefas.filter(t => t.status === 'Aberta' && (maquinasSelecionadas.includes(t.maquina) || t.maquina === 'Geral'));
+        const tarefasExibiveis = tarefas.filter(t => {
+            if (t.status !== 'Aberta') return false;
+            
+            const isMaquinaValida = (!t.maquina || t.maquina === '' || t.maquina === 'Geral' || maquinasSelecionadas.includes(t.maquina));
+            if (!isMaquinaValida) return false;
+            
+            const dIn = t.dataInicio || t.data; // Pega inicio (ou 'data' para tarefas legadas)
+            const dFi = t.dataFim;
+
+            if (!dIn && !dFi) return true; // Sem data = Mostra sempre
+            if (dIn && !dFi) return dataEscala === dIn; // Só inicio = Mostra só no dia
+            if (!dIn && dFi) return dataEscala <= dFi; // Só fim = Mostra até o dia
+            if (dIn && dFi) return dataEscala >= dIn && dataEscala <= dFi; // Período = Mostra se estiver no meio
+            return false;
+        });
 
         if (tarefasExibiveis.length === 0) {
             bloco.style.display = 'none';
@@ -627,11 +653,20 @@
             let html = '';
             tarefasExibiveis.forEach(t => {
                 const isChecked = checkedIds.includes(t.id) ? 'checked' : '';
+                const tagMaq = t.maquina ? t.maquina : 'Lembrete';
+                
+                const dIn = t.dataInicio || t.data;
+                const dFi = t.dataFim;
+                let lblData = '';
+                if(dIn && dFi) lblData = ` <span class="text-muted">(Período: ${dIn.split('-').reverse().join('/')} a ${dFi.split('-').reverse().join('/')})</span>`;
+                else if(dIn) lblData = ` <span class="text-muted">(Data: ${dIn.split('-').reverse().join('/')})</span>`;
+                else if(dFi) lblData = ` <span class="text-muted">(Até: ${dFi.split('-').reverse().join('/')})</span>`;
+
                 html += `
                 <div class="form-check">
-                    <input class="form-check-input tarefa-zap-check" type="checkbox" value="${t.id}" id="chk_t_${t.id}" onchange="atualizarPreviewZap()" data-maquina="${t.maquina}" data-desc="${t.descricao}" ${isChecked}>
+                    <input class="form-check-input tarefa-zap-check" type="checkbox" value="${t.id}" id="chk_t_${t.id}" onchange="atualizarPreviewZap()" data-maquina="${t.maquina || ''}" data-desc="${t.descricao}" ${isChecked}>
                     <label class="form-check-label small" for="chk_t_${t.id}">
-                        <strong class="text-primary">${t.maquina}</strong>: ${t.descricao}
+                        <strong class="text-primary">${tagMaq}</strong>: ${t.descricao}${lblData}
                     </label>
                 </div>`;
             });
@@ -686,7 +721,13 @@
             txt += `\n OBS:\n`;
             
             tarefasSelecionadas.forEach(chk => {
-                txt += `- [${chk.dataset.maquina}]: ${chk.dataset.desc}\n`;
+                const maq = chk.dataset.maquina;
+                if (maq && maq !== "undefined" && maq !== "") {
+                    txt += `- [${maq}]: ${chk.dataset.desc}\n`;
+                } else {
+                    // Sem máquina (só lembrete)
+                    txt += `- ${chk.dataset.desc}\n`;
+                }
             });
 
             if (notasGlobais) {
@@ -798,10 +839,18 @@
             const badgeClass = isAberta ? 'bg-danger' : 'bg-success';
             const btnText = isAberta ? '✔ Concluir' : '↩ Reabrir';
             const btnClass = isAberta ? 'btn-outline-success' : 'btn-outline-secondary';
+            
+            const dIn = t.dataInicio || t.data;
+            const dFi = t.dataFim;
+            let dataFmt = '-';
+            if(dIn && dFi) dataFmt = `${dIn.split('-').reverse().join('/')} a ${dFi.split('-').reverse().join('/')}`;
+            else if(dIn) dataFmt = `${dIn.split('-').reverse().join('/')}`;
+            else if(dFi) dataFmt = `Até ${dFi.split('-').reverse().join('/')}`;
 
             corpo.innerHTML += `
                 <tr>
-                    <td><strong>${t.maquina}</strong></td>
+                    <td><strong>${t.maquina || 'Lembrete'}</strong></td>
+                    <td class="small">${dataFmt}</td>
                     <td class="${!isAberta ? 'text-decoration-line-through text-muted' : ''}">${t.descricao}</td>
                     <td><span class="badge ${badgeClass}">${t.status}</span></td>
                     <td class="text-end text-nowrap">
@@ -817,7 +866,7 @@
     function atualizarSelects() { 
         document.getElementById('fEscala').innerHTML = '<option value="">Turma...</option>' + escalas.map(e => `<option value="${e.nome}">${e.nome}</option>`).join(''); 
         document.getElementById('evFunc').innerHTML = '<option value="">Quem?</option>' + funcionarios.map(f => `<option value="${f.drt}">${f.nome}</option>`).join(''); 
-        document.getElementById('tarMaq').innerHTML = '<option value="">Qual máquina?</option><option value="Geral">Geral</option>' + maquinas.map(m => `<option value="${m}">${m}</option>`).join(''); 
+        document.getElementById('tarMaq').innerHTML = '<option value="">Nenhuma (Só Lembrete)</option><option value="Geral">Geral</option>' + maquinas.map(m => `<option value="${m}">${m}</option>`).join(''); 
     }
     
     function editarEscala(i) { const e = escalas[i]; document.getElementById('editEscalaIdx').value = i; document.getElementById('escNome').value = e.nome; document.getElementById('escInicio').value = e.inicio; }
@@ -829,8 +878,10 @@
     function editarTarefa(i) { 
         const t = tarefas[i]; 
         document.getElementById('editTarefaIdx').value = i; 
-        document.getElementById('tarMaq').value = t.maquina; 
+        document.getElementById('tarMaq').value = t.maquina || ''; 
         document.getElementById('tarDesc').value = t.descricao; 
+        document.getElementById('tarDataInicio').value = t.dataInicio || t.data || ''; 
+        document.getElementById('tarDataFim').value = t.dataFim || ''; 
     }
 
     function editarMudanca(i) {
