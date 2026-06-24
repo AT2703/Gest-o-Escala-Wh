@@ -14,6 +14,7 @@
             --extra: #e0cffc; --extra-text: #6610f2;
             --acerto: #cff4fc; --acerto-text: #055160;
             --licenca: #ffebd6; --licenca-text: #e85d04; 
+            --compensado: #e2e3e5; --compensado-text: #383d41;
             --hoje-border: #0d6efd;
             --hoje-bg: #f0f7ff;
         }
@@ -44,6 +45,7 @@
         .ev-extra, .bg-extra { background: var(--extra) !important; color: var(--extra-text) !important; }
         .ev-acerto, .bg-acerto { background: var(--acerto) !important; color: var(--acerto-text) !important; }
         .ev-licenca, .bg-licenca { background: var(--licenca) !important; color: var(--licenca-text) !important; border: 1px solid rgba(232, 93, 4, 0.2); }
+        .ev-compensado, .bg-compensado { background: var(--compensado) !important; color: var(--compensado-text) !important; border: 1px solid rgba(0,0,0,0.1); }
 
         .nav-pills .nav-link { color: #555; font-weight: 600; cursor: pointer; padding: 10px 15px; font-size: 0.85rem; }
         .nav-pills .nav-link.active { background-color: #0d6efd; box-shadow: 0 4px 10px rgba(13,110,253,0.3); color: white !important; }
@@ -151,7 +153,20 @@
 
     <section id="sec-mensal">
         <div class="card p-3 mb-3">
-            <div class="row g-2 mb-3 align-items-end"><div class="col-md-3"><input type="month" id="mesFiltro" class="form-control" onchange="renderCalendario()"></div><div class="col-md-3"><select id="turnoFiltroMensal" class="form-select" onchange="renderCalendario()"><option value="Todos">Todos Turnos</option><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div></div>
+            <div class="row g-2 mb-3 align-items-end">
+                <div class="col-md-3">
+                    <input type="month" id="mesFiltro" class="form-control" onchange="renderCalendario()">
+                </div>
+                <div class="col-md-3">
+                    <select id="turnoFiltroMensal" class="form-select" onchange="renderCalendario()">
+                        <option value="Todos">Todos Turnos</option>
+                        <option>Manhã</option>
+                        <option>Tarde</option>
+                        <option>Noite</option>
+                        <option>Diária</option>
+                    </select>
+                </div>
+            </div>
             <div class="legenda-container">
                 <div class="legenda-item"><div class="box-cor bg-trabalho"></div> Trabalho</div>
                 <div class="legenda-item"><div class="box-cor bg-folga"></div> Folga</div>
@@ -160,6 +175,7 @@
                 <div class="legenda-item"><div class="box-cor bg-acerto"></div> F. Acerto</div>
                 <div class="legenda-item"><div class="box-cor bg-licenca"></div> Licença</div>
                 <div class="legenda-item"><div class="box-cor bg-extra"></div> Extra</div>
+                <div class="legenda-item"><div class="box-cor bg-compensado"></div> Compensado</div>
             </div>
         </div>
         <div class="card p-1"><div class="cal-wrapper"><div class="cal-grid" id="calendarioGrid"></div></div></div>
@@ -175,7 +191,13 @@
                     </div>
                     <div class="row g-2 mb-3">
                         <div class="col-md-6"><input type="date" id="zapData" class="form-control" onchange="renderWhatsAppList()"></div>
-                        <div class="col-md-6"><select id="zapTurno" class="form-select" onchange="renderWhatsAppList()"><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div>
+                        <div class="col-md-6">
+                            <select id="zapTurno" class="form-select" onchange="renderWhatsAppList()">
+                                <option>Manhã</option>
+                                <option>Tarde</option>
+                                <option>Noite</option>
+                            </select>
+                        </div>
                     </div>
                     
                     <div id="listaTrabalhando" class="border-top pt-3 mb-3"></div>
@@ -203,7 +225,21 @@
         </div>
     </section>
 
-    <section id="sec-agenda" style="display:none;"><div class="card p-3 mb-2"><div class="d-flex gap-2"><input type="date" id="agendaData" class="form-control" style="width:180px" onchange="renderAgenda()"><select id="filtroTurnoAgenda" class="form-select" style="width:150px" onchange="renderAgenda()"><option value="Todos">Todos Turnos</option><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div></div><div class="card table-responsive"><table class="table table-hover mb-0 border"><thead class="table-dark"><tr><th>DRT</th><th>Nome</th><th>Turno</th><th>Turma</th><th>Status</th></tr></thead><tbody id="listaAgenda"></tbody></table></div></section>
+    <section id="sec-agenda" style="display:none;">
+        <div class="card p-3 mb-2">
+            <div class="d-flex gap-2">
+                <input type="date" id="agendaData" class="form-control" style="width:180px" onchange="renderAgenda()">
+                <select id="filtroTurnoAgenda" class="form-select" style="width:150px" onchange="renderAgenda()">
+                    <option value="Todos">Todos Turnos</option>
+                    <option>Manhã</option>
+                    <option>Tarde</option>
+                    <option>Noite</option>
+                    <option>Diária</option>
+                </select>
+            </div>
+        </div>
+        <div class="card table-responsive"><table class="table table-hover mb-0 border"><thead class="table-dark"><tr><th>DRT</th><th>Nome</th><th>Turno</th><th>Turma</th><th>Status</th></tr></thead><tbody id="listaAgenda"></tbody></table></div>
+    </section>
     
     <section id="sec-eventos" style="display:none;">
         <div class="card p-4">
@@ -218,6 +254,7 @@
                         <option>Falta</option>
                         <option>Afastado</option>
                         <option>Licença</option>
+                        <option>Compensado</option>
                     </select>
                 </div>
                 <div class="col-md-2"><label class="small fw-bold">Início</label><input type="date" id="evInicio" class="form-control" required></div>
@@ -230,10 +267,25 @@
                 <div class="col-6 col-md-3">
                     <label class="small fw-bold text-muted">Tipo</label>
                     <select id="filtroTipoAusencia" class="form-select form-select-sm" onchange="renderEventos()">
-                        <option value="Todos">Todos</option><option>Férias</option><option>Falta</option><option>Afastado</option><option>Folga de Acerto</option><option>Licença</option>
+                        <option value="Todos">Todos</option>
+                        <option>Férias</option>
+                        <option>Falta</option>
+                        <option>Afastado</option>
+                        <option>Folga de Acerto</option>
+                        <option>Licença</option>
+                        <option>Compensado</option>
                     </select>
                 </div>
-                <div class="col-6 col-md-3"><label class="small fw-bold text-muted">Turno</label><select id="filtroTurnoAusencia" class="form-select form-select-sm" onchange="renderEventos()"><option value="Todos">Todos</option><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div>
+                <div class="col-6 col-md-3">
+                    <label class="small fw-bold text-muted">Turno</label>
+                    <select id="filtroTurnoAusencia" class="form-select form-select-sm" onchange="renderEventos()">
+                        <option value="Todos">Todos</option>
+                        <option>Manhã</option>
+                        <option>Tarde</option>
+                        <option>Noite</option>
+                        <option>Diária</option>
+                    </select>
+                </div>
                 <div class="col-6 col-md-3"><label class="small fw-bold text-muted">Início</label><input type="date" id="filtroAusInicio" class="form-control form-control-sm" onchange="renderEventos()"></div>
                 <div class="col-6 col-md-3"><label class="small fw-bold text-muted">Final</label><input type="date" id="filtroAusFim" class="form-control form-control-sm" onchange="renderEventos()"></div>
             </div>
@@ -241,7 +293,27 @@
         </div>
     </section>
     
-    <section id="sec-funcionarios" style="display:none;"><div class="card p-4"><h5>👥 Equipe</h5><form id="formFunc" class="row g-2 mb-4"><input type="hidden" id="editFuncIdx" value="-1"><div class="col-md-2"><input type="text" id="fDrt" class="form-control" placeholder="DRT" required></div><div class="col-md-3"><input type="text" id="fNome" class="form-control" placeholder="Nome" required></div><div class="col-md-2"><select id="fTurno" class="form-select"><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div><div class="col-md-3"><select id="fEscala" class="form-select" required></select></div><div class="col-md-2 d-flex align-items-end"><button type="submit" class="btn btn-success w-100">Salvar</button></div></form><table class="table table-hover border"><thead><tr><th>DRT</th><th>Nome</th><th>Turno</th><th>Turma</th><th class="text-end">Ações</th></tr></thead><tbody id="listaFuncView"></tbody></table></div></section>
+    <section id="sec-funcionarios" style="display:none;">
+        <div class="card p-4">
+            <h5>👥 Equipe</h5>
+            <form id="formFunc" class="row g-2 mb-4">
+                <input type="hidden" id="editFuncIdx" value="-1">
+                <div class="col-md-2"><input type="text" id="fDrt" class="form-control" placeholder="DRT" required></div>
+                <div class="col-md-3"><input type="text" id="fNome" class="form-control" placeholder="Nome" required></div>
+                <div class="col-md-2">
+                    <select id="fTurno" class="form-select" onchange="verificarTurno('fTurno', 'fEscala')">
+                        <option>Manhã</option>
+                        <option>Tarde</option>
+                        <option>Noite</option>
+                        <option>Diária</option>
+                    </select>
+                </div>
+                <div class="col-md-3"><select id="fEscala" class="form-select" required></select></div>
+                <div class="col-md-2 d-flex align-items-end"><button type="submit" class="btn btn-success w-100">Salvar</button></div>
+            </form>
+            <table class="table table-hover border"><thead><tr><th>DRT</th><th>Nome</th><th>Turno</th><th>Turma</th><th class="text-end">Ações</th></tr></thead><tbody id="listaFuncView"></tbody></table>
+        </div>
+    </section>
     
     <section id="sec-escalas" style="display:none;">
         <div class="card p-4">
@@ -281,17 +353,18 @@
                     <select id="mudDrt" class="form-select" required></select>
                 </div>
                 <div class="col-12 col-md-3">
-                    <label class="small fw-bold text-muted">Nova Turma</label>
-                    <select id="mudTurma" class="form-select" required></select>
-                </div>
-                <div class="col-12 col-md-3">
                     <label class="small fw-bold text-muted">Novo Turno</label>
-                    <select id="mudTurno" class="form-select" required>
+                    <select id="mudTurno" class="form-select" required onchange="verificarTurno('mudTurno', 'mudTurma')">
                         <option value="">Selecione...</option>
                         <option>Manhã</option>
                         <option>Tarde</option>
                         <option>Noite</option>
+                        <option>Diária</option>
                     </select>
+                </div>
+                <div class="col-12 col-md-3">
+                    <label class="small fw-bold text-muted">Nova Turma</label>
+                    <select id="mudTurma" class="form-select" required></select>
                 </div>
                 <div class="col-12 col-md-3">
                     <label class="small fw-bold text-muted">Data da Troca</label>
@@ -350,7 +423,21 @@
         localStorage.setItem('w_tarefas', JSON.stringify(tarefas));
     }
 
-    // --- LÓGICA DE TURMA E TURNO COM HISTÓRICO ---
+    function verificarTurno(idTurno, idTurma) {
+        const turnoEl = document.getElementById(idTurno);
+        const turmaEl = document.getElementById(idTurma);
+        if(!turnoEl || !turmaEl) return;
+        
+        if (turnoEl.value === 'Diária') {
+            turmaEl.required = false;
+            turmaEl.value = '';
+            turmaEl.disabled = true;
+        } else {
+            turmaEl.required = true;
+            turmaEl.disabled = false;
+        }
+    }
+
     function getTurmaAtual(drt, dataStr) {
         const func = funcionarios.find(f => f.drt === drt);
         const historico = mudancas.filter(m => m.drt === drt && m.data <= dataStr).sort((a,b) => b.data.localeCompare(a.data));
@@ -377,7 +464,18 @@
             if(ev.tipo === 'Afastado') classe = 'ev-afastado';
             if(ev.tipo === 'Folga de Acerto') classe = 'ev-acerto'; 
             if(ev.tipo === 'Licença') classe = 'ev-licenca';
+            if(ev.tipo === 'Compensado') classe = 'ev-compensado';
             return { status: ev.tipo, classe: classe };
+        }
+
+        const turnoAtual = getTurnoAtual(f.drt, dataStr);
+        if (turnoAtual === 'Diária') {
+            const dataObj = new Date(dataStr + 'T00:00:00');
+            const diaSemana = dataObj.getDay(); 
+            if (diaSemana >= 1 && diaSemana <= 5) {
+                return { status: 'Trabalhando', classe: 'ev-trabalho' };
+            }
+            return { status: 'Folga', classe: 'ev-folga' };
         }
         
         const turmaAtual = getTurmaAtual(f.drt, dataStr);
@@ -391,7 +489,6 @@
         return { status: 'Folga', classe: 'ev-folga' };
     }
 
-    // --- PROCESSAMENTO DE FORMULÁRIOS ---
     document.getElementById('formEvento').onsubmit = (e) => {
         e.preventDefault();
         const idx = parseInt(document.getElementById('editEventoIdx').value);
@@ -438,7 +535,6 @@
         cancelarEdicao('Troca'); salvar(); renderizarTudo();
     };
 
-    // TAREFAS COM PERÍODO E MÁQUINA OPCIONAL
     document.getElementById('formTarefa').onsubmit = (e) => {
         e.preventDefault();
         const idx = parseInt(document.getElementById('editTarefaIdx').value);
@@ -520,7 +616,6 @@
         });
     }
 
-    // --- ESCALA / WHATSAPP ---
     function getTemplateLinhaZap(maq, tro) {
         const maqOpts = maquinas.map(m => `<option value="${m}" ${m===maq?'selected':''}>${m}</option>`).join('');
         const troOpts = tiposTroca.map(t => `<option value="${t.sigla}" ${t.sigla===tro?'selected':''}>${t.sigla}</option>`).join('');
@@ -581,10 +676,23 @@
         
         document.getElementById('zapNotas').value = dadosSalvos.notas || "";
         
-        const ativos = funcionarios.filter(f => getTurnoAtual(f.drt, dataStr) === turno && (obterStatusNoDia(dataStr, f).status === 'Trabalhando' || obterStatusNoDia(dataStr, f).status === 'Extra'));
+        const ativos = funcionarios.filter(f => {
+            const turnoAtual = getTurnoAtual(f.drt, dataStr);
+            const statusHoje = obterStatusNoDia(dataStr, f).status;
+            const isTrabalhando = (statusHoje === 'Trabalhando' || statusHoje === 'Extra');
+            
+            if (turnoAtual === 'Diária') {
+                return (turno === 'Manhã' || turno === 'Tarde') && isTrabalhando;
+            }
+            
+            return turnoAtual === turno && isTrabalhando;
+        });
         
         ativos.forEach(f => {
             const isExtra = obterStatusNoDia(dataStr, f).status === 'Extra';
+            const turnoDoColab = getTurnoAtual(f.drt, dataStr);
+            const badgeDiaria = (turnoDoColab === 'Diária') ? '<span class="badge bg-secondary ms-1" style="font-size:0.6rem;">Diária</span>' : '';
+            
             const salvos = dadosSalvos.colaboradores[f.nome];
             let linhasHtml = '';
             
@@ -599,7 +707,7 @@
             container.innerHTML += `
             <div class="zap-colab-row border-bottom pb-2 mb-2 ${isExtra ? 'bg-extra rounded p-1' : ''}" data-nome="${f.nome}">
                 <div class="d-flex justify-content-between align-items-center mb-1">
-                    <div class="small fw-bold">${f.nome} ${isExtra ? '(Extra)' : ''}</div>
+                    <div class="small fw-bold">${f.nome} ${isExtra ? '(Extra)' : ''} ${badgeDiaria}</div>
                     <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" style="font-size:0.7rem;" onclick="addZapLinha(this)">+ Máquina</button>
                 </div>
                 <div class="zap-linhas-container">
@@ -611,7 +719,6 @@
         renderTarefasEscala(dadosSalvos.tarefasSalvas);
     }
 
-    // NOVA LÓGICA INTELIGENTE DE FILTRAGEM
     function renderTarefasEscala(tarefasSalvasAnteriores = null) {
         const bloco = document.getElementById('blocoTarefasEscala');
         const container = document.getElementById('listaTarefasEscala');
@@ -639,13 +746,8 @@
 
             const isMaquinaValida = (!t.maquina || t.maquina === '' || t.maquina === 'Geral' || maquinasSelecionadas.includes(t.maquina));
 
-            // REGRA 1: Se tem data e a escala está nesse dia -> MOSTRA SEMPRE (Ignora máquina)
             if (temData && estaNoPeriodo) return true;
-            
-            // REGRA 2: Se tem data mas a escala NÃO É nesse dia -> ESCONDE
             if (temData && !estaNoPeriodo) return false;
-
-            // REGRA 3: Se NÃO tem data -> MOSTRA APENAS se a máquina for válida ou selecionada
             if (!temData && isMaquinaValida) return true;
 
             return false;
@@ -739,7 +841,6 @@
                 if (maq && maq !== "undefined" && maq !== "") {
                     txt += `- [${maq}]: ${chk.dataset.desc}\n`;
                 } else {
-                    // Sem máquina (só lembrete)
                     txt += `- ${chk.dataset.desc}\n`;
                 }
             });
@@ -757,7 +858,6 @@
         return txt; 
     }
 
-    // --- RENDERIZADORES GERAIS ---
     function renderCalendario() {
         const grid = document.getElementById('calendarioGrid'); const mR = document.getElementById('mesFiltro').value; const tF = document.getElementById('turnoFiltroMensal').value; if (!mR || !grid) return;
         const [ano, mes] = mR.split('-').map(Number); const primDia = new Date(ano, mes-1, 1).getDay(); const ultDia = new Date(ano, mes, 0).getDate();
@@ -785,9 +885,8 @@
         
         const funcOpts = funcionarios.map(f => `<option value="${f.drt}">${f.nome}</option>`).join('');
         document.getElementById('mudDrt').innerHTML = funcOpts;
-        document.getElementById('mudTurma').innerHTML = '<option value="">Nova Turma...</option>' + escalas.map(e => `<option value="${e.nome}">${e.nome}</option>`).join('');
         
-        document.getElementById('listaMudancasView').innerHTML = mudancas.map((m, i) => `<tr><td>${m.data.split('-').reverse().join('/')}</td><td>${funcionarios.find(f=>f.drt===m.drt)?.nome}</td><td>${m.novaTurma}</td><td>${m.novoTurno || '-'}</td><td class="text-end text-nowrap"><button onclick="editarMudanca(${i})" class="btn btn-sm btn-outline-primary me-2 py-0">Editar</button><button onclick="removerMudanca(${i})" class="btn btn-sm btn-link text-danger p-0">X</button></td></tr>`).join('');
+        document.getElementById('listaMudancasView').innerHTML = mudancas.map((m, i) => `<tr><td>${m.data.split('-').reverse().join('/')}</td><td>${funcionarios.find(f=>f.drt===m.drt)?.nome}</td><td>${m.novaTurma || '-'}</td><td>${m.novoTurno || '-'}</td><td class="text-end text-nowrap"><button onclick="editarMudanca(${i})" class="btn btn-sm btn-outline-primary me-2 py-0">Editar</button><button onclick="removerMudanca(${i})" class="btn btn-sm btn-link text-danger p-0">X</button></td></tr>`).join('');
     }
 
     function exportarBackup() { const b = new Blob([JSON.stringify({escalas, funcionarios, eventos, extras, maquinas, tiposTroca, historicoZap, mudancas, tarefas})], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = "GE_Backup.json"; a.click(); }
@@ -833,6 +932,7 @@
             if(ev.tipo.toLowerCase().includes('fér')) badgeEv = 'bg-ferias';
             if(ev.tipo === 'Folga de Acerto') badgeEv = 'bg-acerto';
             if(ev.tipo === 'Licença') badgeEv = 'bg-licenca';
+            if(ev.tipo === 'Compensado') badgeEv = 'bg-compensado';
 
             corpo.innerHTML += `<tr><td>${f.nome}</td><td>${turnoNoEv}</td><td><span class="badge ${badgeEv}">${ev.tipo}</span></td><td>${ev.inicio.split('-').reverse().join('/')}</td><td>${ev.fim.split('-').reverse().join('/')}</td><td class="text-end"><button onclick="editarEvento(${i})" class="btn btn-sm btn-outline-primary me-1 py-0">Editar</button><button onclick="remover('eventos', ${i})" class="btn btn-sm btn-link text-danger py-0">X</button></td></tr>`; 
         }); 
@@ -879,12 +979,26 @@
 
     function atualizarSelects() { 
         document.getElementById('fEscala').innerHTML = '<option value="">Turma...</option>' + escalas.map(e => `<option value="${e.nome}">${e.nome}</option>`).join(''); 
+        document.getElementById('mudTurma').innerHTML = '<option value="">Nova Turma...</option>' + escalas.map(e => `<option value="${e.nome}">${e.nome}</option>`).join(''); 
         document.getElementById('evFunc').innerHTML = '<option value="">Quem?</option>' + funcionarios.map(f => `<option value="${f.drt}">${f.nome}</option>`).join(''); 
         document.getElementById('tarMaq').innerHTML = '<option value="">Nenhuma (Só Lembrete)</option><option value="Geral">Geral</option>' + maquinas.map(m => `<option value="${m}">${m}</option>`).join(''); 
+        
+        verificarTurno('fTurno', 'fEscala');
+        verificarTurno('mudTurno', 'mudTurma');
     }
     
     function editarEscala(i) { const e = escalas[i]; document.getElementById('editEscalaIdx').value = i; document.getElementById('escNome').value = e.nome; document.getElementById('escInicio').value = e.inicio; }
-    function editarFunc(i) { const f = funcionarios[i]; document.getElementById('editFuncIdx').value = i; document.getElementById('fDrt').value = f.drt; document.getElementById('fNome').value = f.nome; document.getElementById('fTurno').value = f.turno; document.getElementById('fEscala').value = f.escalaNome; }
+    
+    function editarFunc(i) { 
+        const f = funcionarios[i]; 
+        document.getElementById('editFuncIdx').value = i; 
+        document.getElementById('fDrt').value = f.drt; 
+        document.getElementById('fNome').value = f.nome; 
+        document.getElementById('fTurno').value = f.turno; 
+        verificarTurno('fTurno', 'fEscala');
+        document.getElementById('fEscala').value = f.escalaNome || ''; 
+    }
+    
     function editarEvento(i) { const ev = eventos[i]; document.getElementById('editEventoIdx').value = i; document.getElementById('evFunc').value = ev.drt; document.getElementById('evTipo').value = ev.tipo; document.getElementById('evInicio').value = ev.inicio; document.getElementById('evFim').value = ev.fim; }
     function editarMaq(i) { document.getElementById('editMaqIdx').value = i; document.getElementById('maqNome').value = maquinas[i]; }
     function editarTroca(i) { const t = tiposTroca[i]; document.getElementById('editTrocaIdx').value = i; document.getElementById('trocaSigla').value = t.sigla; document.getElementById('trocaDesc').value = t.desc; }
@@ -902,14 +1016,24 @@
         const m = mudancas[i];
         document.getElementById('editMudancaIdx').value = i;
         document.getElementById('mudDrt').value = m.drt;
-        document.getElementById('mudTurma').value = m.novaTurma;
         document.getElementById('mudTurno').value = m.novoTurno;
+        verificarTurno('mudTurno', 'mudTurma');
+        document.getElementById('mudTurma').value = m.novaTurma || '';
         document.getElementById('mudData').value = m.data;
         document.getElementById('mudAcertoInicio').value = '';
         document.getElementById('mudAcertoFim').value = '';
     }
 
-    function cancelarEdicao(tipo) { const f = document.getElementById('form' + tipo); if(f) f.reset(); const idx = document.getElementById('edit' + tipo + 'Idx'); if(idx) idx.value = "-1"; }
+    function cancelarEdicao(tipo) { 
+        const f = document.getElementById('form' + tipo); 
+        if(f) f.reset(); 
+        const idx = document.getElementById('edit' + tipo + 'Idx'); 
+        if(idx) idx.value = "-1"; 
+        
+        if(tipo === 'Func') verificarTurno('fTurno', 'fEscala');
+        if(tipo === 'Mudanca') verificarTurno('mudTurno', 'mudTurma');
+    }
+    
     function limparFiltrosAusencia() { document.getElementById('filtroTipoAusencia').value = 'Todos'; document.getElementById('filtroTurnoAusencia').value = 'Todos'; document.getElementById('filtroAusInicio').value = ''; document.getElementById('filtroAusFim').value = ''; renderEventos(); }
     function irParaDia(d) { document.getElementById('agendaData').value = d; document.getElementById('zapData').value = d; navegar('agenda'); }
     function copiarTextoZap() { navigator.clipboard.writeText(atualizarPreviewZap()).then(() => alert("Copiado!")); }
