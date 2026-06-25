@@ -10,6 +10,7 @@
             --trabalho: #d1e7dd; --trabalho-text: #0f5132;
             --folga: #cfe2ff; --folga-text: #084298;
             --ferias: #fff3cd; --ferias-text: #856404;
+            --prev-ferias: #fffbea; --prev-ferias-text: #a67c00;
             --falta: #f8d7da; --falta-text: #842029;
             --extra: #e0cffc; --extra-text: #6610f2;
             --acerto: #cff4fc; --acerto-text: #055160;
@@ -41,6 +42,7 @@
         .ev-trabalho, .bg-trabalho { background: var(--trabalho) !important; color: var(--trabalho-text) !important; }
         .ev-folga, .bg-folga { background: var(--folga) !important; color: var(--folga-text) !important; }
         .ev-ferias, .bg-ferias { background: var(--ferias) !important; color: var(--ferias-text) !important; }
+        .ev-prev-ferias, .bg-prev-ferias { background: var(--prev-ferias) !important; color: var(--prev-ferias-text) !important; }
         .ev-falta, .bg-falta, .ev-afastado, .bg-afastado { background: var(--falta) !important; color: var(--falta-text) !important; }
         .ev-extra, .bg-extra { background: var(--extra) !important; color: var(--extra-text) !important; }
         .ev-acerto, .bg-acerto { background: var(--acerto) !important; color: var(--acerto-text) !important; }
@@ -171,6 +173,7 @@
                 <div class="legenda-item"><div class="box-cor bg-trabalho"></div> Trabalho</div>
                 <div class="legenda-item"><div class="box-cor bg-folga"></div> Folga</div>
                 <div class="legenda-item"><div class="box-cor bg-ferias"></div> Férias</div>
+                <div class="legenda-item"><div class="box-cor bg-prev-ferias"></div> Prev. Férias</div>
                 <div class="legenda-item"><div class="box-cor bg-falta"></div> Ausência</div>
                 <div class="legenda-item"><div class="box-cor bg-acerto"></div> F. Acerto</div>
                 <div class="legenda-item"><div class="box-cor bg-licenca"></div> Licença</div>
@@ -247,18 +250,27 @@
             <form id="formEvento" class="row g-2 mb-4">
                 <input type="hidden" id="editEventoIdx" value="-1">
                 <div class="col-md-3"><label class="small fw-bold">Funcionário</label><select id="evFunc" class="form-select" required></select></div>
+                
                 <div class="col-md-2">
                     <label class="small fw-bold">Tipo</label>
-                    <select id="evTipo" class="form-select" required>
+                    <select id="evTipo" class="form-select" required onchange="verificarTipoAusencia()">
                         <option>Férias</option>
+                        <option>Prev. Férias</option>
                         <option>Falta</option>
                         <option>Afastado</option>
                         <option>Licença</option>
                         <option>Compensado</option>
                     </select>
                 </div>
-                <div class="col-md-2"><label class="small fw-bold">Início</label><input type="date" id="evInicio" class="form-control" required></div>
-                <div class="col-md-2"><label class="small fw-bold">Final</label><input type="date" id="evFim" class="form-control" required></div>
+                
+                <div class="col-md-2 ev-datas"><label class="small fw-bold">Início</label><input type="date" id="evInicio" class="form-control" required></div>
+                <div class="col-md-2 ev-datas"><label class="small fw-bold">Final</label><input type="date" id="evFim" class="form-control" required></div>
+                
+                <div class="col-md-4 ev-mes" style="display:none;">
+                    <label class="small fw-bold text-primary">Mês da Previsão</label>
+                    <input type="month" id="evMesPrev" class="form-control">
+                </div>
+
                 <div class="col-md-3 d-flex align-items-end"><button type="submit" class="btn btn-warning w-100 fw-bold">SALVAR</button></div>
             </form>
             <hr>
@@ -269,6 +281,7 @@
                     <select id="filtroTipoAusencia" class="form-select form-select-sm" onchange="renderEventos()">
                         <option value="Todos">Todos</option>
                         <option>Férias</option>
+                        <option>Prev. Férias</option>
                         <option>Falta</option>
                         <option>Afastado</option>
                         <option>Folga de Acerto</option>
@@ -438,6 +451,31 @@
         }
     }
 
+    function verificarTipoAusencia() {
+        const tipo = document.getElementById('evTipo').value;
+        const datasDivs = document.querySelectorAll('.ev-datas');
+        const mesDiv = document.querySelector('.ev-mes');
+        const ini = document.getElementById('evInicio');
+        const fim = document.getElementById('evFim');
+        const mesP = document.getElementById('evMesPrev');
+
+        if (!tipo) return;
+
+        if (tipo === 'Prev. Férias') {
+            datasDivs.forEach(d => d.style.display = 'none');
+            mesDiv.style.display = 'block';
+            ini.required = false; 
+            fim.required = false;
+            mesP.required = true;
+        } else {
+            datasDivs.forEach(d => d.style.display = 'block');
+            mesDiv.style.display = 'none';
+            ini.required = true; 
+            fim.required = true;
+            mesP.required = false;
+        }
+    }
+
     function getTurmaAtual(drt, dataStr) {
         const func = funcionarios.find(f => f.drt === drt);
         const historico = mudancas.filter(m => m.drt === drt && m.data <= dataStr).sort((a,b) => b.data.localeCompare(a.data));
@@ -460,7 +498,8 @@
         const ev = eventos.find(e => e.drt === f.drt && dataStr >= e.inicio && dataStr <= e.fim);
         if (ev) {
             let classe = 'ev-falta';
-            if(ev.tipo.toLowerCase().includes('fér')) classe = 'ev-ferias';
+            if(ev.tipo === 'Férias') classe = 'ev-ferias';
+            if(ev.tipo === 'Prev. Férias') classe = 'ev-prev-ferias';
             if(ev.tipo === 'Afastado') classe = 'ev-afastado';
             if(ev.tipo === 'Folga de Acerto') classe = 'ev-acerto'; 
             if(ev.tipo === 'Licença') classe = 'ev-licenca';
@@ -492,7 +531,27 @@
     document.getElementById('formEvento').onsubmit = (e) => {
         e.preventDefault();
         const idx = parseInt(document.getElementById('editEventoIdx').value);
-        const novo = { drt: document.getElementById('evFunc').value, tipo: document.getElementById('evTipo').value, inicio: document.getElementById('evInicio').value, fim: document.getElementById('evFim').value };
+        const tipoEv = document.getElementById('evTipo').value;
+        let dataIni, dataFim;
+
+        if (tipoEv === 'Prev. Férias') {
+            const valMes = document.getElementById('evMesPrev').value; 
+            const [ano, mes] = valMes.split('-');
+            dataIni = `${ano}-${mes}-01`;
+            const ultDia = new Date(ano, mes, 0).getDate();
+            dataFim = `${ano}-${mes}-${String(ultDia).padStart(2, '0')}`;
+        } else {
+            dataIni = document.getElementById('evInicio').value;
+            dataFim = document.getElementById('evFim').value;
+        }
+
+        const novo = { 
+            drt: document.getElementById('evFunc').value, 
+            tipo: tipoEv, 
+            inicio: dataIni, 
+            fim: dataFim 
+        };
+        
         if (idx === -1) eventos.push(novo); else eventos[idx] = novo;
         cancelarEdicao('Evento'); salvar(); renderizarTudo();
     };
@@ -929,7 +988,8 @@
             if (fF && ev.inicio > fF) return; 
             
             let badgeEv = 'bg-falta';
-            if(ev.tipo.toLowerCase().includes('fér')) badgeEv = 'bg-ferias';
+            if(ev.tipo === 'Férias') badgeEv = 'bg-ferias';
+            if(ev.tipo === 'Prev. Férias') badgeEv = 'bg-prev-ferias';
             if(ev.tipo === 'Folga de Acerto') badgeEv = 'bg-acerto';
             if(ev.tipo === 'Licença') badgeEv = 'bg-licenca';
             if(ev.tipo === 'Compensado') badgeEv = 'bg-compensado';
@@ -985,6 +1045,7 @@
         
         verificarTurno('fTurno', 'fEscala');
         verificarTurno('mudTurno', 'mudTurma');
+        verificarTipoAusencia();
     }
     
     function editarEscala(i) { const e = escalas[i]; document.getElementById('editEscalaIdx').value = i; document.getElementById('escNome').value = e.nome; document.getElementById('escInicio').value = e.inicio; }
@@ -999,7 +1060,22 @@
         document.getElementById('fEscala').value = f.escalaNome || ''; 
     }
     
-    function editarEvento(i) { const ev = eventos[i]; document.getElementById('editEventoIdx').value = i; document.getElementById('evFunc').value = ev.drt; document.getElementById('evTipo').value = ev.tipo; document.getElementById('evInicio').value = ev.inicio; document.getElementById('evFim').value = ev.fim; }
+    function editarEvento(i) { 
+        const ev = eventos[i]; 
+        document.getElementById('editEventoIdx').value = i; 
+        document.getElementById('evFunc').value = ev.drt; 
+        document.getElementById('evTipo').value = ev.tipo; 
+        
+        verificarTipoAusencia();
+
+        if (ev.tipo === 'Prev. Férias') {
+            document.getElementById('evMesPrev').value = ev.inicio.substring(0, 7);
+        } else {
+            document.getElementById('evInicio').value = ev.inicio; 
+            document.getElementById('evFim').value = ev.fim; 
+        }
+    }
+
     function editarMaq(i) { document.getElementById('editMaqIdx').value = i; document.getElementById('maqNome').value = maquinas[i]; }
     function editarTroca(i) { const t = tiposTroca[i]; document.getElementById('editTrocaIdx').value = i; document.getElementById('trocaSigla').value = t.sigla; document.getElementById('trocaDesc').value = t.desc; }
     
@@ -1032,6 +1108,7 @@
         
         if(tipo === 'Func') verificarTurno('fTurno', 'fEscala');
         if(tipo === 'Mudanca') verificarTurno('mudTurno', 'mudTurma');
+        if(tipo === 'Evento') verificarTipoAusencia();
     }
     
     function limparFiltrosAusencia() { document.getElementById('filtroTipoAusencia').value = 'Todos'; document.getElementById('filtroTurnoAusencia').value = 'Todos'; document.getElementById('filtroAusInicio').value = ''; document.getElementById('filtroAusFim').value = ''; renderEventos(); }
