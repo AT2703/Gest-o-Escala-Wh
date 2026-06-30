@@ -16,8 +16,10 @@
             --acerto: #cff4fc; --acerto-text: #055160;
             --licenca: #ffebd6; --licenca-text: #e85d04; 
             --compensado: #e2e3e5; --compensado-text: #383d41;
+            --horas-licenca: #e0f2f1; --horas-licenca-text: #00695c;
             --hoje-border: #0d6efd;
             --hoje-bg: #f0f7ff;
+            --feriado-text: #c69500;
         }
         body { background-color: #f4f7f6; font-family: 'Segoe UI', sans-serif; }
         .card { border-radius: 12px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
@@ -33,9 +35,11 @@
         .cal-day.today { border: 2px solid var(--hoje-border) !important; background-color: var(--hoje-bg) !important; z-index: 1; }
         .cal-day.out { background: #f8f9fa; color: #ccc; cursor: default; }
         
-        .cal-day-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px; border-bottom: 1px solid #eee; padding-bottom: 2px; }
-        .cal-folga-indicador { font-size: 0.68rem; font-weight: 800; color: #0d6efd; text-transform: uppercase; }
-        .cal-date { font-weight: 800; font-size: 0.9rem; color: #495057; }
+        .cal-day-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; border-bottom: 1px solid #eee; padding-bottom: 2px; }
+        .cal-folga-indicador { font-size: 0.68rem; font-weight: 800; color: #0d6efd; text-transform: uppercase; white-space: nowrap; }
+        
+        .cal-date { font-weight: 800; font-size: 0.9rem; color: #495057; white-space: nowrap; }
+        .cal-date.is-feriado { color: var(--feriado-text) !important; font-size: 1.1rem; }
         
         .emp-event { font-size: 0.65rem; padding: 2px 5px; margin-bottom: 3px; border-radius: 3px; font-weight: 700; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
@@ -48,6 +52,7 @@
         .ev-acerto, .bg-acerto { background: var(--acerto) !important; color: var(--acerto-text) !important; }
         .ev-licenca, .bg-licenca { background: var(--licenca) !important; color: var(--licenca-text) !important; border: 1px solid rgba(232, 93, 4, 0.2); }
         .ev-compensado, .bg-compensado { background: var(--compensado) !important; color: var(--compensado-text) !important; border: 1px solid rgba(0,0,0,0.1); }
+        .bg-horas-licenca { background: var(--horas-licenca) !important; color: var(--horas-licenca-text) !important; border: 1px solid rgba(0, 105, 92, 0.2); }
 
         .nav-pills .nav-link { color: #555; font-weight: 600; cursor: pointer; padding: 10px 15px; font-size: 0.85rem; }
         .nav-pills .nav-link.active { background-color: #0d6efd; box-shadow: 0 4px 10px rgba(13,110,253,0.3); color: white !important; }
@@ -123,6 +128,7 @@
         </div>
     </section>
 
+    <!-- ABA DE EXTRAS -->
     <section id="sec-extra" style="display:none;">
         <div class="card p-4">
             <h5 class="fw-bold">💜 Registro de Trabalho Extra</h5>
@@ -153,6 +159,7 @@
         </div>
     </section>
 
+    <!-- ABA CALENDÁRIO MENSAL -->
     <section id="sec-mensal">
         <div class="card p-3 mb-3">
             <div class="row g-2 mb-3 align-items-end">
@@ -184,6 +191,7 @@
         <div class="card p-1"><div class="cal-wrapper"><div class="cal-grid" id="calendarioGrid"></div></div></div>
     </section>
 
+    <!-- ABA ESCALA WHATSAPP -->
     <section id="sec-whatsapp" style="display:none;">
         <div class="row">
             <div class="col-md-7">
@@ -228,26 +236,31 @@
         </div>
     </section>
 
+    <!-- ABA DIÁRIO AGENDA -->
     <section id="sec-agenda" style="display:none;">
         <div class="card p-3 mb-2">
-            <div class="d-flex gap-2">
-                <input type="date" id="agendaData" class="form-control" style="width:180px" onchange="renderAgenda()">
-                <select id="filtroTurnoAgenda" class="form-select" style="width:150px" onchange="renderAgenda()">
-                    <option value="Todos">Todos Turnos</option>
-                    <option>Manhã</option>
-                    <option>Tarde</option>
-                    <option>Noite</option>
-                    <option>Diária</option>
-                </select>
+            <div class="d-flex flex-column gap-2">
+                <div class="d-flex gap-2 align-items-center">
+                    <input type="date" id="agendaData" class="form-control" style="width:180px" onchange="renderAgenda()">
+                    <select id="filtroTurnoAgenda" class="form-select" style="width:150px" onchange="renderAgenda()">
+                        <option value="Todos">Todos Turnos</option>
+                        <option>Manhã</option>
+                        <option>Tarde</option>
+                        <option>Noite</option>
+                        <option>Diária</option>
+                    </select>
+                </div>
+                <div id="agendaFeriadoAviso" style="display:none;"></div>
             </div>
         </div>
         <div class="card table-responsive"><table class="table table-hover mb-0 border"><thead class="table-dark"><tr><th>DRT</th><th>Nome</th><th>Turno</th><th>Turma</th><th>Status</th></tr></thead><tbody id="listaAgenda"></tbody></table></div>
     </section>
     
+    <!-- ABA EVENTOS / AUSÊNCIAS -->
     <section id="sec-eventos" style="display:none;">
         <div class="card p-4">
-            <h5>⚠️ Registro de Ausências</h5>
-            <form id="formEvento" class="row g-2 mb-4">
+            <h5>⚠️ Registro de Ausências e Licenças</h5>
+            <form id="formEvento" class="row g-2 mb-4 align-items-end">
                 <input type="hidden" id="editEventoIdx" value="-1">
                 <div class="col-md-3"><label class="small fw-bold">Funcionário</label><select id="evFunc" class="form-select" required></select></div>
                 
@@ -260,18 +273,38 @@
                         <option>Afastado</option>
                         <option>Licença</option>
                         <option>Compensado</option>
+                        <option>Horas Licença</option>
                     </select>
                 </div>
                 
-                <div class="col-md-2 ev-datas"><label class="small fw-bold">Início</label><input type="date" id="evInicio" class="form-control" required></div>
-                <div class="col-md-2 ev-datas"><label class="small fw-bold">Final</label><input type="date" id="evFim" class="form-control" required></div>
+                <!-- Campo de data Inicial / Única -->
+                <div class="col-md-2 ev-datas">
+                    <label class="small fw-bold" id="lblEvInicio">Início</label>
+                    <input type="date" id="evInicio" class="form-control" required>
+                </div>
+                
+                <!-- Campo de data Final (Escondido em Horas Licença) -->
+                <div class="col-md-2 ev-datas" id="boxEvFim">
+                    <label class="small fw-bold">Final</label>
+                    <input type="date" id="evFim" class="form-control" required>
+                </div>
                 
                 <div class="col-md-4 ev-mes" style="display:none;">
                     <label class="small fw-bold text-primary">Mês da Previsão</label>
                     <input type="month" id="evMesPrev" class="form-control">
                 </div>
 
-                <div class="col-md-3 d-flex align-items-end"><button type="submit" class="btn btn-warning w-100 fw-bold">SALVAR</button></div>
+                <!-- Campo dinâmico com seletores de hora nativos -->
+                <div class="col-md-4 ev-obs" style="display:none;">
+                    <label class="small fw-bold text-primary">Faixa de Horário</label>
+                    <div class="d-flex align-items-center gap-1">
+                        <input type="time" id="evHoraIni" class="form-control form-control-sm">
+                        <span class="small text-muted px-1">até</span>
+                        <input type="time" id="evHoraFim" class="form-control form-control-sm">
+                    </div>
+                </div>
+
+                <div class="col-md-1"><button type="submit" class="btn btn-warning w-100 fw-bold">SALVAR</button></div>
             </form>
             <hr>
             <div class="d-flex justify-content-between mb-3"><h6 class="fw-bold m-0">Histórico de Eventos</h6><button class="btn btn-sm btn-outline-secondary" onclick="limparFiltrosAusencia()">Limpar Filtros</button></div>
@@ -287,6 +320,7 @@
                         <option>Folga de Acerto</option>
                         <option>Licença</option>
                         <option>Compensado</option>
+                        <option>Horas Licença</option>
                     </select>
                 </div>
                 <div class="col-6 col-md-3">
@@ -302,10 +336,11 @@
                 <div class="col-6 col-md-3"><label class="small fw-bold text-muted">Início</label><input type="date" id="filtroAusInicio" class="form-control form-control-sm" onchange="renderEventos()"></div>
                 <div class="col-6 col-md-3"><label class="small fw-bold text-muted">Final</label><input type="date" id="filtroAusFim" class="form-control form-control-sm" onchange="renderEventos()"></div>
             </div>
-            <div class="table-responsive"><table class="table table-sm table-hover border"><thead><tr><th>Nome</th><th>Turno</th><th>Tipo</th><th>Início</th><th>Fim</th><th class="text-end">Ações</th></tr></thead><tbody id="listaEventosView"></tbody></table></div>
+            <div class="table-responsive"><table class="table table-sm table-hover border"><thead><tr><th>Nome</th><th>Turno</th><th>Tipo / Detalhe</th><th>Início</th><th>Fim</th><th class="text-end">Ações</th></tr></thead><tbody id="listaEventosView"></tbody></table></div>
         </div>
     </section>
     
+    <!-- ABA FUNCIONÁRIOS -->
     <section id="sec-funcionarios" style="display:none;">
         <div class="card p-4">
             <h5>👥 Equipe</h5>
@@ -328,6 +363,7 @@
         </div>
     </section>
     
+    <!-- ABA ESCALAS / TURMAS -->
     <section id="sec-escalas" style="display:none;">
         <div class="card p-4">
             <h5>🔢 Gestão de Turmas</h5>
@@ -356,6 +392,7 @@
     
     <section id="sec-trocas" style="display:none;"><div class="card p-4"><h5>🔄 Trocas</h5><form id="formTroca" class="row g-2 mb-3"><input type="hidden" id="editTrocaIdx" value="-1"><div class="col-md-3"><input type="text" id="trocaSigla" class="form-control" placeholder="TC" required></div><div class="col-md-6"><input type="text" id="trocaDesc" class="form-control" placeholder="Descrição" required></div><div class="col-md-3 d-flex align-items-end"><button type="submit" class="btn btn-primary w-100">OK</button></div></form><table class="table table-sm"><tbody id="listaTrocasView"></tbody></table></div></section>
     
+    <!-- ABA MUDANÇA -->
     <section id="sec-mudanca" style="display:none;">
         <div class="card p-4">
             <h5>🔀 Mudança de Turma / Turno</h5>
@@ -412,6 +449,7 @@
 </div>
 
 <script>
+    // --- INICIALIZAÇÃO DE DADOS ---
     let escalas = JSON.parse(localStorage.getItem('w_escalas')) || [];
     let funcionarios = JSON.parse(localStorage.getItem('w_funcs')) || [];
     let eventos = JSON.parse(localStorage.getItem('w_eventos')) || [];
@@ -436,6 +474,26 @@
         localStorage.setItem('w_tarefas', JSON.stringify(tarefas));
     }
 
+    // --- LÓGICA DE FERIADOS ---
+    function getFeriado(dataStr) {
+        const [ano, mes, dia] = dataStr.split('-');
+        const mesDia = `${mes}-${dia}`;
+        const fixos = { "01-01": "Confraternização Universal", "04-21": "Tiradentes", "05-01": "Dia do Trabalhador", "07-09": "Revolução Const. (SP)", "08-20": "Aniversário SBC", "09-07": "Independência do Brasil", "10-12": "N.S. Aparecida", "11-02": "Finados", "11-15": "Proclamação da República", "11-20": "Consciência Negra", "12-25": "Natal" };
+        if (fixos[mesDia]) return fixos[mesDia];
+
+        const anoNum = parseInt(ano), a = anoNum % 19, b = Math.floor(anoNum / 100), c = anoNum % 100, d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25), g = Math.floor((b - f + 1) / 3), h = (19 * a + b - d - g + 15) % 30, i = Math.floor(c / 4), k = c % 4, l = (32 + 2 * e + 2 * i - h - k) % 7, m = Math.floor((a + 11 * h + 22 * l) / 451), mesPascoa = Math.floor((h + l - 7 * m + 114) / 31), diaPascoa = ((h + l - 7 * m + 114) % 31) + 1;
+        const pascoa = new Date(anoNum, mesPascoa - 1, diaPascoa);
+        const formatD = (d) => `${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        
+        const moveis = {
+            [formatD(new Date(pascoa.getTime() - 47 * 86400000))]: "Carnaval",
+            [formatD(new Date(pascoa.getTime() - 2 * 86400000))]: "Sexta-feira Santa",
+            [formatD(pascoa)]: "Páscoa",
+            [formatD(new Date(pascoa.getTime() + 60 * 86400000))]: "Corpus Christi"
+        };
+        return moveis[mesDia] || null;
+    }
+
     function verificarTurno(idTurno, idTurma) {
         const turnoEl = document.getElementById(idTurno);
         const turmaEl = document.getElementById(idTurma);
@@ -454,25 +512,45 @@
     function verificarTipoAusencia() {
         const tipo = document.getElementById('evTipo').value;
         const datasDivs = document.querySelectorAll('.ev-datas');
+        const boxFim = document.getElementById('boxEvFim');
         const mesDiv = document.querySelector('.ev-mes');
+        const obsDiv = document.querySelector('.ev-obs');
         const ini = document.getElementById('evInicio');
         const fim = document.getElementById('evFim');
         const mesP = document.getElementById('evMesPrev');
+        const hIni = document.getElementById('evHoraIni');
+        const hFim = document.getElementById('evHoraFim');
+        const lblInicio = document.getElementById('lblEvInicio');
 
         if (!tipo) return;
 
+        // Limpa visibilidade e obrigatoriedade padrão
+        datasDivs.forEach(d => d.style.display = 'block');
+        boxFim.style.display = 'block';
+        mesDiv.style.display = 'none';
+        obsDiv.style.display = 'none';
+        ini.required = true; 
+        fim.required = true;
+        mesP.required = false;
+        hIni.required = false;
+        hFim.required = false;
+        
+        if(lblInicio) lblInicio.innerText = "Início";
+
+        // Regras específicas
         if (tipo === 'Prev. Férias') {
             datasDivs.forEach(d => d.style.display = 'none');
             mesDiv.style.display = 'block';
             ini.required = false; 
             fim.required = false;
             mesP.required = true;
-        } else {
-            datasDivs.forEach(d => d.style.display = 'block');
-            mesDiv.style.display = 'none';
-            ini.required = true; 
-            fim.required = true;
-            mesP.required = false;
+        } else if (tipo === 'Horas Licença') {
+            boxFim.style.display = 'none'; // Esconde a Data Final
+            fim.required = false;
+            obsDiv.style.display = 'block';
+            hIni.required = true;
+            hFim.required = true;
+            if(lblInicio) lblInicio.innerText = "Data"; // Muda o texto
         }
     }
 
@@ -495,7 +573,8 @@
         const ex = extras.find(e => e.drt === f.drt && e.data === dataStr);
         if (ex) return { status: 'Extra', classe: 'ev-extra' };
         
-        const ev = eventos.find(e => e.drt === f.drt && dataStr >= e.inicio && dataStr <= e.fim);
+        // Ignora 'Horas Licença' para não aparecer como falta total no calendário/diário
+        const ev = eventos.find(e => e.drt === f.drt && dataStr >= e.inicio && dataStr <= e.fim && e.tipo !== 'Horas Licença');
         if (ev) {
             let classe = 'ev-falta';
             if(ev.tipo === 'Férias') classe = 'ev-ferias';
@@ -508,13 +587,16 @@
         }
 
         const turnoAtual = getTurnoAtual(f.drt, dataStr);
+        
         if (turnoAtual === 'Diária') {
             const dataObj = new Date(dataStr + 'T00:00:00');
             const diaSemana = dataObj.getDay(); 
-            if (diaSemana >= 1 && diaSemana <= 5) {
-                return { status: 'Trabalhando', classe: 'ev-trabalho' };
+            const isFeriado = getFeriado(dataStr) !== null;
+            
+            if (isFeriado || diaSemana === 0 || diaSemana === 6) {
+                return { status: 'Folga', classe: 'ev-folga' };
             }
-            return { status: 'Folga', classe: 'ev-folga' };
+            return { status: 'Trabalhando', classe: 'ev-trabalho' };
         }
         
         const turmaAtual = getTurmaAtual(f.drt, dataStr);
@@ -528,11 +610,12 @@
         return { status: 'Folga', classe: 'ev-folga' };
     }
 
+    // --- FORMULÁRIOS ---
     document.getElementById('formEvento').onsubmit = (e) => {
         e.preventDefault();
         const idx = parseInt(document.getElementById('editEventoIdx').value);
         const tipoEv = document.getElementById('evTipo').value;
-        let dataIni, dataFim;
+        let dataIni, dataFim, stringObs = "";
 
         if (tipoEv === 'Prev. Férias') {
             const valMes = document.getElementById('evMesPrev').value; 
@@ -540,6 +623,13 @@
             dataIni = `${ano}-${mes}-01`;
             const ultDia = new Date(ano, mes, 0).getDate();
             dataFim = `${ano}-${mes}-${String(ultDia).padStart(2, '0')}`;
+        } else if (tipoEv === 'Horas Licença') {
+            dataIni = document.getElementById('evInicio').value;
+            dataFim = dataIni; // Sempre um único dia
+            
+            const hI = document.getElementById('evHoraIni').value;
+            const hF = document.getElementById('evHoraFim').value;
+            if (hI && hF) stringObs = hI + ' às ' + hF;
         } else {
             dataIni = document.getElementById('evInicio').value;
             dataFim = document.getElementById('evFim').value;
@@ -549,7 +639,8 @@
             drt: document.getElementById('evFunc').value, 
             tipo: tipoEv, 
             inicio: dataIni, 
-            fim: dataFim 
+            fim: dataFim,
+            obs: stringObs
         };
         
         if (idx === -1) eventos.push(novo); else eventos[idx] = novo;
@@ -702,7 +793,6 @@
         if(!dataStr) return alert("Selecione data!"); 
         
         const chave = `${dataStr}-${t}`; 
-        
         const tarefasMarcadas = Array.from(document.querySelectorAll('.tarefa-zap-check:checked')).map(c => c.value);
 
         historicoZap[chave] = { 
@@ -921,11 +1011,19 @@
         const grid = document.getElementById('calendarioGrid'); const mR = document.getElementById('mesFiltro').value; const tF = document.getElementById('turnoFiltroMensal').value; if (!mR || !grid) return;
         const [ano, mes] = mR.split('-').map(Number); const primDia = new Date(ano, mes-1, 1).getDay(); const ultDia = new Date(ano, mes, 0).getDate();
         const hojeStr = new Date().toLocaleDateString('en-CA');
-        grid.innerHTML = ''; ['DOM','SEG','TER','QUA','QUI','SEX','SÁB'].forEach(d => grid.innerHTML += `<div class="cal-header">${d}</div>`);
+        
+        grid.innerHTML = ''; 
+        ['DOM','SEG','TER','QUA','QUI','SEX','SÁB'].forEach(d => grid.innerHTML += `<div class="cal-header">${d}</div>`);
+        
         for (let i = 0; i < primDia; i++) grid.innerHTML += `<div class="cal-day out"></div>`;
+        
         for (let d = 1; d <= ultDia; d++) {
             const dStr = `${ano}-${String(mes).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
             const isToday = (dStr === hojeStr) ? 'today' : '';
+            
+            const nomeFeriado = getFeriado(dStr);
+            const classFeriado = nomeFeriado ? 'is-feriado' : '';
+
             let tFolga = escalas.filter(esc => { const dInic = new Date(esc.inicio + 'T00:00:00'); const dAlvo = new Date(dStr + 'T00:00:00'); const diff = Math.floor((dAlvo - dInic) / 86400000); return diff >= 0 && (diff % 8) >= 6; }).map(esc => esc.nome).join(' & ');
             
             let hEv = ''; 
@@ -935,7 +1033,15 @@
                 const res = obterStatusNoDia(dStr, f); 
                 hEv += `<div class="emp-event ${res.classe}">${f.nome.split(' ')[0]}</div>`; 
             });
-            grid.innerHTML += `<div class="cal-day ${isToday}" onclick="irParaDia('${dStr}')"><div class="cal-day-top"><span class="cal-folga-indicador">${tFolga}</span><span class="cal-date">${d}</span></div>${hEv}</div>`;
+            
+            grid.innerHTML += `
+            <div class="cal-day ${isToday}" onclick="irParaDia('${dStr}')">
+                <div class="cal-day-top">
+                    <span class="cal-folga-indicador">${tFolga}</span>
+                    <span class="cal-date ${classFeriado}">${d}</span>
+                </div>
+                ${hEv}
+            </div>`;
         }
     }
 
@@ -956,11 +1062,22 @@
     
     function renderEscalas() { const corpo = document.getElementById('listaEscalasView'); if(!corpo) return; corpo.innerHTML = escalas.map((e, i) => `<tr><td>${e.nome}</td><td>${e.inicio.split('-').reverse().join('/')}</td><td class="text-end"><button onclick="editarEscala(${i})" class="btn btn-sm btn-outline-primary me-2">Editar</button><button onclick="remover('escalas', ${i})" class="btn btn-sm btn-link text-danger">X</button></td></tr>`).join(''); }
     function renderFuncionarios() { const corpo = document.getElementById('listaFuncView'); if(!corpo) return; corpo.innerHTML = funcionarios.map((f, i) => `<tr><td>${f.drt}</td><td>${f.nome}</td><td>${f.turno}</td><td>${f.escalaNome || '-'}</td><td class="text-end"><button onclick="editarFunc(${i})" class="btn btn-sm btn-outline-primary me-2">Editar</button><button onclick="remover('funcionarios', ${i})" class="btn btn-sm btn-link text-danger">X</button></td></tr>`).join(''); }
+    
     function renderAgenda() { 
         const dStr = document.getElementById('agendaData').value; 
         const fT = document.getElementById('filtroTurnoAgenda').value; 
         const corpo = document.getElementById('listaAgenda'); 
-        if (!corpo) return; 
+        const avisoFeriado = document.getElementById('agendaFeriadoAviso');
+        if (!corpo || !dStr) return; 
+
+        const nomeFeriado = getFeriado(dStr);
+        if (nomeFeriado) {
+            avisoFeriado.innerHTML = `<span class="badge" style="background-color: var(--feriado-text); color: white; font-size: 0.85rem; padding: 8px 12px; display: inline-block;">🎉 Feriado: ${nomeFeriado}</span>`;
+            avisoFeriado.style.display = 'block';
+        } else {
+            avisoFeriado.style.display = 'none';
+        }
+
         corpo.innerHTML = ''; 
         funcionarios.forEach(f => { 
             const turnoNoDia = getTurnoAtual(f.drt, dStr);
@@ -970,6 +1087,7 @@
             corpo.innerHTML += `<tr><td>${f.drt}</td><td><strong>${f.nome}</strong></td><td>${turnoNoDia}</td><td>${getTurmaAtual(f.drt, dStr) || '-'}</td><td><span class="badge ${badgeC}">${res.status}</span></td></tr>`; 
         }); 
     }
+
     function renderEventos() { 
         const fT = document.getElementById('filtroTipoAusencia').value; 
         const fTr = document.getElementById('filtroTurnoAusencia').value; 
@@ -993,10 +1111,19 @@
             if(ev.tipo === 'Folga de Acerto') badgeEv = 'bg-acerto';
             if(ev.tipo === 'Licença') badgeEv = 'bg-licenca';
             if(ev.tipo === 'Compensado') badgeEv = 'bg-compensado';
+            if(ev.tipo === 'Horas Licença') badgeEv = 'bg-horas-licenca';
 
-            corpo.innerHTML += `<tr><td>${f.nome}</td><td>${turnoNoEv}</td><td><span class="badge ${badgeEv}">${ev.tipo}</span></td><td>${ev.inicio.split('-').reverse().join('/')}</td><td>${ev.fim.split('-').reverse().join('/')}</td><td class="text-end"><button onclick="editarEvento(${i})" class="btn btn-sm btn-outline-primary me-1 py-0">Editar</button><button onclick="remover('eventos', ${i})" class="btn btn-sm btn-link text-danger py-0">X</button></td></tr>`; 
+            let obsHtml = (ev.tipo === 'Horas Licença' && ev.obs) ? `<div class="mt-1"><small class="badge bg-light text-dark" style="font-size: 0.72rem; border: 1px solid #ddd;">⏱️ ${ev.obs}</small></div>` : '';
+            
+            let dataFimTxt = ev.fim.split('-').reverse().join('/');
+            if (ev.tipo === 'Horas Licença' && ev.inicio === ev.fim) {
+                dataFimTxt = '-'; // Limpa a data final na tabela se for a mesma
+            }
+
+            corpo.innerHTML += `<tr><td>${f.nome}</td><td>${turnoNoEv}</td><td><span class="badge ${badgeEv}">${ev.tipo}</span>${obsHtml}</td><td>${ev.inicio.split('-').reverse().join('/')}</td><td>${dataFimTxt}</td><td class="text-end text-nowrap"><button onclick="editarEvento(${i})" class="btn btn-sm btn-outline-primary me-1 py-0">Editar</button><button onclick="remover('eventos', ${i})" class="btn btn-sm btn-link text-danger py-0 p-0">X</button></td></tr>`; 
         }); 
     }
+    
     function renderMaquinas() { document.getElementById('listaMaquinasView').innerHTML = maquinas.map((m, i) => `<tr><td class="fw-bold">${m}</td><td class="text-end"><button onclick="editarMaq(${i})" class="btn btn-sm btn-outline-primary me-1">Editar</button><button onclick="remover('maquinas', ${i})" class="btn btn-sm btn-link text-danger">X</button></td></tr>`).join(''); }
     function renderTrocas() { document.getElementById('listaTrocasView').innerHTML = tiposTroca.map((t, i) => `<tr><td><b>${t.sigla}</b></td><td>${t.desc}</td><td class="text-end"><button onclick="editarTroca(${i})" class="btn btn-sm btn-outline-primary me-1">Editar</button><button onclick="remover('trocas', ${i})" class="btn btn-sm btn-link text-danger">X</button></td></tr>`).join(''); }
     
@@ -1070,6 +1197,14 @@
 
         if (ev.tipo === 'Prev. Férias') {
             document.getElementById('evMesPrev').value = ev.inicio.substring(0, 7);
+        } else if (ev.tipo === 'Horas Licença') {
+            document.getElementById('evInicio').value = ev.inicio; 
+            document.getElementById('evFim').value = ev.fim;
+            if(ev.obs && ev.obs.includes(' às ')) {
+                const hPartes = ev.obs.split(' às ');
+                document.getElementById('evHoraIni').value = hPartes[0];
+                document.getElementById('evHoraFim').value = hPartes[1];
+            }
         } else {
             document.getElementById('evInicio').value = ev.inicio; 
             document.getElementById('evFim').value = ev.fim; 
@@ -1108,7 +1243,11 @@
         
         if(tipo === 'Func') verificarTurno('fTurno', 'fEscala');
         if(tipo === 'Mudanca') verificarTurno('mudTurno', 'mudTurma');
-        if(tipo === 'Evento') verificarTipoAusencia();
+        if(tipo === 'Evento') {
+            verificarTipoAusencia();
+            document.getElementById('evHoraIni').value = '';
+            document.getElementById('evHoraFim').value = '';
+        }
     }
     
     function limparFiltrosAusencia() { document.getElementById('filtroTipoAusencia').value = 'Todos'; document.getElementById('filtroTurnoAusencia').value = 'Todos'; document.getElementById('filtroAusInicio').value = ''; document.getElementById('filtroAusFim').value = ''; renderEventos(); }
