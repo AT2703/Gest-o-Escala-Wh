@@ -83,7 +83,6 @@
         <li class="nav-item"><a class="nav-link" id="tab-backup" onclick="navegar('backup')">⚙️ Sistema</a></li>
     </ul>
 
-    <!-- ABA DE TAREFAS / LEMBRETES -->
     <section id="sec-tarefas" style="display:none;">
         <div class="card p-4">
             <h5 class="fw-bold">✅ Tarefas e Lembretes</h5>
@@ -128,7 +127,6 @@
         </div>
     </section>
 
-    <!-- ABA DE EXTRAS -->
     <section id="sec-extra" style="display:none;">
         <div class="card p-4">
             <h5 class="fw-bold">💜 Registro de Trabalho Extra</h5>
@@ -159,7 +157,6 @@
         </div>
     </section>
 
-    <!-- ABA CALENDÁRIO MENSAL -->
     <section id="sec-mensal">
         <div class="card p-3 mb-3">
             <div class="row g-2 mb-3 align-items-end">
@@ -191,7 +188,6 @@
         <div class="card p-1"><div class="cal-wrapper"><div class="cal-grid" id="calendarioGrid"></div></div></div>
     </section>
 
-    <!-- ABA ESCALA WHATSAPP -->
     <section id="sec-whatsapp" style="display:none;">
         <div class="row">
             <div class="col-md-7">
@@ -213,7 +209,6 @@
                     
                     <div id="listaTrabalhando" class="border-top pt-3 mb-3"></div>
 
-                    <!-- BLOCO DE TAREFAS NA ESCALA -->
                     <div id="blocoTarefasEscala" class="border-top pt-3 mb-3" style="display:none; background-color: #f8f9fa; padding: 10px; border-radius: 8px;">
                         <label class="small fw-bold text-primary">📋 Lembretes e Tarefas Pendentes</label>
                         <p class="small text-muted mb-2">Marque as tarefas para incluir no preview da escala.</p>
@@ -236,7 +231,6 @@
         </div>
     </section>
 
-    <!-- ABA DIÁRIO AGENDA -->
     <section id="sec-agenda" style="display:none;">
         <div class="card p-3 mb-2">
             <div class="d-flex flex-column gap-2">
@@ -256,7 +250,6 @@
         <div class="card table-responsive"><table class="table table-hover mb-0 border"><thead class="table-dark"><tr><th>DRT</th><th>Nome</th><th>Turno</th><th>Turma</th><th>Status</th></tr></thead><tbody id="listaAgenda"></tbody></table></div>
     </section>
     
-    <!-- ABA EVENTOS / AUSÊNCIAS -->
     <section id="sec-eventos" style="display:none;">
         <div class="card p-4">
             <h5>⚠️ Registro de Ausências e Licenças</h5>
@@ -277,24 +270,11 @@
                     </select>
                 </div>
                 
-                <!-- Campo de data Inicial / Única -->
-                <div class="col-md-2 ev-datas">
-                    <label class="small fw-bold" id="lblEvInicio">Início</label>
-                    <input type="date" id="evInicio" class="form-control" required>
-                </div>
+                <div class="col-md-2 ev-datas"><label class="small fw-bold" id="lblEvInicio">Início</label><input type="date" id="evInicio" class="form-control" required></div>
+                <div class="col-md-2 ev-datas" id="boxEvFim"><label class="small fw-bold">Final</label><input type="date" id="evFim" class="form-control" required></div>
                 
-                <!-- Campo de data Final (Escondido em Horas Licença) -->
-                <div class="col-md-2 ev-datas" id="boxEvFim">
-                    <label class="small fw-bold">Final</label>
-                    <input type="date" id="evFim" class="form-control" required>
-                </div>
-                
-                <div class="col-md-4 ev-mes" style="display:none;">
-                    <label class="small fw-bold text-primary">Mês da Previsão</label>
-                    <input type="month" id="evMesPrev" class="form-control">
-                </div>
+                <div class="col-md-4 ev-mes" style="display:none;"><label class="small fw-bold text-primary">Mês da Previsão</label><input type="month" id="evMesPrev" class="form-control"></div>
 
-                <!-- Campo dinâmico com seletores de hora nativos -->
                 <div class="col-md-4 ev-obs" style="display:none;">
                     <label class="small fw-bold text-primary">Faixa de Horário</label>
                     <div class="d-flex align-items-center gap-1">
@@ -336,11 +316,10 @@
                 <div class="col-6 col-md-3"><label class="small fw-bold text-muted">Início</label><input type="date" id="filtroAusInicio" class="form-control form-control-sm" onchange="renderEventos()"></div>
                 <div class="col-6 col-md-3"><label class="small fw-bold text-muted">Final</label><input type="date" id="filtroAusFim" class="form-control form-control-sm" onchange="renderEventos()"></div>
             </div>
-            <div class="table-responsive"><table class="table table-sm table-hover border"><thead><tr><th>Nome</th><th>Turno</th><th>Tipo / Detalhe</th><th>Início</th><th>Fim</th><th class="text-end">Ações</th></tr></thead><tbody id="listaEventosView"></tbody></table></div>
+            <div class="table-responsive"><table class="table table-sm table-hover border"><thead><tr><th>Nome</th><th>Turno</th><th>Tipo / Detalhe</th><th>Início</th><th>Fim</th><th class="text-center">Status</th><th class="text-end">Ações</th></tr></thead><tbody id="listaEventosView"></tbody></table></div>
         </div>
     </section>
     
-    <!-- ABA FUNCIONÁRIOS -->
     <section id="sec-funcionarios" style="display:none;">
         <div class="card p-4">
             <h5>👥 Equipe</h5>
@@ -363,7 +342,6 @@
         </div>
     </section>
     
-    <!-- ABA ESCALAS / TURMAS -->
     <section id="sec-escalas" style="display:none;">
         <div class="card p-4">
             <h5>🔢 Gestão de Turmas</h5>
@@ -392,7 +370,6 @@
     
     <section id="sec-trocas" style="display:none;"><div class="card p-4"><h5>🔄 Trocas</h5><form id="formTroca" class="row g-2 mb-3"><input type="hidden" id="editTrocaIdx" value="-1"><div class="col-md-3"><input type="text" id="trocaSigla" class="form-control" placeholder="TC" required></div><div class="col-md-6"><input type="text" id="trocaDesc" class="form-control" placeholder="Descrição" required></div><div class="col-md-3 d-flex align-items-end"><button type="submit" class="btn btn-primary w-100">OK</button></div></form><table class="table table-sm"><tbody id="listaTrocasView"></tbody></table></div></section>
     
-    <!-- ABA MUDANÇA -->
     <section id="sec-mudanca" style="display:none;">
         <div class="card p-4">
             <h5>🔀 Mudança de Turma / Turno</h5>
@@ -640,8 +617,14 @@
             tipo: tipoEv, 
             inicio: dataIni, 
             fim: dataFim,
-            obs: stringObs
+            obs: stringObs,
+            lancado: false
         };
+        
+        // Mantém o status "lancado" se for edição
+        if (idx !== -1 && eventos[idx].lancado) {
+            novo.lancado = eventos[idx].lancado;
+        }
         
         if (idx === -1) eventos.push(novo); else eventos[idx] = novo;
         cancelarEdicao('Evento'); salvar(); renderizarTudo();
@@ -1059,6 +1042,7 @@
     function remover(t, i) { if(confirm("Apagar?")) { if(t==='maquinas') maquinas.splice(i,1); if(t==='escalas') escalas.splice(i,1); if(t==='funcionarios') funcionarios.splice(i,1); if(t==='eventos') eventos.splice(i,1); if(t==='extras') extras.splice(i,1); if(t==='trocas') tiposTroca.splice(i,1); if(t==='tarefas') tarefas.splice(i,1); salvar(); renderizarTudo(); } }
     function removerMudanca(i) { if(confirm("Apagar mudança?")) { mudancas.splice(i, 1); salvar(); renderizarTudo(); } }
     function toggleStatusTarefa(i) { tarefas[i].status = (tarefas[i].status === 'Aberta') ? 'Concluida' : 'Aberta'; salvar(); renderTarefas(); renderTarefasEscala(); }
+    function toggleLancado(i) { eventos[i].lancado = !eventos[i].lancado; salvar(); renderEventos(); }
     
     function renderEscalas() { const corpo = document.getElementById('listaEscalasView'); if(!corpo) return; corpo.innerHTML = escalas.map((e, i) => `<tr><td>${e.nome}</td><td>${e.inicio.split('-').reverse().join('/')}</td><td class="text-end"><button onclick="editarEscala(${i})" class="btn btn-sm btn-outline-primary me-2">Editar</button><button onclick="remover('escalas', ${i})" class="btn btn-sm btn-link text-danger">X</button></td></tr>`).join(''); }
     function renderFuncionarios() { const corpo = document.getElementById('listaFuncView'); if(!corpo) return; corpo.innerHTML = funcionarios.map((f, i) => `<tr><td>${f.drt}</td><td>${f.nome}</td><td>${f.turno}</td><td>${f.escalaNome || '-'}</td><td class="text-end"><button onclick="editarFunc(${i})" class="btn btn-sm btn-outline-primary me-2">Editar</button><button onclick="remover('funcionarios', ${i})" class="btn btn-sm btn-link text-danger">X</button></td></tr>`).join(''); }
@@ -1117,10 +1101,16 @@
             
             let dataFimTxt = ev.fim.split('-').reverse().join('/');
             if (ev.tipo === 'Horas Licença' && ev.inicio === ev.fim) {
-                dataFimTxt = '-'; // Limpa a data final na tabela se for a mesma
+                dataFimTxt = '-'; 
             }
 
-            corpo.innerHTML += `<tr><td>${f.nome}</td><td>${turnoNoEv}</td><td><span class="badge ${badgeEv}">${ev.tipo}</span>${obsHtml}</td><td>${ev.inicio.split('-').reverse().join('/')}</td><td>${dataFimTxt}</td><td class="text-end text-nowrap"><button onclick="editarEvento(${i})" class="btn btn-sm btn-outline-primary me-1 py-0">Editar</button><button onclick="remover('eventos', ${i})" class="btn btn-sm btn-link text-danger py-0 p-0">X</button></td></tr>`; 
+            let statusBtn = '';
+            if (ev.tipo === 'Licença' || ev.tipo === 'Horas Licença') {
+                const btnClass = ev.lancado ? 'btn-success' : 'btn-outline-success';
+                statusBtn = `<button onclick="toggleLancado(${i})" class="btn btn-sm ${btnClass} py-0 px-2 fw-bold" style="font-size:0.7rem;">${ev.lancado ? '✅ Lançado' : '🔄 Pendente'}</button>`;
+            }
+
+            corpo.innerHTML += `<tr><td>${f.nome}</td><td>${turnoNoEv}</td><td><span class="badge ${badgeEv}">${ev.tipo}</span>${obsHtml}</td><td>${ev.inicio.split('-').reverse().join('/')}</td><td>${dataFimTxt}</td><td class="text-center">${statusBtn}</td><td class="text-end text-nowrap"><button onclick="editarEvento(${i})" class="btn btn-sm btn-outline-primary me-1 py-0">Editar</button><button onclick="remover('eventos', ${i})" class="btn btn-sm btn-link text-danger py-0 p-0">X</button></td></tr>`; 
         }); 
     }
     
