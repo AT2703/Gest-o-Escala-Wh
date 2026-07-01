@@ -597,6 +597,47 @@
         return { status: 'Folga', classe: 'ev-folga' };
     }
 
+    // --- FUNÇÃO PARA COPIAR PARA O RH ---
+    function copiarParaRH(tipo, i) {
+        let txt = "";
+        
+        if (tipo === 'evento') {
+            const ev = eventos[i];
+            const f = funcionarios.find(fn => fn.drt === ev.drt);
+            if (!f) return;
+            
+            txt += `📌 LANÇAMENTO - ${ev.tipo.toUpperCase()}\n`;
+            txt += `Colaborador(a): ${f.nome}\n`;
+            txt += `DRT: ${f.drt}\n`;
+            
+            if (ev.tipo === 'Prev. Férias') {
+                txt += `Mês Referência: ${ev.inicio.substring(0, 7).split('-').reverse().join('/')}\n`;
+            } else if (ev.tipo === 'Horas Licença') {
+                txt += `Data: ${ev.inicio.split('-').reverse().join('/')}\n`;
+                if (ev.obs) txt += `Horário: ${ev.obs}\n`;
+            } else {
+                txt += `Data Início: ${ev.inicio.split('-').reverse().join('/')}\n`;
+                txt += `Data Fim: ${ev.fim.split('-').reverse().join('/')}\n`;
+            }
+        } else if (tipo === 'extra') {
+            const ex = extras[i];
+            const f = funcionarios.find(fn => fn.drt === ex.drt);
+            if (!f) return;
+            
+            txt += `📌 LANÇAMENTO - HORA EXTRA\n`;
+            txt += `Colaborador(a): ${f.nome}\n`;
+            txt += `DRT: ${f.drt}\n`;
+            txt += `Data: ${ex.data.split('-').reverse().join('/')}\n`;
+            txt += `Turno: ${getTurnoAtual(f.drt, ex.data)}\n`;
+        }
+        
+        navigator.clipboard.writeText(txt).then(() => {
+            alert("✅ Dados copiados! Cole no WhatsApp ou e-mail do RH.");
+        }).catch(err => {
+            alert("Erro ao copiar. Tente novamente.");
+        });
+    }
+
     // --- FORMULÁRIOS ---
     document.getElementById('formEvento').onsubmit = (e) => {
         e.preventDefault();
@@ -771,7 +812,7 @@
         extras.forEach((ex, i) => {
             const f = funcionarios.find(fn => fn.drt === ex.drt);
             if(!f) return;
-            corpo.innerHTML += `<tr><td>${ex.data.split('-').reverse().join('/')}</td><td>${f.drt}</td><td>${f.nome}</td><td>${getTurnoAtual(f.drt, ex.data)}</td><td class="text-end text-nowrap"><button onclick="editarExtra(${i})" class="btn btn-sm btn-outline-primary me-2 py-0">Editar</button><button onclick="remover('extras', ${i})" class="btn btn-sm btn-link text-danger p-0 py-0">X</button></td></tr>`;
+            corpo.innerHTML += `<tr><td>${ex.data.split('-').reverse().join('/')}</td><td>${f.drt}</td><td>${f.nome}</td><td>${getTurnoAtual(f.drt, ex.data)}</td><td class="text-end text-nowrap"><button onclick="copiarParaRH('extra', ${i})" class="btn btn-sm btn-outline-secondary me-2 py-0" title="Copiar para RH">📋 Copiar</button><button onclick="editarExtra(${i})" class="btn btn-sm btn-outline-primary me-2 py-0">Editar</button><button onclick="remover('extras', ${i})" class="btn btn-sm btn-link text-danger p-0 py-0">X</button></td></tr>`;
         });
     }
 
@@ -1136,7 +1177,7 @@
                 statusBtn = `<button onclick="toggleLancado(${i})" class="btn btn-sm ${btnClass} py-0 px-2 fw-bold" style="font-size:0.7rem;">${ev.lancado ? '✅ Lançado' : '🔄 Pendente'}</button>`;
             }
 
-            corpo.innerHTML += `<tr><td>${f.drt}</td><td>${f.nome}</td><td>${turnoNoEv}</td><td><span class="badge ${badgeEv}">${ev.tipo}</span>${obsHtml}</td><td>${ev.inicio.split('-').reverse().join('/')}</td><td>${dataFimTxt}</td><td class="text-center">${statusBtn}</td><td class="text-end text-nowrap"><button onclick="editarEvento(${i})" class="btn btn-sm btn-outline-primary me-1 py-0">Editar</button><button onclick="remover('eventos', ${i})" class="btn btn-sm btn-link text-danger py-0 p-0">X</button></td></tr>`; 
+            corpo.innerHTML += `<tr><td>${f.drt}</td><td>${f.nome}</td><td>${turnoNoEv}</td><td><span class="badge ${badgeEv}">${ev.tipo}</span>${obsHtml}</td><td>${ev.inicio.split('-').reverse().join('/')}</td><td>${dataFimTxt}</td><td class="text-center">${statusBtn}</td><td class="text-end text-nowrap"><button onclick="copiarParaRH('evento', ${i})" class="btn btn-sm btn-outline-secondary me-1 py-0" title="Copiar para RH">📋 Copiar</button><button onclick="editarEvento(${i})" class="btn btn-sm btn-outline-primary me-1 py-0">Editar</button><button onclick="remover('eventos', ${i})" class="btn btn-sm btn-link text-danger py-0 p-0">X</button></td></tr>`; 
         }); 
     }
     
