@@ -42,7 +42,7 @@
         .ev-extra, .bg-extra { background: var(--extra) !important; color: var(--extra-text) !important; }
 
         .nav-pills .nav-link { color: #555; font-weight: 600; cursor: pointer; padding: 10px 15px; font-size: 0.85rem; }
-        .nav-pills .nav-link.active { background-color: #0d6efd; box-shadow: 0 4px 10px rgba(13,110,253,0.3); }
+        .nav-pills .nav-link.active { background-color: #0d6efd; box-shadow: 0 4px 10px rgba(13,110,253,0.3); color: white !important; }
         #previewZap { background: #f8fff9; font-family: 'Consolas', monospace; font-size: 0.9rem; white-space: pre-wrap; padding: 15px; border: 1px solid #d4edda; border-radius: 8px; }
         .backup-zone { border: 2px dashed #ccc; padding: 40px 20px; text-align: center; border-radius: 12px; cursor: pointer; }
         
@@ -66,6 +66,7 @@
         <li class="nav-item"><a class="nav-link active" id="tab-mensal" onclick="navegar('mensal')">📅 Calendário</a></li>
         <li class="nav-item"><a class="nav-link" id="tab-agenda" onclick="navegar('agenda')">📋 Diário</a></li>
         <li class="nav-item"><a class="nav-link" id="tab-whatsapp" onclick="navegar('whatsapp')">📲 Escala</a></li>
+        <li class="nav-item"><a class="nav-link" id="tab-tarefas" onclick="navegar('tarefas')">✅ Tarefas</a></li>
         <li class="nav-item"><a class="nav-link" id="tab-extra" onclick="navegar('extra')">🟣 Extra</a></li>
         <li class="nav-item"><a class="nav-link" id="tab-eventos" onclick="navegar('eventos')">⚠️ Ausências</a></li>
         <li class="nav-item"><a class="nav-link" id="tab-funcionarios" onclick="navegar('funcionarios')">👥 Equipe</a></li>
@@ -75,6 +76,52 @@
         <li class="nav-item"><a class="nav-link" id="tab-backup" onclick="navegar('backup')">⚙️ Sistema</a></li>
     </ul>
 
+    <!-- ABA DE TAREFAS -->
+    <section id="sec-tarefas" style="display:none;">
+        <div class="card p-4">
+            <h5 class="fw-bold">✅ Tarefas e Lembretes</h5>
+            <p class="small text-muted">Se a tarefa tiver data, ela aparecerá na escala naquele dia independentemente da máquina selecionada.</p>
+            <form id="formTarefa" class="row g-2 mb-4">
+                <input type="hidden" id="editTarefaIdx" value="-1">
+                <div class="col-12 col-md-2">
+                    <label class="small fw-bold">Máquina (Opcional)</label>
+                    <select id="tarMaq" class="form-select"></select>
+                </div>
+                <div class="col-12 col-md-4">
+                    <label class="small fw-bold">Descrição da Tarefa / Aviso</label>
+                    <input type="text" id="tarDesc" class="form-control" placeholder="O que precisa ser feito?" required>
+                </div>
+                <div class="col-6 col-md-2">
+                    <label class="small fw-bold text-primary">Início (Opc.)</label>
+                    <input type="date" id="tarDataInicio" class="form-control">
+                </div>
+                <div class="col-6 col-md-2">
+                    <label class="small fw-bold text-primary">Fim (Opc.)</label>
+                    <input type="date" id="tarDataFim" class="form-control">
+                </div>
+                <div class="col-12 col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100 fw-bold">SALVAR</button>
+                </div>
+            </form>
+            <hr>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="fw-bold m-0">Lista de Tarefas/Lembretes</h6>
+                <select id="filtroStatusTarefa" class="form-select form-select-sm w-auto" onchange="renderTarefas()">
+                    <option value="Aberta">Mostrar Abertas</option>
+                    <option value="Concluida">Mostrar Concluídas</option>
+                    <option value="Todas">Mostrar Todas</option>
+                </select>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-sm table-hover border">
+                    <thead class="table-light"><tr><th>Máquina / Tipo</th><th>Período</th><th>Descrição</th><th>Status</th><th class="text-end">Ações</th></tr></thead>
+                    <tbody id="listaTarefasView"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- ABA EXTRA -->
     <section id="sec-extra" style="display:none;">
         <div class="card p-4">
             <h5 class="fw-bold">💜 Registro de Trabalho Extra</h5>
@@ -105,6 +152,7 @@
         </div>
     </section>
 
+    <!-- ABA MENSAL -->
     <section id="sec-mensal">
         <div class="card p-3 mb-3">
             <div class="row g-2 mb-3 align-items-end"><div class="col-md-3"><input type="month" id="mesFiltro" class="form-control" onchange="renderCalendario()"></div><div class="col-md-3"><select id="turnoFiltroMensal" class="form-select" onchange="renderCalendario()"><option value="Todos">Todos Turnos</option><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div></div>
@@ -119,6 +167,7 @@
         <div class="card p-1"><div class="cal-wrapper"><div class="cal-grid" id="calendarioGrid"></div></div></div>
     </section>
 
+    <!-- ABA WHATSAPP / ESCALA -->
     <section id="sec-whatsapp" style="display:none;">
         <div class="row">
             <div class="col-md-7">
@@ -155,6 +204,13 @@
                             <div id="contAm" class="mb-2 d-flex flex-wrap"></div>
                         </div>
 
+                        <!-- BLOCO DE TAREFAS NA ESCALA -->
+                        <div id="blocoTarefasEscala" class="mb-3" style="display:none; background-color: #f8f9fa; padding: 10px; border-radius: 8px;">
+                            <label class="small fw-bold text-primary">📋 Lembretes e Tarefas Pendentes</label>
+                            <p class="small text-muted mb-2">Marque as tarefas para incluir no preview da escala.</p>
+                            <div id="listaTarefasEscala" class="d-flex flex-column gap-1"></div>
+                        </div>
+
                         <label class="small fw-bold">📝 Notas e Observações do Dia</label>
                         <textarea id="zapNotas" class="form-control form-control-sm" rows="3" placeholder="Digite aqui observações importantes para esta escala..." oninput="atualizarPreviewZap()"></textarea>
                     </div>
@@ -170,10 +226,13 @@
         </div>
     </section>
 
+    <!-- ABA DIÁRIO AGENDA -->
     <section id="sec-agenda" style="display:none;"><div class="card p-3 mb-2"><div class="d-flex gap-2"><input type="date" id="agendaData" class="form-control" style="width:180px" onchange="renderAgenda()"><select id="filtroTurnoAgenda" class="form-select" style="width:150px" onchange="renderAgenda()"><option value="Todos">Todos Turnos</option><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div></div><div class="card table-responsive"><table class="table table-hover mb-0 border"><thead class="table-dark"><tr><th>DRT</th><th>Nome</th><th>Turno</th><th>Turma</th><th>Status</th></tr></thead><tbody id="listaAgenda"></tbody></table></div></section>
     
+    <!-- ABA EVENTOS -->
     <section id="sec-eventos" style="display:none;"><div class="card p-4"><h5>⚠️ Registro de Ausências</h5><form id="formEvento" class="row g-2 mb-4"><input type="hidden" id="editEventoIdx" value="-1"><div class="col-md-3"><label class="small fw-bold">Funcionário</label><select id="evFunc" class="form-select" required></select></div><div class="col-md-2"><label class="small fw-bold">Tipo</label><select id="evTipo" class="form-select" required><option>Férias</option><option>Falta</option><option>Afastado</option></select></div><div class="col-md-2"><label class="small fw-bold">Início</label><input type="date" id="evInicio" class="form-control" required></div><div class="col-md-2"><label class="small fw-bold">Final</label><input type="date" id="evFim" class="form-control" required></div><div class="col-md-3 d-flex align-items-end"><button type="submit" class="btn btn-warning w-100 fw-bold">SALVAR</button></div></form><hr><div class="d-flex justify-content-between mb-3"><h6 class="fw-bold m-0">Histórico</h6><button class="btn btn-sm btn-outline-secondary" onclick="limparFiltrosAusencia()">Limpar</button></div><div class="row g-2 mb-3"><div class="col-6 col-md-3"><label class="small fw-bold text-muted">Tipo</label><select id="filtroTipoAusencia" class="form-select form-select-sm" onchange="renderEventos()"><option value="Todos">Todos</option><option>Férias</option><option>Falta</option><option>Afastado</option></select></div><div class="col-6 col-md-3"><label class="small fw-bold text-muted">Turno</label><select id="filtroTurnoAusencia" class="form-select form-select-sm" onchange="renderEventos()"><option value="Todos">Todos</option><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div><div class="col-6 col-md-3"><label class="small fw-bold text-muted">Início</label><input type="date" id="filtroAusInicio" class="form-control form-control-sm" onchange="renderEventos()"></div><div class="col-6 col-md-3"><label class="small fw-bold text-muted">Final</label><input type="date" id="filtroAusFim" class="form-control form-control-sm" onchange="renderEventos()"></div></div><div class="table-responsive"><table class="table table-sm table-hover border"><thead><tr><th>Nome</th><th>Turno</th><th>Tipo</th><th>Início</th><th>Fim</th><th class="text-end">Ações</th></tr></thead><tbody id="listaEventosView"></tbody></table></div></div></section>
     
+    <!-- ABA FUNCIONARIOS -->
     <section id="sec-funcionarios" style="display:none;">
         <div class="card p-4">
             <h5>👥 Equipe</h5>
@@ -193,6 +252,7 @@
         </div>
     </section>
     
+    <!-- ABA TURMAS -->
     <section id="sec-escalas" style="display:none;">
         <div class="card p-4">
             <h5>🔢 Gestão de Turmas</h5>
@@ -217,18 +277,22 @@
         </div>
     </section>
 
+    <!-- ABA MAQUINAS / TROCAS / BACKUP -->
     <section id="sec-maquinas" style="display:none;"><div class="card p-4"><h5>🔷️ Máquinas</h5><form id="formMaq" class="row g-2 mb-3"><input type="hidden" id="editMaqIdx" value="-1"><div class="col-md-9"><input type="text" id="maqNome" class="form-control" placeholder="Ex: M13" required></div><div class="col-md-3 d-flex align-items-end"><button type="submit" class="btn btn-primary w-100">Gravar</button></div></form><table class="table table-sm"><tbody id="listaMaquinasView"></tbody></table></div></section>
     <section id="sec-trocas" style="display:none;"><div class="card p-4"><h5>🔄 Trocas</h5><form id="formTroca" class="row g-2 mb-3"><input type="hidden" id="editTrocaIdx" value="-1"><div class="col-md-3"><input type="text" id="trocaSigla" class="form-control" placeholder="TC" required></div><div class="col-md-6"><input type="text" id="trocaDesc" class="form-control" placeholder="Descrição" required></div><div class="col-md-3 d-flex align-items-end"><button type="submit" class="btn btn-primary w-100">OK</button></div></form><table class="table table-sm"><tbody id="listaTrocasView"></tbody></table></div></section>
     <section id="sec-backup" style="display:none;"><div class="row g-4"><div class="col-md-6"><div class="card p-4 h-100 text-center"><h5>💾 Exportar</h5><button class="btn btn-primary w-100 py-3 mt-auto" onclick="exportarBackup()">BAIXAR BACKUP</button></div></div><div class="col-md-6"><div class="card p-4 h-100 text-center"><h5>📂 Importar</h5><div class="backup-zone" onclick="document.getElementById('inputBackup').click()"><p>Clique para carregar JSON</p><input type="file" id="inputBackup" hidden accept=".json" onchange="importarBackup(event)"></div></div></div><div class="col-12"><button class="btn btn-outline-danger btn-sm w-100" onclick="limparTudo()">Limpar Dados</button></div></div></section>
 </div>
 
 <script>
+    function generateId() { return Date.now().toString(36) + Math.random().toString(36).substr(2); }
+
     let escalas = JSON.parse(localStorage.getItem('w_escalas')) || [];
     let funcionarios = JSON.parse(localStorage.getItem('w_funcs')) || [];
     let eventos = JSON.parse(localStorage.getItem('w_eventos')) || [];
     let extras = JSON.parse(localStorage.getItem('w_extras')) || [];
     let maquinas = JSON.parse(localStorage.getItem('w_maquinas')) || [];
     let tiposTroca = JSON.parse(localStorage.getItem('w_trocas')) || [];
+    let tarefas = JSON.parse(localStorage.getItem('w_tarefas')) || [];
     let historicoZap = JSON.parse(localStorage.getItem('w_historico_zap')) || {};
 
     let tempProducao = [];
@@ -241,6 +305,7 @@
         localStorage.setItem('w_extras', JSON.stringify(extras));
         localStorage.setItem('w_maquinas', JSON.stringify(maquinas));
         localStorage.setItem('w_trocas', JSON.stringify(tiposTroca));
+        localStorage.setItem('w_tarefas', JSON.stringify(tarefas));
         localStorage.setItem('w_historico_zap', JSON.stringify(historicoZap));
     }
 
@@ -296,6 +361,26 @@
         cancelarEdicao('Troca'); salvar(); renderizarTudo();
     };
 
+    document.getElementById('formTarefa').onsubmit = (e) => {
+        e.preventDefault();
+        const idx = parseInt(document.getElementById('editTarefaIdx').value);
+        const maq = document.getElementById('tarMaq').value;
+        const desc = document.getElementById('tarDesc').value;
+        const dIn = document.getElementById('tarDataInicio').value;
+        const dFi = document.getElementById('tarDataFim').value;
+        
+        if (idx === -1) {
+            tarefas.push({ id: generateId(), maquina: maq, descricao: desc, dataInicio: dIn, dataFim: dFi, status: 'Aberta' });
+        } else {
+            tarefas[idx].maquina = maq;
+            tarefas[idx].descricao = desc;
+            tarefas[idx].dataInicio = dIn;
+            tarefas[idx].dataFim = dFi;
+            document.getElementById('editTarefaIdx').value = "-1";
+        }
+        cancelarEdicao('Tarefa'); salvar(); renderizarTudo(); e.target.reset();
+    };
+
     function navegar(aba) {
         document.querySelectorAll('section').forEach(s => s.style.display = 'none');
         document.getElementById('sec-' + aba).style.display = 'block';
@@ -335,26 +420,20 @@
         else { folguistas.forEach(f => { select.innerHTML += `<option value="${f.drt}">${f.nome} (${f.turno})</option>`; }); select.disabled = false; }
     }
 
-    function renderExtras() {
-        const corpo = document.getElementById('listaExtrasView'); if(!corpo) return; corpo.innerHTML = '';
-        extras.forEach((ex, i) => {
-            const f = funcionarios.find(fn => fn.drt === ex.drt);
-            if(!f) return;
-            corpo.innerHTML += `<tr><td>${ex.data.split('-').reverse().join('/')}</td><td>${f.nome}</td><td>${f.turno}</td><td class="text-end"><button onclick="remover('extras', ${i})" class="btn btn-sm btn-link text-danger">X</button></td></tr>`;
-        });
-    }
-
     function salvarEscalaZap() { 
         const dataStr = document.getElementById('zapData').value; 
         const t = document.getElementById('zapTurno').value; 
         if(!dataStr) return alert("Selecione data!"); 
         
         const chave = `${dataStr}-${t}`; 
+        const tarefasMarcadas = Array.from(document.querySelectorAll('.tarefa-zap-check:checked')).map(c => c.value);
+
         historicoZap[chave] = {
             colaboradores: {},
             pArr: tempProducao,
             aArr: tempAmostra,
-            notas: document.getElementById('zapNotas').value
+            notas: document.getElementById('zapNotas').value,
+            tarefasSalvas: tarefasMarcadas
         }; 
         
         document.querySelectorAll('#listaTrabalhando .row').forEach(row => { 
@@ -366,7 +445,7 @@
             }
         }); 
         salvar(); 
-        alert("Escala e Notas Salvas!"); 
+        alert("Escala, Notas e Tarefas Salvas!"); 
         atualizarPreviewZap();
     }
 
@@ -377,7 +456,7 @@
         if(!container || !dataStr) return; container.innerHTML = '';
         
         const chave = `${dataStr}-${turno}`;
-        const dadosSalvos = historicoZap[chave] || { colaboradores: {}, notas: "", pArr: [], aArr: [] };
+        const dadosSalvos = historicoZap[chave] || { colaboradores: {}, notas: "", pArr: [], aArr: [], tarefasSalvas: [] };
         
         tempProducao = dadosSalvos.pArr || [];
         tempAmostra = dadosSalvos.aArr || [];
@@ -399,7 +478,7 @@
             
             container.innerHTML += `<div class="row g-1 mb-2 border-bottom pb-2 ${isExtra ? 'bg-extra rounded' : ''}">
                 <div class="col-12 small fw-bold mb-1">${f.nome} ${isExtra ? '(Extra)' : ''}</div>
-                <div class="col-6"><select class="form-select form-select-sm maq-zap-input" onchange="atualizarPreviewZap()" data-nome="${f.nome}">
+                <div class="col-6"><select class="form-select form-select-sm maq-zap-input" onchange="renderTarefasEscala()" data-nome="${f.nome}">
                     <option value="">Máquina...</option>${maquinas.map(m => `<option value="${m}" ${m===maqS?'selected':''}>${m}</option>`).join('')}
                 </select></div>
                 <div class="col-6"><select class="form-select form-select-sm troca-zap-input" onchange="atualizarPreviewZap()">
@@ -408,6 +487,79 @@
         });
         
         updateTagsZap();
+        renderTarefasEscala(dadosSalvos.tarefasSalvas);
+    }
+
+    function renderTarefasEscala(tarefasSalvasAnteriores = null) {
+        const bloco = document.getElementById('blocoTarefasEscala');
+        const container = document.getElementById('listaTarefasEscala');
+        const dataEscala = document.getElementById('zapData').value;
+        if(!bloco || !container) return;
+
+        const maquinasSelecionadas = Array.from(document.querySelectorAll('.maq-zap-input'))
+                                        .map(sel => sel.value)
+                                        .filter(v => v !== '');
+
+        const tarefasExibiveis = tarefas.filter(t => {
+            if (t.status !== 'Aberta') return false;
+            
+            const dIn = t.dataInicio || t.data; 
+            const dFi = t.dataFim;
+            
+            let temData = (dIn || dFi);
+            let estaNoPeriodo = false;
+
+            if (temData) {
+                if (dIn && !dFi) estaNoPeriodo = (dataEscala === dIn);
+                else if (!dIn && dFi) estaNoPeriodo = (dataEscala <= dFi);
+                else if (dIn && dFi) estaNoPeriodo = (dataEscala >= dIn && dataEscala <= dFi);
+            }
+
+            const isMaquinaValida = (!t.maquina || t.maquina === '' || t.maquina === 'Geral' || maquinasSelecionadas.includes(t.maquina));
+
+            if (temData && estaNoPeriodo) return true;
+            if (temData && !estaNoPeriodo) return false;
+            if (!temData && isMaquinaValida) return true;
+
+            return false;
+        });
+
+        if (tarefasExibiveis.length === 0) {
+            bloco.style.display = 'none';
+            container.innerHTML = '';
+        } else {
+            bloco.style.display = 'block';
+            
+            let checkedIds = [];
+            if (tarefasSalvasAnteriores) {
+                checkedIds = tarefasSalvasAnteriores;
+            } else {
+                checkedIds = Array.from(document.querySelectorAll('.tarefa-zap-check:checked')).map(c => c.value);
+            }
+
+            let html = '';
+            tarefasExibiveis.forEach(t => {
+                const isChecked = checkedIds.includes(t.id) ? 'checked' : '';
+                const tagMaq = t.maquina ? t.maquina : 'Lembrete';
+                
+                const dIn = t.dataInicio || t.data;
+                const dFi = t.dataFim;
+                let lblData = '';
+                if(dIn && dFi) lblData = ` <span class="text-muted">(Período: ${dIn.split('-').reverse().join('/')} a ${dFi.split('-').reverse().join('/')})</span>`;
+                else if(dIn) lblData = ` <span class="text-muted">(Data: ${dIn.split('-').reverse().join('/')})</span>`;
+                else if(dFi) lblData = ` <span class="text-muted">(Até: ${dFi.split('-').reverse().join('/')})</span>`;
+
+                html += `
+                <div class="form-check">
+                    <input class="form-check-input tarefa-zap-check" type="checkbox" value="${t.id}" id="chk_t_${t.id}" onchange="atualizarPreviewZap()" data-maquina="${t.maquina || ''}" data-desc="${t.descricao}" ${isChecked}>
+                    <label class="form-check-label small" for="chk_t_${t.id}">
+                        <strong class="text-primary">${tagMaq}</strong>: ${t.descricao}${lblData}
+                    </label>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+        atualizarPreviewZap();
     }
 
     function addItemZap(tipo) {
@@ -446,7 +598,7 @@
             const mS = row.querySelector('.maq-zap-input'); 
             const tS = row.querySelector('.troca-zap-input'); 
             const m = mS?.value || '___'; 
-            const tro = tS?.value ? ` (${tS.value})` : ''; 
+            const tro = (tS && tS.value) ? ` (${tS.value})` : ''; 
             if(mS) txt += `${mS.dataset.nome} - ${m}${tro}\n`; 
         }); 
 
@@ -458,8 +610,23 @@
         }
 
         const notas = notasEl.value.trim();
-        if(notas) {
-            txt += `\nOBS:\n${notas}\n`;
+        const tarefasSelecionadas = document.querySelectorAll('.tarefa-zap-check:checked');
+        
+        if (notas || tarefasSelecionadas.length > 0) {
+            txt += `\nOBS:\n`;
+            
+            tarefasSelecionadas.forEach(chk => {
+                const maq = chk.dataset.maquina;
+                if (maq && maq !== "undefined" && maq !== "") {
+                    txt += `- [${maq}]: ${chk.dataset.desc}\n`;
+                } else {
+                    txt += `- ${chk.dataset.desc}\n`;
+                }
+            });
+
+            if (notas) {
+                txt += `${notas}\n`;
+            }
         }
         
         txt += `\nLegenda:\n`; 
@@ -491,13 +658,52 @@
         }
     }
 
-    function renderizarTudo() { renderMaquinas(); renderTrocas(); renderEscalas(); renderFuncionarios(); renderEventos(); renderExtras(); renderAgenda(); renderCalendario(); renderWhatsAppList(); atualizarSelects(); }
-    function exportarBackup() { const b = new Blob([JSON.stringify({escalas, funcionarios, eventos, extras, maquinas, tiposTroca, historicoZap})], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = "GE_Backup.json"; a.click(); }
-    function importarBackup(e) { const fr = new FileReader(); fr.onload = (v) => { const d = JSON.parse(v.target.result); escalas=d.escalas; funcionarios=d.funcionarios; maquinas=d.maquinas || []; tiposTroca=d.tiposTroca || []; eventos=d.eventos || []; extras=d.extras || []; historicoZap=d.historicoZap || {}; salvar(); location.reload(); }; fr.readAsText(e.target.files[0]); }
-    function remover(t, i) { if(confirm("Apagar?")) { if(t==='maquinas') maquinas.splice(i,1); if(t==='escalas') escalas.splice(i,1); if(t==='funcionarios') funcionarios.splice(i,1); if(t==='eventos') eventos.splice(i,1); if(t==='extras') extras.splice(i,1); if(t==='trocas') tiposTroca.splice(i,1); salvar(); renderizarTudo(); } }
+    function renderizarTudo() { renderMaquinas(); renderTrocas(); renderEscalas(); renderFuncionarios(); renderEventos(); renderExtras(); renderAgenda(); renderCalendario(); renderWhatsAppList(); atualizarSelects(); renderTarefas(); }
+    function exportarBackup() { const b = new Blob([JSON.stringify({escalas, funcionarios, eventos, extras, maquinas, tiposTroca, historicoZap, tarefas})], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = "GE_Backup.json"; a.click(); }
+    function importarBackup(e) { const fr = new FileReader(); fr.onload = (v) => { const d = JSON.parse(v.target.result); escalas=d.escalas; funcionarios=d.funcionarios; maquinas=d.maquinas || []; tiposTroca=d.tiposTroca || []; eventos=d.eventos || []; extras=d.extras || []; historicoZap=d.historicoZap || {}; tarefas=d.tarefas || []; salvar(); location.reload(); }; fr.readAsText(e.target.files[0]); }
+    function remover(t, i) { if(confirm("Apagar?")) { if(t==='maquinas') maquinas.splice(i,1); if(t==='escalas') escalas.splice(i,1); if(t==='funcionarios') funcionarios.splice(i,1); if(t==='eventos') eventos.splice(i,1); if(t==='extras') extras.splice(i,1); if(t==='trocas') tiposTroca.splice(i,1); if(t==='tarefas') tarefas.splice(i,1); salvar(); renderizarTudo(); } }
     
+    function toggleStatusTarefa(i) { tarefas[i].status = (tarefas[i].status === 'Aberta') ? 'Concluida' : 'Aberta'; salvar(); renderTarefas(); renderTarefasEscala(); }
+
     function renderEscalas() { const corpo = document.getElementById('listaEscalasView'); if(!corpo) return; corpo.innerHTML = escalas.map((e, i) => `<tr><td>${e.nome}</td><td>${e.inicio.split('-').reverse().join('/')}</td><td class="text-end"><button onclick="editarEscala(${i})" class="btn btn-sm btn-outline-primary me-2">Editar</button><button onclick="remover('escalas', ${i})" class="btn btn-sm btn-link text-danger">X</button></td></tr>`).join(''); }
     
+    function renderTarefas() {
+        const corpo = document.getElementById('listaTarefasView');
+        if(!corpo) return;
+        const filtro = document.getElementById('filtroStatusTarefa').value;
+        corpo.innerHTML = '';
+        
+        tarefas.forEach((t, i) => {
+            if(filtro !== 'Todas' && t.status !== filtro) return;
+            
+            const isAberta = t.status === 'Aberta';
+            const badgeClass = isAberta ? 'bg-danger' : 'bg-success';
+            const btnText = isAberta ? '✔ Concluir' : '↩ Reabrir';
+            const btnClass = isAberta ? 'btn-outline-success' : 'btn-outline-secondary';
+            
+            const dIn = t.dataInicio || t.data;
+            const dFi = t.dataFim;
+            let dataFmt = '-';
+            if(dIn && dFi) dataFmt = `${dIn.split('-').reverse().join('/')} a ${dFi.split('-').reverse().join('/')}`;
+            else if(dIn) dataFmt = `${dIn.split('-').reverse().join('/')}`;
+            else if(dFi) dataFmt = `Até ${dFi.split('-').reverse().join('/')}`;
+
+            corpo.innerHTML += `
+                <tr>
+                    <td><strong>${t.maquina || 'Lembrete'}</strong></td>
+                    <td class="small">${dataFmt}</td>
+                    <td class="${!isAberta ? 'text-decoration-line-through text-muted' : ''}">${t.descricao}</td>
+                    <td><span class="badge ${badgeClass}">${t.status}</span></td>
+                    <td class="text-end text-nowrap">
+                        <button onclick="editarTarefa(${i})" class="btn btn-sm btn-outline-primary me-2 py-0">Editar</button>
+                        <button onclick="toggleStatusTarefa(${i})" class="btn btn-sm ${btnClass} me-2 py-0">${btnText}</button>
+                        <button onclick="remover('tarefas', ${i})" class="btn btn-sm btn-link text-danger p-0">X</button>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
     function renderFuncionarios() { 
         const corpo = document.getElementById('listaFuncView'); 
         if(!corpo) return; 
@@ -513,6 +719,15 @@
                 </td>
             </tr>
         `).join(''); 
+    }
+
+    function renderExtras() {
+        const corpo = document.getElementById('listaExtrasView'); if(!corpo) return; corpo.innerHTML = '';
+        extras.forEach((ex, i) => {
+            const f = funcionarios.find(fn => fn.drt === ex.drt);
+            if(!f) return;
+            corpo.innerHTML += `<tr><td>${ex.data.split('-').reverse().join('/')}</td><td>${f.nome}</td><td>${f.turno}</td><td class="text-end"><button onclick="remover('extras', ${i})" class="btn btn-sm btn-link text-danger">X</button></td></tr>`;
+        });
     }
 
     function renderAgenda() { 
@@ -537,6 +752,9 @@
     function atualizarSelects() { 
         document.getElementById('fEscala').innerHTML = '<option value="">Turma...</option>' + escalas.map(e => `<option value="${e.nome}">${e.nome}</option>`).join(''); 
         document.getElementById('evFunc').innerHTML = '<option value="">Quem?</option>' + funcionarios.filter(f => f.ativo !== false).map(f => `<option value="${f.drt}">${f.nome}</option>`).join(''); 
+        
+        const tarMaqEl = document.getElementById('tarMaq'); 
+        if(tarMaqEl) tarMaqEl.innerHTML = '<option value="">Nenhuma (Só Lembrete)</option><option value="Geral">Geral</option>' + maquinas.map(m => `<option value="${m}">${m}</option>`).join('');
     }
     
     function editarEscala(i) { const e = escalas[i]; document.getElementById('editEscalaIdx').value = i; document.getElementById('escNome').value = e.nome; document.getElementById('escInicio').value = e.inicio; }
@@ -555,6 +773,15 @@
     function editarMaq(i) { document.getElementById('editMaqIdx').value = i; document.getElementById('maqNome').value = maquinas[i]; }
     function editarTroca(i) { const t = tiposTroca[i]; document.getElementById('editTrocaIdx').value = i; document.getElementById('trocaSigla').value = t.sigla; document.getElementById('trocaDesc').value = t.desc; }
     
+    function editarTarefa(i) { 
+        const t = tarefas[i]; 
+        document.getElementById('editTarefaIdx').value = i; 
+        document.getElementById('tarMaq').value = t.maquina || ''; 
+        document.getElementById('tarDesc').value = t.descricao; 
+        document.getElementById('tarDataInicio').value = t.dataInicio || t.data || ''; 
+        document.getElementById('tarDataFim').value = t.dataFim || ''; 
+    }
+
     function cancelarEdicao(tipo) { const f = document.getElementById('form' + tipo); if(f) f.reset(); const idx = document.getElementById('edit' + tipo + 'Idx'); if(idx) idx.value = "-1"; }
     function limparFiltrosAusencia() { document.getElementById('filtroTipoAusencia').value = 'Todos'; document.getElementById('filtroTurnoAusencia').value = 'Todos'; document.getElementById('filtroAusInicio').value = ''; document.getElementById('filtroAusFim').value = ''; renderEventos(); }
     function irParaDia(d) { document.getElementById('agendaData').value = d; document.getElementById('zapData').value = d; navegar('agenda'); }
