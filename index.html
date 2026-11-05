@@ -81,7 +81,7 @@
         <div class="card p-4">
             <h5 class="fw-bold">✅ Tarefas e Lembretes</h5>
             <p class="small text-muted">Se a tarefa tiver data, ela aparecerá na escala naquele dia independentemente da máquina selecionada.</p>
-            <form id="formTarefa" class="row g-2 mb-4">
+            <form id="formTarefa" class="row g-2 mb-4 align-items-end">
                 <input type="hidden" id="editTarefaIdx" value="-1">
                 <div class="col-12 col-md-2">
                     <label class="small fw-bold">Máquina (Opcional)</label>
@@ -89,7 +89,7 @@
                 </div>
                 <div class="col-12 col-md-4">
                     <label class="small fw-bold">Descrição da Tarefa / Aviso</label>
-                    <input type="text" id="tarDesc" class="form-control" placeholder="O que precisa ser feito?" required>
+                    <textarea id="tarDesc" class="form-control" rows="1" placeholder="O que precisa ser feito?" required></textarea>
                 </div>
                 <div class="col-6 col-md-2">
                     <label class="small fw-bold text-primary">Início (Opc.)</label>
@@ -99,7 +99,7 @@
                     <label class="small fw-bold text-primary">Fim (Opc.)</label>
                     <input type="date" id="tarDataFim" class="form-control">
                 </div>
-                <div class="col-12 col-md-2 d-flex align-items-end">
+                <div class="col-12 col-md-2">
                     <button type="submit" class="btn btn-primary w-100 fw-bold">SALVAR</button>
                 </div>
             </form>
@@ -174,7 +174,6 @@
                 <div class="card p-4">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5>📲 Montar Escala</h5>
-                        <button class="btn btn-sm btn-primary fw-bold" onclick="salvarEscalaZap()">💾 SALVAR</button>
                     </div>
                     <div class="row g-2 mb-3">
                         <div class="col-md-6"><input type="date" id="zapData" class="form-control" onchange="renderWhatsAppList()"></div>
@@ -187,9 +186,9 @@
                         <div class="mb-3">
                             <label class="small fw-bold text-success">Produção</label>
                             <div class="row g-1 mb-2">
-                                <div class="col-5"><select id="selProdMaq" class="form-select form-select-sm"></select></div>
-                                <div class="col-5"><select id="selProdTroca" class="form-select form-select-sm"></select></div>
-                                <div class="col-2"><button class="btn btn-sm btn-success w-100" onclick="addItemZap('producao')">+</button></div>
+                                <div class="col-5"><select id="selProdMaq" class="form-select form-select-sm" onchange="atualizarPreviewZap()"></select></div>
+                                <div class="col-5"><select id="selProdTroca" class="form-select form-select-sm" onchange="atualizarPreviewZap()"></select></div>
+                                <div class="col-2"><button type="button" class="btn btn-sm btn-success w-100" onclick="addItemZap('producao')">+</button></div>
                             </div>
                             <div id="contProd" class="mb-2 d-flex flex-wrap"></div>
                         </div>
@@ -197,9 +196,9 @@
                         <div class="mb-3">
                             <label class="small fw-bold text-purple">Amostra</label>
                             <div class="row g-1 mb-2">
-                                <div class="col-5"><select id="selAmMaq" class="form-select form-select-sm"></select></div>
-                                <div class="col-5"><select id="selAmTroca" class="form-select form-select-sm"></select></div>
-                                <div class="col-2"><button class="btn btn-sm btn-purple w-100" onclick="addItemZap('amostra')">+</button></div>
+                                <div class="col-5"><select id="selAmMaq" class="form-select form-select-sm" onchange="atualizarPreviewZap()"></select></div>
+                                <div class="col-5"><select id="selAmTroca" class="form-select form-select-sm" onchange="atualizarPreviewZap()"></select></div>
+                                <div class="col-2"><button type="button" class="btn btn-sm btn-purple w-100" onclick="addItemZap('amostra')">+</button></div>
                             </div>
                             <div id="contAm" class="mb-2 d-flex flex-wrap"></div>
                         </div>
@@ -220,7 +219,7 @@
                 <div class="card p-4 h-100">
                     <h5>Preview</h5>
                     <div id="previewZap" class="mb-3"></div>
-                    <button class="btn btn-success w-100 fw-bold py-3" onclick="copiarTextoZap()">COPIAR</button>
+                    <button type="button" class="btn btn-success w-100 fw-bold py-3" onclick="salvarECopiarZap()">💾 SALVAR E COPIAR</button>
                 </div>
             </div>
         </div>
@@ -277,10 +276,41 @@
         </div>
     </section>
 
-    <!-- ABA MAQUINAS / TROCAS / BACKUP -->
+    <!-- ABA MAQUINAS E TROCAS -->
     <section id="sec-maquinas" style="display:none;"><div class="card p-4"><h5>🔷️ Máquinas</h5><form id="formMaq" class="row g-2 mb-3"><input type="hidden" id="editMaqIdx" value="-1"><div class="col-md-9"><input type="text" id="maqNome" class="form-control" placeholder="Ex: M13" required></div><div class="col-md-3 d-flex align-items-end"><button type="submit" class="btn btn-primary w-100">Gravar</button></div></form><table class="table table-sm"><tbody id="listaMaquinasView"></tbody></table></div></section>
-    <section id="sec-trocas" style="display:none;"><div class="card p-4"><h5>🔄 Trocas</h5><form id="formTroca" class="row g-2 mb-3"><input type="hidden" id="editTrocaIdx" value="-1"><div class="col-md-3"><input type="text" id="trocaSigla" class="form-control" placeholder="TC" required></div><div class="col-md-6"><input type="text" id="trocaDesc" class="form-control" placeholder="Descrição" required></div><div class="col-md-3 d-flex align-items-end"><button type="submit" class="btn btn-primary w-100">OK</button></div></form><table class="table table-sm"><tbody id="listaTrocasView"></tbody></table></div></section>
-    <section id="sec-backup" style="display:none;"><div class="row g-4"><div class="col-md-6"><div class="card p-4 h-100 text-center"><h5>💾 Exportar</h5><button class="btn btn-primary w-100 py-3 mt-auto" onclick="exportarBackup()">BAIXAR BACKUP</button></div></div><div class="col-md-6"><div class="card p-4 h-100 text-center"><h5>📂 Importar</h5><div class="backup-zone" onclick="document.getElementById('inputBackup').click()"><p>Clique para carregar JSON</p><input type="file" id="inputBackup" hidden accept=".json" onchange="importarBackup(event)"></div></div></div><div class="col-12"><button class="btn btn-outline-danger btn-sm w-100" onclick="limparTudo()">Limpar Dados</button></div></div></section>
+    
+    <section id="sec-trocas" style="display:none;">
+        <div class="card p-4">
+            <h5>🔄 Trocas e Siglas</h5>
+            <form id="formTroca" class="row g-2 mb-3">
+                <input type="hidden" id="editTrocaIdx" value="-1">
+                <div class="col-md-2">
+                    <label class="small fw-bold">Sigla</label>
+                    <input type="text" id="trocaSigla" class="form-control" placeholder="Ex: TC" required>
+                </div>
+                <div class="col-md-4">
+                    <label class="small fw-bold">Descrição</label>
+                    <input type="text" id="trocaDesc" class="form-control" placeholder="Ex: Troca de Cor" required>
+                </div>
+                <div class="col-md-4 d-flex align-items-center justify-content-center">
+                    <div class="form-check form-switch mt-3">
+                        <input class="form-check-input" type="checkbox" id="trocaLegenda" checked>
+                        <label class="form-check-label small fw-bold text-muted" for="trocaLegenda">Mostrar legenda na Escala?</label>
+                    </div>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100 fw-bold">SALVAR</button>
+                </div>
+            </form>
+            <table class="table table-sm table-hover border mt-2">
+                <thead class="table-light"><tr><th>Sigla</th><th>Descrição</th><th class="text-center">Legenda Escala</th><th class="text-end">Ações</th></tr></thead>
+                <tbody id="listaTrocasView"></tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ABA BACKUP -->
+    <section id="sec-backup" style="display:none;"><div class="row g-4"><div class="col-md-6"><div class="card p-4 h-100 text-center"><h5>💾 Exportar</h5><button type="button" class="btn btn-primary w-100 py-3 mt-auto" onclick="exportarBackup()">BAIXAR BACKUP</button></div></div><div class="col-md-6"><div class="card p-4 h-100 text-center"><h5>📂 Importar</h5><div class="backup-zone" onclick="document.getElementById('inputBackup').click()"><p>Clique para carregar JSON</p><input type="file" id="inputBackup" hidden accept=".json" onchange="importarBackup(event)"></div></div></div><div class="col-12"><button type="button" class="btn btn-outline-danger btn-sm w-100" onclick="limparTudo()">Limpar Dados</button></div></div></section>
 </div>
 
 <script>
@@ -356,7 +386,11 @@
     document.getElementById('formTroca').onsubmit = (e) => {
         e.preventDefault();
         const idx = parseInt(document.getElementById('editTrocaIdx').value);
-        const novo = { sigla: document.getElementById('trocaSigla').value, desc: document.getElementById('trocaDesc').value };
+        const novo = { 
+            sigla: document.getElementById('trocaSigla').value, 
+            desc: document.getElementById('trocaDesc').value,
+            mostrarLegenda: document.getElementById('trocaLegenda').checked
+        };
         if (idx === -1) tiposTroca.push(novo); else tiposTroca[idx] = novo;
         cancelarEdicao('Troca'); salvar(); renderizarTudo();
     };
@@ -420,11 +454,14 @@
         else { folguistas.forEach(f => { select.innerHTML += `<option value="${f.drt}">${f.nome} (${f.turno})</option>`; }); select.disabled = false; }
     }
 
-    function salvarEscalaZap() { 
+    function salvarECopiarZap() {
         const dataStr = document.getElementById('zapData').value; 
         const t = document.getElementById('zapTurno').value; 
         if(!dataStr) return alert("Selecione data!"); 
         
+        if (document.getElementById('selProdMaq').value) addItemZap('producao');
+        if (document.getElementById('selAmMaq').value) addItemZap('amostra');
+
         const chave = `${dataStr}-${t}`; 
         const tarefasMarcadas = Array.from(document.querySelectorAll('.tarefa-zap-check:checked')).map(c => c.value);
 
@@ -445,8 +482,13 @@
             }
         }); 
         salvar(); 
-        alert("Escala, Notas e Tarefas Salvas!"); 
-        atualizarPreviewZap();
+        
+        const texto = atualizarPreviewZap();
+        navigator.clipboard.writeText(texto).then(() => {
+            alert("✅ Escala salva e copiada com sucesso!");
+        }).catch(() => {
+            alert("⚠️ Escala salva, mas não foi possível copiar para a área de transferência.");
+        });
     }
 
     function renderWhatsAppList() {
@@ -563,12 +605,23 @@
     }
 
     function addItemZap(tipo) {
-        const m = document.getElementById(tipo === 'producao' ? 'selProdMaq' : 'selAmMaq').value;
-        const tr = document.getElementById(tipo === 'producao' ? 'selProdTroca' : 'selAmTroca').value;
-        if(!m) return alert("Selecione ao menos a máquina.");
+        const selMaq = document.getElementById(tipo === 'producao' ? 'selProdMaq' : 'selAmMaq');
+        const selTroca = document.getElementById(tipo === 'producao' ? 'selProdTroca' : 'selAmTroca');
+        
+        const m = selMaq.value;
+        const tr = selTroca.value;
+        
+        if(!m) return; 
         
         const item = m + (tr ? ` (${tr})` : "");
-        if(tipo === 'producao') tempProducao.push(item); else tempAmostra.push(item);
+        if(tipo === 'producao') {
+            if(!tempProducao.includes(item)) tempProducao.push(item);
+        } else {
+            if(!tempAmostra.includes(item)) tempAmostra.push(item);
+        }
+        
+        selMaq.value = '';
+        selTroca.value = '';
         
         updateTagsZap();
     }
@@ -579,8 +632,8 @@
     }
 
     function updateTagsZap() {
-        document.getElementById('contProd').innerHTML = tempProducao.map((v, i) => `<span class="item-tag">${v}<button class="btn-del-tag" onclick="delItemZap('producao', ${i})">x</button></span>`).join('');
-        document.getElementById('contAm').innerHTML = tempAmostra.map((v, i) => `<span class="item-tag">${v}<button class="btn-del-tag" onclick="delItemZap('amostra', ${i})">x</button></span>`).join('');
+        document.getElementById('contProd').innerHTML = tempProducao.map((v, i) => `<span class="item-tag">${v}<button type="button" class="btn-del-tag" onclick="delItemZap('producao', ${i})">x</button></span>`).join('');
+        document.getElementById('contAm').innerHTML = tempAmostra.map((v, i) => `<span class="item-tag">${v}<button type="button" class="btn-del-tag" onclick="delItemZap('amostra', ${i})">x</button></span>`).join('');
         atualizarPreviewZap();
     }
 
@@ -602,11 +655,27 @@
             if(mS) txt += `${mS.dataset.nome} - ${m}${tro}\n`; 
         }); 
 
-        if (tempProducao && tempProducao.length > 0) {
-            txt += `\nProdução: ${tempProducao.join(', ')}\n`;
+        let prodList = [...tempProducao];
+        const currProdMaq = document.getElementById('selProdMaq')?.value;
+        const currProdTroca = document.getElementById('selProdTroca')?.value;
+        if (currProdMaq) {
+            const item = currProdMaq + (currProdTroca ? ` (${currProdTroca})` : '');
+            if(!prodList.includes(item)) prodList.push(item);
         }
-        if (tempAmostra && tempAmostra.length > 0) {
-            txt += `Amostra: ${tempAmostra.join(', ')}\n`;
+
+        let amList = [...tempAmostra];
+        const currAmMaq = document.getElementById('selAmMaq')?.value;
+        const currAmTroca = document.getElementById('selAmTroca')?.value;
+        if (currAmMaq) {
+            const item = currAmMaq + (currAmTroca ? ` (${currAmTroca})` : '');
+            if(!amList.includes(item)) amList.push(item);
+        }
+
+        if (prodList.length > 0) {
+            txt += `\nProdução - ${prodList.join(', ')}\n`;
+        }
+        if (amList.length > 0) {
+            txt += `Amostra - ${amList.join(', ')}\n`;
         }
 
         const notas = notasEl.value.trim();
@@ -629,8 +698,11 @@
             }
         }
         
-        txt += `\nLegenda:\n`; 
-        tiposTroca.forEach(t => { txt += `${t.sigla} - ${t.desc}\n`; }); 
+        const trocasLegenda = tiposTroca.filter(t => t.mostrarLegenda !== false);
+        if (trocasLegenda.length > 0) {
+            txt += `\nLegenda:\n`; 
+            trocasLegenda.forEach(t => { txt += `${t.sigla} - ${t.desc}\n`; }); 
+        }
         
         const p = document.getElementById('previewZap'); 
         if(p) p.innerText = txt; 
@@ -747,7 +819,12 @@
 
     function renderEventos() { const fT = document.getElementById('filtroTipoAusencia').value; const fTr = document.getElementById('filtroTurnoAusencia').value; const fI = document.getElementById('filtroAusInicio').value; const fF = document.getElementById('filtroAusFim').value; const corpo = document.getElementById('listaEventosView'); if(!corpo) return; corpo.innerHTML = ''; eventos.forEach((ev, i) => { const f = funcionarios.find(fn => fn.drt === ev.drt); if (!f) return; if (fT !== 'Todos' && ev.tipo !== fT) return; if (fTr !== 'Todos' && f.turno !== fTr) return; if (fI && ev.fim < fI) return; if (fF && ev.inicio > fF) return; corpo.innerHTML += `<tr><td>${f.nome}</td><td>${f.turno}</td><td><span class="badge ${ev.tipo.toLowerCase().includes('fér') ? 'bg-ferias' : 'bg-falta'}">${ev.tipo}</span></td><td>${ev.inicio.split('-').reverse().join('/')}</td><td>${ev.fim.split('-').reverse().join('/')}</td><td class="text-end"><button onclick="editarEvento(${i})" class="btn btn-sm btn-outline-primary me-1">Editar</button><button onclick="remover('eventos', ${i})" class="btn btn-sm btn-link text-danger">X</button></td></tr>`; }); }
     function renderMaquinas() { document.getElementById('listaMaquinasView').innerHTML = maquinas.map((m, i) => `<tr><td class="fw-bold">${m}</td><td class="text-end"><button onclick="editarMaq(${i})" class="btn btn-sm btn-outline-primary me-1">Editar</button><button onclick="remover('maquinas', ${i})" class="btn btn-sm btn-link text-danger">X</button></td></tr>`).join(''); }
-    function renderTrocas() { document.getElementById('listaTrocasView').innerHTML = tiposTroca.map((t, i) => `<tr><td><b>${t.sigla}</b></td><td>${t.desc}</td><td class="text-end"><button onclick="editarTroca(${i})" class="btn btn-sm btn-outline-primary me-1">Editar</button><button onclick="remover('trocas', ${i})" class="btn btn-sm btn-link text-danger">X</button></td></tr>`).join(''); }
+    function renderTrocas() { 
+        document.getElementById('listaTrocasView').innerHTML = tiposTroca.map((t, i) => {
+            const badgeLegenda = t.mostrarLegenda !== false ? '<span class="badge bg-success">Sim</span>' : '<span class="badge bg-secondary">Não</span>';
+            return `<tr><td><b>${t.sigla}</b></td><td>${t.desc}</td><td class="text-center">${badgeLegenda}</td><td class="text-end text-nowrap"><button onclick="editarTroca(${i})" class="btn btn-sm btn-outline-primary me-2 py-0">Editar</button><button onclick="remover('trocas', ${i})" class="btn btn-sm btn-link text-danger p-0 py-0">X</button></td></tr>`;
+        }).join(''); 
+    }
     
     function atualizarSelects() { 
         document.getElementById('fEscala').innerHTML = '<option value="">Turma...</option>' + escalas.map(e => `<option value="${e.nome}">${e.nome}</option>`).join(''); 
@@ -771,7 +848,14 @@
 
     function editarEvento(i) { const ev = eventos[i]; document.getElementById('editEventoIdx').value = i; document.getElementById('evFunc').value = ev.drt; document.getElementById('evTipo').value = ev.tipo; document.getElementById('evInicio').value = ev.inicio; document.getElementById('evFim').value = ev.fim; }
     function editarMaq(i) { document.getElementById('editMaqIdx').value = i; document.getElementById('maqNome').value = maquinas[i]; }
-    function editarTroca(i) { const t = tiposTroca[i]; document.getElementById('editTrocaIdx').value = i; document.getElementById('trocaSigla').value = t.sigla; document.getElementById('trocaDesc').value = t.desc; }
+    
+    function editarTroca(i) { 
+        const t = tiposTroca[i]; 
+        document.getElementById('editTrocaIdx').value = i; 
+        document.getElementById('trocaSigla').value = t.sigla; 
+        document.getElementById('trocaDesc').value = t.desc; 
+        document.getElementById('trocaLegenda').checked = t.mostrarLegenda !== false;
+    }
     
     function editarTarefa(i) { 
         const t = tarefas[i]; 
@@ -782,10 +866,17 @@
         document.getElementById('tarDataFim').value = t.dataFim || ''; 
     }
 
-    function cancelarEdicao(tipo) { const f = document.getElementById('form' + tipo); if(f) f.reset(); const idx = document.getElementById('edit' + tipo + 'Idx'); if(idx) idx.value = "-1"; }
+    function cancelarEdicao(tipo) { 
+        const f = document.getElementById('form' + tipo); 
+        if(f) f.reset(); 
+        const idx = document.getElementById('edit' + tipo + 'Idx'); 
+        if(idx) idx.value = "-1"; 
+        
+        if (tipo === 'Troca') document.getElementById('trocaLegenda').checked = true;
+    }
+
     function limparFiltrosAusencia() { document.getElementById('filtroTipoAusencia').value = 'Todos'; document.getElementById('filtroTurnoAusencia').value = 'Todos'; document.getElementById('filtroAusInicio').value = ''; document.getElementById('filtroAusFim').value = ''; renderEventos(); }
     function irParaDia(d) { document.getElementById('agendaData').value = d; document.getElementById('zapData').value = d; navegar('agenda'); }
-    function copiarTextoZap() { navigator.clipboard.writeText(atualizarPreviewZap()).then(() => alert("Copiado!")); }
     function limparTudo() { if(confirm("Limpar dados?")) { localStorage.clear(); location.reload(); } }
 
     const hj = new Date(); const hjL = hj.toLocaleDateString('en-CA');
