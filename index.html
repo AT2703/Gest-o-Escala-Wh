@@ -975,7 +975,7 @@
             const nome = container.querySelector('.maq-zap-input')?.dataset.nome;
             if (!nome) return;
             
-            let hasMachine = false;
+            let maquinasDoFuncionario = [];
             container.querySelectorAll('.linha-maq-zap').forEach(row => {
                 const mS = row.querySelector('.maq-zap-input'); 
                 const tS = row.querySelector('.troca-zap-input');
@@ -983,13 +983,19 @@
                 const tro = (tS && tS.value) ? ` (${tS.value})` : '';
                 
                 if (m) {
-                    txt += `${nome} - ${m}${tro}\n`; 
-                    hasMachine = true;
+                    maquinasDoFuncionario.push(`${m}${tro}`);
                 }
             });
             
-            if (!hasMachine) {
+            if (maquinasDoFuncionario.length === 0) {
                 txt += `${nome} - ___\n`;
+            } else if (maquinasDoFuncionario.length === 1) {
+                txt += `${nome} - ${maquinasDoFuncionario[0]}\n`;
+            } else if (maquinasDoFuncionario.length === 2) {
+                txt += `${nome} - ${maquinasDoFuncionario.join(' e ')}\n`;
+            } else {
+                const ultima = maquinasDoFuncionario.pop();
+                txt += `${nome} - ${maquinasDoFuncionario.join(', ')} e ${ultima}\n`;
             }
         }); 
 
