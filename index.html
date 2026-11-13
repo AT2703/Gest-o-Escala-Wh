@@ -1,1363 +1,864 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GE Wheaton</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        :root { 
-            --trabalho: #d1e7dd; --trabalho-text: #0f5132;
-            --folga: #cfe2ff; --folga-text: #084298;
-            --ferias: #fff3cd; --ferias-text: #856404;
-            --falta: #f8d7da; --falta-text: #842029;
-            --extra: #e0cffc; --extra-text: #6610f2;
-            --hoje-border: #0d6efd;
-            --hoje-bg: #f0f7ff;
-        }
-        body { background-color: #f4f7f6; font-family: 'Segoe UI', sans-serif; }
-        .card { border-radius: 12px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        
-        .legenda-container { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; padding: 12px; background: white; border-radius: 8px; border: 1px solid #eee; }
-        .legenda-item { display: flex; align-items: center; font-size: 0.75rem; font-weight: bold; }
-        .box-cor { width: 12px; height: 12px; border-radius: 2px; margin-right: 5px; border: 1px solid rgba(0,0,0,0.1); }
-        
-        .cal-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 8px; background: #dee2e6; }
-        .cal-grid { display: grid; grid-template-columns: repeat(7, minmax(95px, 1fr)); gap: 1px; min-width: 665px; }
-        .cal-header { background: #212529; color: white; text-align: center; padding: 8px; font-weight: bold; font-size: 0.75rem; text-transform: uppercase; }
-        .cal-day { background: white; min-height: 95px; padding: 5px; cursor: pointer; border: 2px solid transparent; }
-        .cal-day.today { border: 2px solid var(--hoje-border) !important; background-color: var(--hoje-bg) !important; z-index: 1; }
-        .cal-day.out { background: #f8f9fa; color: #ccc; cursor: default; }
-        
-        .cal-day-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px; border-bottom: 1px solid #eee; padding-bottom: 2px; }
-        .cal-folga-indicador { font-size: 0.68rem; font-weight: 800; color: #0d6efd; text-transform: uppercase; }
-        .cal-date { font-weight: 800; font-size: 0.9rem; color: #495057; }
-        
-        .emp-event { font-size: 0.65rem; padding: 2px 5px; margin-bottom: 3px; border-radius: 3px; font-weight: 700; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        
-        .ev-trabalho, .bg-trabalho { background: var(--trabalho) !important; color: var(--trabalho-text) !important; }
-        .ev-folga, .bg-folga { background: var(--folga) !important; color: var(--folga-text) !important; }
-        .ev-ferias, .bg-ferias { background: var(--ferias) !important; color: var(--ferias-text) !important; }
-        .ev-falta, .bg-falta, .ev-afastado, .bg-afastado { background: var(--falta) !important; color: var(--falta-text) !important; }
-        .ev-extra, .bg-extra { background: var(--extra) !important; color: var(--extra-text) !important; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GE Wheaton</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#E7EAEE; --surface:#FFFFFF; --surface-2:#F3F5F7; --ink:#18222D; --muted:#5A6676; --line:#D2D8DF;
+  --primary:#1F5A8C; --primary-ink:#FFFFFF; --primary-soft:#DDE8F3; --accent:#F2B705; --danger:#B42318; --bubble:#DCF5D4;
+  --t-bg:#D6EEDF; --t-fg:#145A32; --t-bar:#2E9E5B;
+  --f-bg:#DCE8F7; --f-fg:#1D4E89; --f-bar:#4A82C4;
+  --v-bg:#FBEFC8; --v-fg:#7A5600; --v-bar:#D9A400;
+  --a-bg:#F8DADA; --a-fg:#8B1E1E; --a-bar:#D14B4B;
+  --x-bg:#E8DDFB; --x-fg:#5B2BA6; --x-bar:#8A5CD6;
+  --font:"Barlow","Segoe UI",system-ui,-apple-system,Roboto,sans-serif;
+  --cond:"Barlow Condensed","Arial Narrow","Roboto Condensed",system-ui,sans-serif;
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#11161C; --surface:#1A2129; --surface-2:#222B35; --ink:#E5EAF0; --muted:#97A3B1; --line:#2D3743;
+    --primary:#6FA8DC; --primary-ink:#0E1A26; --primary-soft:#1D3044; --danger:#F07167; --bubble:#1E3A2B;
+    --t-bg:#1E3A2A; --t-fg:#8FD6AA; --f-bg:#1C2D44; --f-fg:#9CC2EE; --v-bg:#3B3014; --v-fg:#F0CF6E;
+    --a-bg:#43201F; --a-fg:#F1A3A0; --x-bg:#33264D; --x-fg:#C9B0F5;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#11161C; --surface:#1A2129; --surface-2:#222B35; --ink:#E5EAF0; --muted:#97A3B1; --line:#2D3743;
+  --primary:#6FA8DC; --primary-ink:#0E1A26; --primary-soft:#1D3044; --danger:#F07167; --bubble:#1E3A2B;
+  --t-bg:#1E3A2A; --t-fg:#8FD6AA; --f-bg:#1C2D44; --f-fg:#9CC2EE; --v-bg:#3B3014; --v-fg:#F0CF6E;
+  --a-bg:#43201F; --a-fg:#F1A3A0; --x-bg:#33264D; --x-fg:#C9B0F5;
+  color-scheme:dark;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.45;-webkit-tap-highlight-color:transparent}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+svg{display:block}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 
-        .nav-pills .nav-link { color: #555; font-weight: 600; cursor: pointer; padding: 10px 15px; font-size: 0.85rem; }
-        .nav-pills .nav-link.active { background-color: #0d6efd; box-shadow: 0 4px 10px rgba(13,110,253,0.3); color: white !important; }
-        #previewZap { background: #f8fff9; font-family: 'Consolas', monospace; font-size: 0.9rem; white-space: pre-wrap; padding: 15px; border: 1px solid #d4edda; border-radius: 8px; }
-        .backup-zone { border: 2px dashed #ccc; padding: 40px 20px; text-align: center; border-radius: 12px; cursor: pointer; }
-        
-        .item-tag { font-size: 0.8rem; background: #e9ecef; padding: 4px 10px; border-radius: 20px; border: 1px solid #dee2e6; margin: 3px; display: inline-flex; align-items: center; font-weight: 600; }
-        .btn-del-tag { border: none; background: transparent; color: #dc3545; font-weight: bold; margin-left: 6px; cursor: pointer; }
-        
-        .text-purple { color: #6f42c1 !important; }
-        .btn-purple { background-color: #6f42c1; color: white; border: none; }
-        .btn-purple:hover { background-color: #59339d; color: white; }
-    </style>
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+.top .in{max-width:880px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:10px 16px}
+.brand{font-family:var(--cond);font-weight:700;font-size:1.45rem;display:flex;align-items:center;gap:10px;line-height:1}
+.tape{width:12px;height:24px;border-radius:2px;background:repeating-linear-gradient(-45deg,var(--accent) 0 5px,#18222D 5px 10px)}
+.clock{text-align:right;line-height:1.1}
+.clock b{font-family:var(--cond);font-weight:700;font-size:1.25rem;display:block}
+.clock span{font-size:.75rem;color:var(--muted);font-weight:500;text-transform:capitalize}
+
+main{max-width:880px;margin:0 auto;padding:14px 14px calc(92px + env(safe-area-inset-bottom,0px))}
+h1{font-family:var(--cond);font-weight:700;font-size:1.8rem;line-height:1.1;margin:2px 0 12px}
+h2{font-family:var(--cond);font-weight:700;font-size:1.25rem;line-height:1.15;margin:0 0 10px}
+h3{font-size:.95rem;font-weight:700;margin:0 0 8px}
+p{margin:0 0 10px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px}
+.muted{color:var(--muted)} .small{font-size:.85rem}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.row>*{min-width:0}
+.grow{flex:1 1 130px}
+.titlebar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.titlebar h1{margin:0}
+
+select,input,textarea{font:inherit;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:9px 11px;width:100%;min-height:44px}
+textarea{min-height:84px;resize:vertical}
+input[type=checkbox]{width:22px;height:22px;min-height:0;accent-color:var(--primary);flex:none;margin:1px 0 0}
+
+.btn{font:inherit;font-weight:600;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:9px;padding:9px 14px;min-height:44px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;white-space:nowrap}
+.btn svg{width:18px;height:18px}
+.btn.primary{background:var(--primary);color:var(--primary-ink);border-color:var(--primary)}
+.btn.danger{color:var(--danger)}
+.btn.danger.solid{background:var(--danger);color:#fff;border-color:var(--danger)}
+.btn.block{width:100%}
+.btn.sm{min-height:38px;padding:6px 12px;font-size:.92rem}
+.btn.ghost{border-color:transparent;background:transparent;padding-left:4px}
+.icon-btn{width:40px;height:40px;flex:none;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:9px;cursor:pointer;padding:0}
+.icon-btn svg{width:18px;height:18px}
+.icon-btn.danger{color:var(--danger)}
+.icon-btn.add{background:var(--primary);color:var(--primary-ink);border-color:var(--primary)}
+
+.chip{display:inline-flex;align-items:center;font-size:.78rem;font-weight:600;padding:3px 9px;border-radius:999px;white-space:nowrap;line-height:1.3}
+.s-trabalho{background:var(--t-bg);color:var(--t-fg)}
+.s-folga{background:var(--f-bg);color:var(--f-fg)}
+.s-ferias{background:var(--v-bg);color:var(--v-fg)}
+.s-falta{background:var(--a-bg);color:var(--a-fg)}
+.s-extra{background:var(--x-bg);color:var(--x-fg)}
+.b-trabalho{background:var(--t-bar)} .b-folga{background:var(--f-bar)} .b-ferias{background:var(--v-bar)} .b-falta{background:var(--a-bar)} .b-extra{background:var(--x-bar)}
+.chip.area{background:transparent;border:1px solid var(--line);color:var(--muted)}
+.chip.neutral{background:var(--surface-2);color:var(--muted)}
+
+.seg{display:flex;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:3px;gap:2px}
+.seg button{flex:1;border:0;background:transparent;font:inherit;font-weight:600;font-size:.92rem;padding:7px 6px;border-radius:7px;color:var(--muted);min-height:38px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.14)}
+
+.list{margin:0;padding:0;list-style:none}
+.item{display:flex;gap:10px;align-items:center;padding:11px 0;border-top:1px solid var(--line)}
+.item:first-child{border-top:0;padding-top:2px}
+.item:last-child{padding-bottom:0}
+.item .main{flex:1;min-width:0}
+.item .t{font-weight:600;overflow-wrap:anywhere}
+.item .t.done{text-decoration:line-through;color:var(--muted)}
+.item .m{font-size:.85rem;color:var(--muted);margin-top:2px;display:flex;flex-wrap:wrap;gap:4px 6px;align-items:center}
+.item .acts{display:flex;gap:6px;flex:none}
+.empty{text-align:center;padding:22px 10px;color:var(--muted)}
+.empty .btn{margin-top:10px}
+
+/* calendário */
+.cal-head{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.cal-month{font-family:var(--cond);font-weight:700;font-size:1.55rem;flex:1;text-transform:capitalize;line-height:1.1}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.wd{font-size:.72rem;font-weight:600;color:var(--muted);text-align:center;padding:2px 0 4px}
+.day{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:8px;min-height:70px;padding:6px 5px 5px;text-align:left;font:inherit;color:inherit;cursor:pointer;display:flex;flex-direction:column;gap:3px;overflow:hidden}
+.day .n{font-family:var(--cond);font-weight:700;font-size:1.1rem;line-height:1}
+.day .fol{font-size:.62rem;font-weight:700;color:var(--f-fg);line-height:1.15;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.day .cnt{font-size:.66rem;color:var(--muted);font-weight:600;margin-top:auto;line-height:1}
+.day .bar{display:flex;height:5px;border-radius:3px;overflow:hidden;background:var(--surface-2)}
+.day.today::before{content:"";position:absolute;inset:0 0 auto;height:5px;background:repeating-linear-gradient(-45deg,var(--accent) 0 6px,#18222D 6px 12px)}
+.day.sel{border-color:var(--primary);box-shadow:inset 0 0 0 1px var(--primary);background:var(--primary-soft)}
+.day.blank{visibility:hidden}
+@media (min-width:700px){.day{min-height:100px;padding:8px}.day .n{font-size:1.3rem}.day .fol{font-size:.72rem}.day .cnt{font-size:.75rem}.day .bar{height:7px}}
+.legend{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.group{margin-top:12px}
+.group:first-of-type{margin-top:4px}
+.names{display:flex;flex-wrap:wrap;gap:6px}
+.names .chip{font-size:.85rem;padding:4px 10px}
+
+/* escala */
+.wk{padding:10px 0;border-top:1px solid var(--line)}
+.wk:first-child{border-top:0;padding-top:0}
+.wk.extra{background:var(--x-bg);border-radius:10px;padding:10px;border-top:0;margin:6px 0}
+.wk .nm{font-weight:600;margin-bottom:6px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.mrow{display:grid;grid-template-columns:1fr 1fr 40px;gap:6px;align-items:center;margin-bottom:6px}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{display:inline-flex;align-items:center;gap:2px;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:2px 2px 2px 10px;font-size:.88rem;font-weight:600}
+.tag button{border:0;background:transparent;color:var(--danger);width:30px;height:30px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;border-radius:50%}
+.tag button svg{width:15px;height:15px}
+.blk+.blk{margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+.check{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-top:1px solid var(--line);cursor:pointer}
+.check:first-child{border-top:0}
+.bubble{white-space:pre-wrap;word-break:break-word;font-family:var(--font);font-size:.95rem;line-height:1.45;background:var(--bubble);border-radius:12px 12px 12px 4px;padding:12px 14px;margin:0 0 12px}
+.actions{display:grid;gap:8px}
+
+/* mais */
+.menu{display:grid;gap:8px}
+.menu button{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:13px 14px;font:inherit;color:inherit;cursor:pointer}
+.menu .tx{flex:1;min-width:0}
+.menu .tx b{display:block;font-weight:700}
+.menu .tx span{font-size:.85rem;color:var(--muted)}
+.menu .ct{font-family:var(--cond);font-weight:700;font-size:1.2rem;color:var(--muted)}
+.menu svg{width:18px;height:18px;color:var(--muted)}
+
+/* barra inferior */
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+.tabbar .in{display:flex;max-width:880px;margin:0 auto}
+.tabbar button{flex:1;border:0;background:none;font:inherit;font-size:.72rem;font-weight:600;color:var(--muted);padding:8px 2px;display:flex;flex-direction:column;align-items:center;gap:3px;min-height:60px;position:relative;cursor:pointer}
+.tabbar button svg{width:24px;height:24px}
+.tabbar button[aria-current="page"]{color:var(--primary)}
+.tabbar button[aria-current="page"]::before{content:"";position:absolute;top:0;left:26%;right:26%;height:3px;background:var(--accent);border-radius:0 0 3px 3px}
+
+/* painel */
+.sheet-wrap{position:fixed;inset:0;z-index:50;background:rgba(8,14,22,.5);display:flex;align-items:flex-end;justify-content:center}
+.sheet-wrap[hidden]{display:none}
+.sheet{background:var(--surface);width:100%;max-width:560px;max-height:92%;overflow:auto;border-radius:16px 16px 0 0;padding:6px 16px calc(16px + env(safe-area-inset-bottom,0px));animation:up .18s ease-out}
+@media (min-width:700px){.sheet-wrap{align-items:center}.sheet{border-radius:14px;padding-bottom:16px}}
+@keyframes up{from{transform:translateY(28px);opacity:.5}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion: reduce){.sheet{animation:none}}
+.grab{width:40px;height:4px;border-radius:2px;background:var(--line);margin:6px auto 10px}
+.sheet-h{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.sheet-h h2{margin:0}
+.sheet-f{display:grid;grid-template-columns:1fr 1.4fr;gap:8px;margin-top:6px}
+.fld{display:block;margin-bottom:12px}
+.fld>span{display:block;font-size:.85rem;font-weight:600;margin-bottom:4px;color:var(--muted)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}
+.switch{display:flex;gap:10px;align-items:center;margin-bottom:12px;font-weight:600;cursor:pointer}
+.err{background:var(--a-bg);color:var(--a-fg);border-radius:8px;padding:9px 12px;font-weight:600;font-size:.9rem}
+
+.toast{position:fixed;left:50%;bottom:calc(76px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--ink);color:var(--surface);padding:10px 16px;border-radius:10px;font-weight:600;font-size:.92rem;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:60;max-width:calc(100% - 32px);text-align:center}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media (prefers-reduced-motion: reduce){.toast{transition:none}}
+</style>
 </head>
 <body>
+<header class="top"><div class="in">
+  <div class="brand"><span class="tape" aria-hidden="true"></span>GE Wheaton</div>
+  <div class="clock" aria-live="off"><b id="hora">--:--</b><span id="data"></span></div>
+</div></header>
 
-<div class="container-fluid py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4 px-2">
-        <h3 class="fw-bold m-0 text-primary">🟢🔵 GE Wheaton</h3>
-        <div id="relogio" class="h5 fw-bold text-secondary"></div>
-    </div>
+<main id="app"></main>
 
-    <ul class="nav nav-pills mb-4 bg-white p-2 rounded shadow-sm border overflow-auto flex-nowrap">
-        <li class="nav-item"><a class="nav-link active" id="tab-mensal" onclick="navegar('mensal')">📅 Calendário</a></li>
-        <li class="nav-item"><a class="nav-link" id="tab-agenda" onclick="navegar('agenda')">📋 Diário</a></li>
-        <li class="nav-item"><a class="nav-link" id="tab-whatsapp" onclick="navegar('whatsapp')">📲 Escala</a></li>
-        <li class="nav-item"><a class="nav-link" id="tab-tarefas" onclick="navegar('tarefas')">✅ Tarefas</a></li>
-        <li class="nav-item"><a class="nav-link" id="tab-extra" onclick="navegar('extra')">🟣 Extra</a></li>
-        <li class="nav-item"><a class="nav-link" id="tab-eventos" onclick="navegar('eventos')">⚠️ Ausências</a></li>
-        <li class="nav-item"><a class="nav-link" id="tab-funcionarios" onclick="navegar('funcionarios')">👥 Equipe</a></li>
-        <li class="nav-item"><a class="nav-link" id="tab-escalas" onclick="navegar('escalas')">🔢 Turmas</a></li>
-        <li class="nav-item"><a class="nav-link" id="tab-troca-turma" onclick="navegar('troca-turma')">🔀 Mudança de Turma</a></li>
-        <li class="nav-item"><a class="nav-link" id="tab-maquinas" onclick="navegar('maquinas')">🔷️ Máquinas</a></li>
-        <li class="nav-item"><a class="nav-link" id="tab-trocas" onclick="navegar('trocas')">🔄 Trocas</a></li>
-        <li class="nav-item"><a class="nav-link" id="tab-backup" onclick="navegar('backup')">⚙️ Sistema</a></li>
-    </ul>
-
-    <!-- ABA DE TAREFAS -->
-    <section id="sec-tarefas" style="display:none;">
-        <div class="card p-4">
-            <h5 class="fw-bold">✅ Tarefas e Lembretes</h5>
-            <p class="small text-muted">Se a tarefa tiver data, ela aparecerá na escala naquele dia independentemente da máquina selecionada.</p>
-            <form id="formTarefa" class="row g-2 mb-4 align-items-end">
-                <input type="hidden" id="editTarefaIdx" value="-1">
-                <div class="col-12 col-md-2">
-                    <label class="small fw-bold">Máquina (Opcional)</label>
-                    <select id="tarMaq" class="form-select"></select>
-                </div>
-                <div class="col-12 col-md-4">
-                    <label class="small fw-bold">Descrição da Tarefa / Aviso</label>
-                    <textarea id="tarDesc" class="form-control" rows="1" placeholder="O que precisa ser feito?" required></textarea>
-                </div>
-                <div class="col-6 col-md-2">
-                    <label class="small fw-bold text-primary">Início (Opc.)</label>
-                    <input type="date" id="tarDataInicio" class="form-control">
-                </div>
-                <div class="col-6 col-md-2">
-                    <label class="small fw-bold text-primary">Fim (Opc.)</label>
-                    <input type="date" id="tarDataFim" class="form-control">
-                </div>
-                <div class="col-12 col-md-2">
-                    <button type="submit" class="btn btn-primary w-100 fw-bold">SALVAR</button>
-                </div>
-            </form>
-            <hr>
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h6 class="fw-bold m-0">Lista de Tarefas/Lembretes</h6>
-                <select id="filtroStatusTarefa" class="form-select form-select-sm w-auto" onchange="renderTarefas()">
-                    <option value="Aberta">Mostrar Abertas</option>
-                    <option value="Concluida">Mostrar Concluídas</option>
-                    <option value="Todas">Mostrar Todas</option>
-                </select>
-            </div>
-            <div class="table-responsive">
-                <table class="table table-sm table-hover border">
-                    <thead class="table-light"><tr><th>Máquina / Tipo</th><th>Período</th><th>Descrição</th><th>Status</th><th class="text-end">Ações</th></tr></thead>
-                    <tbody id="listaTarefasView"></tbody>
-                </table>
-            </div>
-        </div>
-    </section>
-
-    <!-- ABA EXTRA -->
-    <section id="sec-extra" style="display:none;">
-        <div class="card p-4">
-            <h5 class="fw-bold">💜 Registro de Trabalho Extra</h5>
-            <div class="row g-2 mb-3">
-                <div class="col-md-3">
-                    <label class="small fw-bold text-muted">Filtrar por Área</label>
-                    <select id="filtroAreaExtra" class="form-select form-select-sm" onchange="renderExtras()">
-                        <option value="Todas">Todas as Áreas</option>
-                        <option value="Troca de Moldes">Troca de Moldes</option>
-                        <option value="Produção">Produção</option>
-                    </select>
-                </div>
-            </div>
-            <form id="formExtra" class="row g-2 mb-4">
-                <input type="hidden" id="editExtraIdx" value="-1">
-                <div class="col-md-3">
-                    <label class="small fw-bold">Escolha a Data</label>
-                    <input type="date" id="exData" class="form-control" required onchange="popularSelectExtra()">
-                </div>
-                <div class="col-md-6">
-                    <label class="small fw-bold">Funcionário</label>
-                    <select id="exFunc" class="form-select" required disabled>
-                        <option value="">Selecione a data primeiro...</option>
-                    </select>
-                </div>
-                <div class="col-md-3 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary w-100 fw-bold">REGISTRAR EXTRA</button>
-                </div>
-            </form>
-            <hr>
-            <h6 class="fw-bold mb-3">Histórico de Extras</h6>
-            <div class="table-responsive">
-                <table class="table table-sm table-hover border">
-                    <thead class="table-light"><tr><th>Data</th><th>Nome</th><th>Área</th><th>Turno</th><th class="text-end">Ações</th></tr></thead>
-                    <tbody id="listaExtrasView"></tbody>
-                </table>
-            </div>
-        </div>
-    </section>
-
-    <!-- ABA MENSAL -->
-    <section id="sec-mensal">
-        <div class="card p-3 mb-3">
-            <div class="row g-2 mb-3 align-items-end">
-                <div class="col-md-3"><input type="month" id="mesFiltro" class="form-control" onchange="renderCalendario()"></div>
-                <div class="col-md-3">
-                    <select id="turnoFiltroMensal" class="form-select" onchange="renderCalendario()">
-                        <option value="Todos">Todos Turnos</option>
-                        <option>Manhã</option><option>Tarde</option><option>Noite</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <select id="filtroAreaMensal" class="form-select" onchange="renderCalendario()">
-                        <option value="Todas">Todas as Áreas</option>
-                        <option value="Troca de Moldes">Troca de Moldes</option>
-                        <option value="Produção">Produção</option>
-                    </select>
-                </div>
-            </div>
-            <div class="legenda-container">
-                <div class="legenda-item"><div class="box-cor bg-trabalho"></div> Trabalho</div>
-                <div class="legenda-item"><div class="box-cor bg-folga"></div> Folga</div>
-                <div class="legenda-item"><div class="box-cor bg-ferias"></div> Férias</div>
-                <div class="legenda-item"><div class="box-cor bg-falta"></div> Ausência / Falta</div>
-                <div class="legenda-item"><div class="box-cor bg-extra"></div> Extra</div>
-            </div>
-        </div>
-        <div class="card p-1"><div class="cal-wrapper"><div class="cal-grid" id="calendarioGrid"></div></div></div>
-    </section>
-
-    <!-- ABA WHATSAPP / ESCALA -->
-    <section id="sec-whatsapp" style="display:none;">
-        <div class="row">
-            <div class="col-md-7">
-                <div class="card p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5>📲 Montar Escala (Troca de Moldes)</h5>
-                    </div>
-                    <div class="row g-2 mb-3">
-                        <div class="col-md-6"><input type="date" id="zapData" class="form-control" onchange="renderWhatsAppList()"></div>
-                        <div class="col-md-6"><select id="zapTurno" class="form-select" onchange="renderWhatsAppList()"><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div>
-                    </div>
-                    
-                    <div id="listaTrabalhando" class="border-top pt-3 mb-3"></div>
-                    
-                    <div class="border-top pt-3">
-                        <div class="mb-3">
-                            <label class="small fw-bold text-success">Produção</label>
-                            <div class="row g-1 mb-2">
-                                <div class="col-5"><select id="selProdMaq" class="form-select form-select-sm" onchange="atualizarPreviewZap()"></select></div>
-                                <div class="col-5"><select id="selProdTroca" class="form-select form-select-sm" onchange="atualizarPreviewZap()"></select></div>
-                                <div class="col-2"><button type="button" class="btn btn-sm btn-success w-100" onclick="addItemZap('producao')">+</button></div>
-                            </div>
-                            <div id="contProd" class="mb-2 d-flex flex-wrap"></div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="small fw-bold text-purple">Amostra</label>
-                            <div class="row g-1 mb-2">
-                                <div class="col-5"><select id="selAmMaq" class="form-select form-select-sm" onchange="atualizarPreviewZap()"></select></div>
-                                <div class="col-5"><select id="selAmTroca" class="form-select form-select-sm" onchange="atualizarPreviewZap()"></select></div>
-                                <div class="col-2"><button type="button" class="btn btn-sm btn-purple w-100" onclick="addItemZap('amostra')">+</button></div>
-                            </div>
-                            <div id="contAm" class="mb-2 d-flex flex-wrap"></div>
-                        </div>
-
-                        <!-- BLOCO DE TAREFAS NA ESCALA -->
-                        <div id="blocoTarefasEscala" class="mb-3" style="display:none; background-color: #f8f9fa; padding: 10px; border-radius: 8px;">
-                            <label class="small fw-bold text-primary">📋 Lembretes e Tarefas Pendentes</label>
-                            <p class="small text-muted mb-2">Marque as tarefas para incluir no preview da escala.</p>
-                            <div id="listaTarefasEscala" class="d-flex flex-column gap-1"></div>
-                        </div>
-
-                        <label class="small fw-bold">📝 Notas e Observações do Dia</label>
-                        <textarea id="zapNotas" class="form-control form-control-sm" rows="3" placeholder="Digite aqui observações importantes para esta escala..." oninput="atualizarPreviewZap()"></textarea>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-5">
-                <div class="card p-4 h-100">
-                    <h5>Preview</h5>
-                    <div id="previewZap" class="mb-3"></div>
-                    <button type="button" class="btn btn-success w-100 fw-bold py-3" onclick="salvarECopiarZap()">💾 SALVAR E COPIAR</button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ABA DIÁRIO AGENDA -->
-    <section id="sec-agenda" style="display:none;">
-        <div class="card p-3 mb-2">
-            <div class="d-flex gap-2 flex-wrap">
-                <input type="date" id="agendaData" class="form-control" style="width:180px" onchange="renderAgenda()">
-                <select id="filtroTurnoAgenda" class="form-select" style="width:150px" onchange="renderAgenda()">
-                    <option value="Todos">Todos Turnos</option>
-                    <option>Manhã</option><option>Tarde</option><option>Noite</option>
-                </select>
-                <select id="filtroAreaAgenda" class="form-select" style="width:180px" onchange="renderAgenda()">
-                    <option value="Todas">Todas as Áreas</option>
-                    <option value="Troca de Moldes">Troca de Moldes</option>
-                    <option value="Produção">Produção</option>
-                </select>
-            </div>
-        </div>
-        <div class="card table-responsive">
-            <table class="table table-hover mb-0 border">
-                <thead class="table-dark"><tr><th>DRT</th><th>Nome</th><th>Área</th><th>Turno</th><th>Turma Atual</th><th>Status no Dia</th></tr></thead>
-                <tbody id="listaAgenda"></tbody>
-            </table>
-        </div>
-    </section>
-    
-    <!-- ABA EVENTOS -->
-    <section id="sec-eventos" style="display:none;">
-        <div class="card p-4">
-            <h5>⚠️ Registro de Ausências e Eventos</h5>
-            <form id="formEvento" class="row g-2 mb-4">
-                <input type="hidden" id="editEventoIdx" value="-1">
-                <div class="col-md-3"><label class="small fw-bold">Funcionário</label><select id="evFunc" class="form-select" required></select></div>
-                <div class="col-md-2">
-                    <label class="small fw-bold">Tipo</label>
-                    <select id="evTipo" class="form-select" required>
-                        <option>Férias</option>
-                        <option>Falta</option>
-                        <option>Afastado</option>
-                        <option>Folga Acerto</option>
-                    </select>
-                </div>
-                <div class="col-md-2"><label class="small fw-bold">Início</label><input type="date" id="evInicio" class="form-control" required></div>
-                <div class="col-md-2"><label class="small fw-bold">Final</label><input type="date" id="evFim" class="form-control" required></div>
-                <div class="col-md-3 d-flex align-items-end"><button type="submit" class="btn btn-warning w-100 fw-bold">SALVAR</button></div>
-            </form>
-            <hr>
-            <div class="d-flex justify-content-between mb-3"><h6 class="fw-bold m-0">Histórico</h6><button class="btn btn-sm btn-outline-secondary" onclick="limparFiltrosAusencia()">Limpar</button></div>
-            <div class="row g-2 mb-3">
-                <div class="col-6 col-md-3">
-                    <label class="small fw-bold text-muted">Tipo</label>
-                    <select id="filtroTipoAusencia" class="form-select form-select-sm" onchange="renderEventos()">
-                        <option value="Todos">Todos</option>
-                        <option>Férias</option><option>Falta</option><option>Afastado</option><option>Folga Acerto</option>
-                    </select>
-                </div>
-                <div class="col-6 col-md-3"><label class="small fw-bold text-muted">Turno</label><select id="filtroTurnoAusencia" class="form-select form-select-sm" onchange="renderEventos()"><option value="Todos">Todos</option><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div>
-                <div class="col-6 col-md-3"><label class="small fw-bold text-muted">Área</label><select id="filtroAreaAusencia" class="form-select form-select-sm" onchange="renderEventos()"><option value="Todas">Todas as Áreas</option><option value="Troca de Moldes">Troca de Moldes</option><option value="Produção">Produção</option></select></div>
-                <div class="col-6 col-md-3"><label class="small fw-bold text-muted">Início a Partir de</label><input type="date" id="filtroAusInicio" class="form-control form-control-sm" onchange="renderEventos()"></div>
-            </div>
-            <div class="table-responsive">
-                <table class="table table-sm table-hover border">
-                    <thead><tr><th>Nome</th><th>Área</th><th>Turno</th><th>Tipo</th><th>Início</th><th>Fim</th><th class="text-end">Ações</th></tr></thead>
-                    <tbody id="listaEventosView"></tbody>
-                </table>
-            </div>
-        </div>
-    </section>
-    
-    <!-- ABA FUNCIONARIOS -->
-    <section id="sec-funcionarios" style="display:none;">
-        <div class="card p-4">
-            <h5>👥 Equipe</h5>
-            <form id="formFunc" class="row g-2 mb-4 align-items-end">
-                <input type="hidden" id="editFuncIdx" value="-1">
-                <div class="col-md-2"><label class="small fw-bold">DRT</label><input type="text" id="fDrt" class="form-control" placeholder="DRT" required></div>
-                <div class="col-md-3"><label class="small fw-bold">Nome</label><input type="text" id="fNome" class="form-control" placeholder="Nome" required></div>
-                <div class="col-md-2"><label class="small fw-bold">Área</label><select id="fArea" class="form-select"><option value="Troca de Moldes">Troca de Moldes</option><option value="Produção">Produção</option></select></div>
-                <div class="col-md-2"><label class="small fw-bold">Turno</label><select id="fTurno" class="form-select"><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div>
-                <div class="col-md-2"><label class="small fw-bold">Turma Cadastrada</label><select id="fEscala" class="form-select" required></select></div>
-                <div class="col-md-1"><label class="small fw-bold">Status</label><select id="fStatus" class="form-select"><option value="true">Ativo</option><option value="false">Inativo</option></select></div>
-                <div class="col-12 mt-2"><button type="submit" class="btn btn-success w-100 fw-bold">SALVAR COLABORADOR</button></div>
-            </form>
-            <div class="row g-2 mb-3">
-                <div class="col-md-3">
-                    <label class="small fw-bold text-muted">Filtrar por Área na Tabela</label>
-                    <select id="filtroAreaTabela" class="form-select form-select-sm" onchange="renderFuncionarios()">
-                        <option value="Todas">Todas as Áreas</option>
-                        <option value="Troca de Moldes">Troca de Moldes</option>
-                        <option value="Produção">Produção</option>
-                    </select>
-                </div>
-            </div>
-            <table class="table table-hover border">
-                <thead><tr><th>DRT</th><th>Nome</th><th>Área</th><th>Turno</th><th>Turma Original</th><th class="text-end">Ações</th></tr></thead>
-                <tbody id="listaFuncView"></tbody>
-            </table>
-        </div>
-    </section>
-    
-    <!-- ABA TURMAS -->
-    <section id="sec-escalas" style="display:none;">
-        <div class="card p-4">
-            <h5>🔢 Gestão de Turmas</h5>
-            <form id="formEscala" class="row g-2 mb-3">
-                <input type="hidden" id="editEscalaIdx" value="-1">
-                <div class="col-md-5">
-                    <label class="small fw-bold">Nome da Turma</label>
-                    <input type="text" id="escNome" class="form-control" placeholder="Ex: Turma A" required>
-                </div>
-                <div class="col-md-4">
-                    <label class="small fw-bold">Início do Ciclo</label>
-                    <input type="date" id="escInicio" class="form-control" required>
-                </div>
-                <div class="col-md-3 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary w-100">Salvar</button>
-                </div>
-            </form>
-            <table class="table table-sm table-hover border">
-                <thead><tr><th>Turma</th><th>Início do Ciclo</th><th class="text-end">Ações</th></tr></thead>
-                <tbody id="listaEscalasView"></tbody>
-            </table>
-        </div>
-    </section>
-
-    <!-- ABA MUDANÇA DE TURMA -->
-    <section id="sec-troca-turma" style="display:none;">
-        <div class="card p-4">
-            <h5 class="fw-bold">🔀 Registro de Mudança de Turma / Escala</h5>
-            <p class="small text-muted">Altere a turma de um colaborador a partir de uma data, preservando o histórico. Você também pode definir uma <b>Folga de Acerto</b> aqui mesmo.</p>
-            
-            <form id="formTrocaTurma" class="row g-2 mb-4 align-items-end">
-                <input type="hidden" id="editTrocaTurmaIdx" value="-1">
-                
-                <div class="col-md-2">
-                    <label class="small fw-bold text-primary">Filtrar Equipe (Área)</label>
-                    <select id="ttFiltroAreaForm" class="form-select" onchange="atualizarSelects()">
-                        <option value="Todas">Todas as Áreas</option>
-                        <option value="Troca de Moldes">Troca de Moldes</option>
-                        <option value="Produção">Produção</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label class="small fw-bold">Funcionário</label>
-                    <select id="ttFunc" class="form-select" required></select>
-                </div>
-                <div class="col-md-2">
-                    <label class="small fw-bold">Nova Turma</label>
-                    <select id="ttNovaEscala" class="form-select" required></select>
-                </div>
-                <div class="col-md-2">
-                    <label class="small fw-bold">Início (Efeito)</label>
-                    <input type="date" id="ttDataInicio" class="form-control" required>
-                </div>
-                <div class="col-md-3">
-                    <label class="small fw-bold text-muted">Fim (Opcional)</label>
-                    <input type="date" id="ttDataFim" class="form-control">
-                </div>
-
-                <div class="col-md-3 mt-2">
-                    <label class="small fw-bold text-primary">Folga Acerto (Opc)</label>
-                    <input type="date" id="ttDataFolga" class="form-control">
-                </div>
-                
-                <div class="col-md-3 mt-2 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary w-100 fw-bold">SALVAR TROCA</button>
-                </div>
-            </form>
-            <hr>
-            
-            <div class="row g-2 mb-3 align-items-center">
-                <div class="col-md-6">
-                    <h6 class="fw-bold m-0">Histórico de Mudanças de Turma</h6>
-                </div>
-                <div class="col-md-3 ms-auto">
-                    <label class="small fw-bold text-muted">Filtrar Tabela por Área</label>
-                    <select id="filtroAreaTrocaTurma" class="form-select form-select-sm" onchange="renderTrocasTurma()">
-                        <option value="Todas">Todas as Áreas</option>
-                        <option value="Troca de Moldes">Troca de Moldes</option>
-                        <option value="Produção">Produção</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div class="table-responsive">
-                <table class="table table-sm table-hover border">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Nome</th>
-                            <th>Área</th>
-                            <th>Turma Original</th>
-                            <th>Nova Turma</th>
-                            <th>Início</th>
-                            <th>Fim</th>
-                            <th>Folga Acerto</th>
-                            <th class="text-end">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="listaTrocasTurmaView"></tbody>
-                </table>
-            </div>
-        </div>
-    </section>
-
-    <!-- ABA MAQUINAS E TROCAS -->
-    <section id="sec-maquinas" style="display:none;"><div class="card p-4"><h5>🔷️ Máquinas</h5><form id="formMaq" class="row g-2 mb-3"><input type="hidden" id="editMaqIdx" value="-1"><div class="col-md-9"><input type="text" id="maqNome" class="form-control" placeholder="Ex: M13" required></div><div class="col-md-3 d-flex align-items-end"><button type="submit" class="btn btn-primary w-100">Gravar</button></div></form><table class="table table-sm"><tbody id="listaMaquinasView"></tbody></table></div></section>
-    
-    <section id="sec-trocas" style="display:none;">
-        <div class="card p-4">
-            <h5>🔄 Trocas e Siglas</h5>
-            <form id="formTroca" class="row g-2 mb-3">
-                <input type="hidden" id="editTrocaIdx" value="-1">
-                <div class="col-md-2">
-                    <label class="small fw-bold">Sigla</label>
-                    <input type="text" id="trocaSigla" class="form-control" placeholder="Ex: TC" required>
-                </div>
-                <div class="col-md-4">
-                    <label class="small fw-bold">Descrição</label>
-                    <input type="text" id="trocaDesc" class="form-control" placeholder="Ex: Troca de Cor" required>
-                </div>
-                <div class="col-md-4 d-flex align-items-center justify-content-center">
-                    <div class="form-check form-switch mt-3">
-                        <input class="form-check-input" type="checkbox" id="trocaLegenda" checked>
-                        <label class="form-check-label small fw-bold text-muted" for="trocaLegenda">Mostrar legenda na Escala?</label>
-                    </div>
-                </div>
-                <div class="col-md-2 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary w-100 fw-bold">SALVAR</button>
-                </div>
-            </form>
-            <table class="table table-sm table-hover border mt-2">
-                <thead class="table-light"><tr><th>Sigla</th><th>Descrição</th><th class="text-center">Legenda Escala</th><th class="text-end">Ações</th></tr></thead>
-                <tbody id="listaTrocasView"></tbody>
-            </table>
-        </div>
-    </section>
-
-    <!-- ABA BACKUP -->
-    <section id="sec-backup" style="display:none;"><div class="row g-4"><div class="col-md-6"><div class="card p-4 h-100 text-center"><h5>💾 Exportar</h5><button type="button" class="btn btn-primary w-100 py-3 mt-auto" onclick="exportarBackup()">BAIXAR BACKUP</button></div></div><div class="col-md-6"><div class="card p-4 h-100 text-center"><h5>📂 Importar</h5><div class="backup-zone" onclick="document.getElementById('inputBackup').click()"><p>Clique para carregar JSON</p><input type="file" id="inputBackup" hidden accept=".json" onchange="importarBackup(event)"></div></div></div><div class="col-12"><button type="button" class="btn btn-outline-danger btn-sm w-100" onclick="limparTudo()">Limpar Dados</button></div></div></section>
-</div>
+<nav class="tabbar" aria-label="Navegação principal"><div class="in" id="tabbar"></div></nav>
+<div id="sheet" class="sheet-wrap" hidden></div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<input type="file" id="fileImport" accept=".json,application/json" hidden>
 
 <script>
-    function generateId() { return Date.now().toString(36) + Math.random().toString(36).substr(2); }
+(function(){
+'use strict';
 
-    let escalas = JSON.parse(localStorage.getItem('w_escalas')) || [];
-    let funcionarios = JSON.parse(localStorage.getItem('w_funcs')) || [];
-    let eventos = JSON.parse(localStorage.getItem('w_eventos')) || [];
-    let extras = JSON.parse(localStorage.getItem('w_extras')) || [];
-    let maquinas = JSON.parse(localStorage.getItem('w_maquinas')) || [];
-    let tiposTroca = JSON.parse(localStorage.getItem('w_trocas')) || [];
-    let tarefas = JSON.parse(localStorage.getItem('w_tarefas')) || [];
-    let trocasTurma = JSON.parse(localStorage.getItem('w_trocas_turma')) || [];
-    let historicoZap = JSON.parse(localStorage.getItem('w_historico_zap')) || {};
+/* ---------- dados ---------- */
+const KEYS={escalas:'w_escalas',funcionarios:'w_funcs',eventos:'w_eventos',extras:'w_extras',maquinas:'w_maquinas',tiposTroca:'w_trocas',tarefas:'w_tarefas',trocasTurma:'w_trocas_turma',historicoZap:'w_historico_zap'};
+const ARR=['escalas','funcionarios','eventos','extras','maquinas','tiposTroca','tarefas','trocasTurma'];
+const S={};
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,9);
 
-    let tempProducao = [];
-    let tempAmostra = [];
+function load(){
+  ARR.forEach(k=>{let v=null;try{v=JSON.parse(localStorage.getItem(KEYS[k]))}catch(e){} S[k]=Array.isArray(v)?v:[];});
+  let h=null;try{h=JSON.parse(localStorage.getItem(KEYS.historicoZap))}catch(e){}
+  S.historicoZap=(h&&typeof h==='object'&&!Array.isArray(h))?h:{};
+  S.tarefas.forEach(t=>{if(!t.id)t.id=uid();});
+}
+function save(){
+  try{Object.keys(KEYS).forEach(k=>localStorage.setItem(KEYS[k],JSON.stringify(S[k])));}
+  catch(e){toast('Não foi possível salvar neste navegador. Exporte um backup.');}
+}
 
-    function salvar() {
-        localStorage.setItem('w_escalas', JSON.stringify(escalas));
-        localStorage.setItem('w_funcs', JSON.stringify(funcionarios));
-        localStorage.setItem('w_eventos', JSON.stringify(eventos));
-        localStorage.setItem('w_extras', JSON.stringify(extras));
-        localStorage.setItem('w_maquinas', JSON.stringify(maquinas));
-        localStorage.setItem('w_trocas', JSON.stringify(tiposTroca));
-        localStorage.setItem('w_tarefas', JSON.stringify(tarefas));
-        localStorage.setItem('w_trocas_turma', JSON.stringify(trocasTurma));
-        localStorage.setItem('w_historico_zap', JSON.stringify(historicoZap));
+/* ---------- utilidades ---------- */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad=n=>String(n).padStart(2,'0');
+const ymd=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const hojeStr=()=>ymd(new Date());
+const br=s=>s?String(s).split('-').reverse().join('/'):'';
+const brCurto=s=>s?br(s).slice(0,5):'';
+const parse=s=>new Date(s+'T00:00:00');
+const addDays=(s,n)=>{const d=parse(s);d.setDate(d.getDate()+n);return ymd(d);};
+const diffDays=(a,b)=>Math.round((parse(b)-parse(a))/86400000);
+const AREAS=['Troca de Moldes','Produção'];
+const TURNOS=['Manhã','Tarde','Noite'];
+const TIPOS=['Férias','Falta','Afastado','Folga Acerto'];
+const areaOf=f=>f.area||'Troca de Moldes';
+const areaOk=(flt,f)=>!flt||flt==='Todas'||areaOf(f)===flt;
+const turmaOrig=f=>f.escalaNome||f.escala||'';
+const ativos=()=>S.funcionarios.filter(f=>f.ativo!==false);
+const reduced=()=>window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const diaSemana=s=>parse(s).toLocaleDateString('pt-BR',{weekday:'long'});
+
+const IC={
+  cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  list:'<path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/>',
+  send:'<path d="M21 3 10 14"/><path d="M21 3l-7 18-4-7-7-4z"/>',
+  check:'<rect x="3" y="3" width="18" height="18" rx="3"/><path d="m8 12 3 3 5-6"/>',
+  grid:'<rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/>',
+  edit:'<path d="M4 20h4L19 9l-4-4L4 16z"/>',
+  trash:'<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  chevL:'<path d="m15 18-6-6 6-6"/>',
+  chevR:'<path d="m9 18 6-6-6-6"/>',
+  x:'<path d="M6 6l12 12M18 6 6 18"/>',
+  done:'<path d="m5 12 5 5 9-10"/>',
+  undo:'<path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/>'
+};
+const ic=n=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]}</svg>`;
+
+function opts(list,val){
+  return list.map(o=>{const v=Array.isArray(o)?o[0]:o,l=Array.isArray(o)?o[1]:o;return `<option value="${esc(v)}"${String(v)===String(val??'')?' selected':''}>${esc(l)}</option>`;}).join('');
+}
+const fld=(label,inner)=>`<label class="fld"><span>${label}</span>${inner}</label>`;
+const seg=(key,list,val)=>`<div class="seg" role="group">${list.map(o=>{const v=Array.isArray(o)?o[0]:o,l=Array.isArray(o)?o[1]:o;return `<button type="button" data-act="seg" data-k="${key}" data-v="${esc(v)}" aria-pressed="${String(v)===String(val)}">${esc(l)}</button>`;}).join('')}</div>`;
+const areaChip=f=>`<span class="chip area">${esc(areaOf(f))}</span>`;
+
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove('on'),2800);}
+
+/* ---------- regras de escala ---------- */
+function turmaNoDia(d,f){
+  const id=String(f.drt);
+  const v=S.trocasTurma.filter(t=>String(t.drt)===id&&!(t.dataInicio&&d<t.dataInicio)&&!(t.dataFim&&d>t.dataFim));
+  if(v.length){v.sort((a,b)=>(b.dataInicio||'').localeCompare(a.dataInicio||''));return v[0].novaEscala;}
+  return turmaOrig(f);
+}
+function statusNoDia(d,f){
+  const id=String(f.drt);
+  if(S.extras.some(e=>String(e.drt)===id&&e.data===d))return{status:'Extra',c:'extra'};
+  const ev=S.eventos.find(e=>String(e.drt)===id&&d>=e.inicio&&d<=e.fim);
+  if(ev){let c='falta';const t=(ev.tipo||'').toLowerCase();if(t.includes('fér'))c='ferias';if(ev.tipo==='Folga Acerto')c='folga';return{status:ev.tipo,c};}
+  if(S.trocasTurma.some(t=>String(t.drt)===id&&t.folgaAcerto===d))return{status:'Folga Acerto',c:'folga'};
+  const e=S.escalas.find(x=>x.nome===turmaNoDia(d,f));
+  if(e&&e.inicio){const df=diffDays(e.inicio,d);if(df>=0&&df%8<6)return{status:'Trabalhando',c:'trabalho'};}
+  return{status:'Folga',c:'folga'};
+}
+function turmasDeFolga(d){
+  return S.escalas.filter(e=>{if(!e.inicio)return false;const df=diffDays(e.inicio,d);return df>=0&&df%8>=6;}).map(e=>e.nome);
+}
+const GRUPOS=[['trabalho','Trabalhando'],['extra','Extra'],['folga','Folga'],['ferias','Férias'],['falta','Ausência']];
+function periodo(t){const a=t.dataInicio||t.data,b=t.dataFim;if(a&&b)return `${br(a)} a ${br(b)}`;if(a)return br(a);if(b)return `até ${br(b)}`;return '';}
+
+/* ---------- estado da tela ---------- */
+const ui={tab:'calendario',sub:null,mes:hojeStr().slice(0,7),calSel:hojeStr(),calTurno:'Todos',calArea:'Todas',
+  agData:hojeStr(),agTurno:'Todos',agArea:'Todas',tarFiltro:'Aberta',exArea:'Todas',
+  evTipo:'Todos',evTurno:'Todos',evArea:'Todas',evDesde:'',evFiltros:false,fArea:'Todas',fBusca:'',ttArea:'Todas'};
+let zap=null;
+let dl=null;
+
+/* ---------- escala (WhatsApp) ---------- */
+function autoTurno(){
+  const d=new Date(),h=d.getHours();let turno='Manhã';
+  if(h>=4&&h<12)turno='Manhã';else if(h>=12&&h<20)turno='Tarde';else{turno='Noite';if(h<4)d.setDate(d.getDate()-1);}
+  return{data:ymd(d),turno};
+}
+function zapWorkers(){
+  if(!zap)return[];
+  return ativos().filter(f=>areaOf(f)==='Troca de Moldes'&&f.turno===zap.turno&&['Trabalhando','Extra'].includes(statusNoDia(zap.data,f).status));
+}
+function zapLoad(data,turno){
+  const key=`${data}-${turno}`,h=S.historicoZap[key]||{};
+  zap={key,data,turno,linhas:{},prod:[...(h.pArr||[])],am:[...(h.aArr||[])],notas:h.notas||'',tarefas:[...(h.tarefasSalvas||[])],pend:{prodMaq:'',prodTro:'',amMaq:'',amTro:''}};
+  const c=h.colaboradores||{};
+  zapWorkers().forEach(f=>{
+    const v=c[String(f.drt)]??c[f.nome];
+    let arr=Array.isArray(v)?v:(v&&typeof v==='object'?[v]:[]);
+    arr=arr.map(x=>({maq:x.maq||'',tro:x.tro||''}));
+    if(!arr.length)arr=[{maq:'',tro:''}];
+    zap.linhas[String(f.drt)]=arr;
+  });
+}
+function ensureZap(){if(!zap){const a=autoTurno();zapLoad(a.data,a.turno);}}
+function zapTarefas(){
+  const maqs=Object.values(zap.linhas).flat().map(l=>l.maq).filter(Boolean);
+  const d=zap.data;
+  return S.tarefas.filter(t=>{
+    if(t.status!=='Aberta')return false;
+    const a=t.dataInicio||t.data,b=t.dataFim,temData=!!(a||b);
+    if(temData){
+      let ok=false;
+      if(a&&!b)ok=d===a;else if(!a&&b)ok=d<=b;else ok=d>=a&&d<=b;
+      return ok;
     }
+    return !t.maquina||t.maquina==='Geral'||maqs.includes(t.maquina);
+  });
+}
+function pendItem(k){const m=zap.pend[k+'Maq'],t=zap.pend[k+'Tro'];return m?m+(t?` (${t})`:''):'';}
+function juntar(ls){if(!ls.length)return '___';if(ls.length===1)return ls[0];return ls.slice(0,-1).join(', ')+' e '+ls[ls.length-1];}
+function zapTexto(){
+  let txt=`Escala - ${br(zap.data)} (${zap.turno.toUpperCase()})\n\n`;
+  zapWorkers().forEach(f=>{
+    const ls=(zap.linhas[String(f.drt)]||[]).filter(l=>l.maq).map(l=>l.maq+(l.tro?` (${l.tro})`:''));
+    txt+=`${f.nome} - ${juntar(ls)}\n`;
+  });
+  const prod=[...zap.prod],am=[...zap.am];
+  const pp=pendItem('prod'),pa=pendItem('am');
+  if(pp&&!prod.includes(pp))prod.push(pp);
+  if(pa&&!am.includes(pa))am.push(pa);
+  if(prod.length)txt+=`\nProdução - ${prod.join(', ')}\n`;
+  if(am.length)txt+=`Amostra - ${am.join(', ')}\n`;
+  const tars=zapTarefas().filter(t=>zap.tarefas.includes(t.id));
+  const notas=zap.notas.trim();
+  if(notas||tars.length){
+    txt+='\nOBS:\n';
+    tars.forEach(t=>{txt+=t.maquina?`- [${t.maquina}]: ${t.descricao}\n`:`- ${t.descricao}\n`;});
+    if(notas)txt+=notas+'\n';
+  }
+  const leg=S.tiposTroca.filter(t=>t.mostrarLegenda!==false);
+  if(leg.length){txt+='\nLegenda:\n';leg.forEach(t=>{txt+=`${t.sigla} - ${t.desc}\n`;});}
+  return txt;
+}
+function updatePreview(){
+  if(!zap)return;
+  const txt=zapTexto();
+  const p=$('#preview');if(p)p.textContent=txt;
+  const w=$('#waLink');if(w)w.href='https://wa.me/?text='+encodeURIComponent(txt);
+}
+function zapPersist(){
+  ['prod','am'].forEach(k=>{const it=pendItem(k);if(it&&!zap[k].includes(it))zap[k].push(it);zap.pend[k+'Maq']='';zap.pend[k+'Tro']='';});
+  const col={};
+  zapWorkers().forEach(f=>{col[String(f.drt)]=(zap.linhas[String(f.drt)]||[]).map(l=>({maq:l.maq,tro:l.tro}));});
+  const vis=zapTarefas().map(t=>t.id);
+  S.historicoZap[zap.key]={colaboradores:col,pArr:[...zap.prod],aArr:[...zap.am],notas:zap.notas,tarefasSalvas:zap.tarefas.filter(id=>vis.includes(id))};
+  save();
+  return zapTexto();
+}
+async function copiar(txt){
+  try{await navigator.clipboard.writeText(txt);return true;}catch(e){}
+  try{const ta=document.createElement('textarea');ta.value=txt;ta.setAttribute('readonly','');ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();const ok=document.execCommand('copy');ta.remove();return ok;}catch(e){return false;}
+}
 
-    function areaBate(filtroValor, funcArea) {
-        if (!filtroValor || filtroValor === 'Todas' || filtroValor === 'Todas as Áreas') return true;
-        const areaFunc = funcArea || 'Troca de Moldes';
-        return areaFunc === filtroValor;
-    }
+/* ---------- telas ---------- */
+const TABS=[['calendario','Calendário','cal'],['diario','Diário','list'],['escala','Escala','send'],['tarefas','Tarefas','check'],['mais','Mais','grid']];
+function renderTabbar(){
+  $('#tabbar').innerHTML=TABS.map(([k,l,i])=>`<button type="button" data-act="nav" data-v="${k}"${ui.tab===k?' aria-current="page"':''}>${ic(i)}<span>${l}</span></button>`).join('');
+}
 
-    document.getElementById('formEvento').onsubmit = (e) => {
-        e.preventDefault();
-        const idx = parseInt(document.getElementById('editEventoIdx').value);
-        const novo = { drt: document.getElementById('evFunc').value, tipo: document.getElementById('evTipo').value, inicio: document.getElementById('evInicio').value, fim: document.getElementById('evFim').value };
-        if (idx === -1) eventos.push(novo); else eventos[idx] = novo;
-        cancelarEdicao('Evento'); salvar(); renderizarTudo();
+function vCalendario(){
+  const [y,m]=ui.mes.split('-').map(Number);
+  const first=new Date(y,m-1,1).getDay(),last=new Date(y,m,0).getDate();
+  const nome=new Date(y,m-1,1).toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+  const hoje=hojeStr();
+  const gente=ativos().filter(f=>areaOk(ui.calArea,f)&&(ui.calTurno==='Todos'||f.turno===ui.calTurno));
+  if(!S.funcionarios.length){
+    return `<h1>Calendário</h1><div class="card empty"><p>Nenhum colaborador cadastrado ainda.</p><p class="small">Se você já tem um backup do app antigo, importe para trazer tudo de volta.</p><button class="btn primary" data-act="goto" data-tab="mais" data-sub="sistema">Importar backup</button></div>`;
+  }
+  let cells=['D','S','T','Q','Q','S','S'].map((d,i)=>`<div class="wd" aria-hidden="true" title="${['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'][i]}">${d}</div>`).join('');
+  for(let i=0;i<first;i++)cells+='<div class="day blank" aria-hidden="true"></div>';
+  for(let d=1;d<=last;d++){
+    const ds=`${y}-${pad(m)}-${pad(d)}`;
+    const cnt={trabalho:0,extra:0,folga:0,ferias:0,falta:0};
+    gente.forEach(f=>{cnt[statusNoDia(ds,f).c]++;});
+    const tot=gente.length||1,trab=cnt.trabalho+cnt.extra;
+    const bar=['trabalho','extra','ferias','falta','folga'].filter(k=>cnt[k]).map(k=>`<i class="b-${k}" style="width:${cnt[k]/tot*100}%"></i>`).join('');
+    const fol=turmasDeFolga(ds);
+    cells+=`<button type="button" class="day${ds===hoje?' today':''}${ds===ui.calSel?' sel':''}" data-act="cal-day" data-d="${ds}" aria-label="${d}, ${trab} trabalhando${fol.length?', folga de '+esc(fol.join(' e ')):''}">
+      <span class="n">${d}</span>${fol.length?`<span class="fol">${esc(fol.join('/'))}</span>`:''}
+      <span class="cnt">${trab}/${gente.length}</span><span class="bar">${bar}</span></button>`;
+  }
+  let det='';
+  if(ui.calSel&&ui.calSel.slice(0,7)===ui.mes){
+    const ds=ui.calSel,fol=turmasDeFolga(ds);
+    const grupos=GRUPOS.map(([c,l])=>{
+      const ps=gente.map(f=>({f,r:statusNoDia(ds,f)})).filter(x=>x.r.c===c);
+      if(!ps.length)return '';
+      return `<div class="group"><h3>${l} <span class="muted">(${ps.length})</span></h3><div class="names">${ps.map(x=>`<span class="chip s-${c}" title="${esc(x.r.status)}">${esc(x.f.nome)}${x.r.status!==l&&c!=='trabalho'?` (${esc(x.r.status)})`:''}</span>`).join('')}</div></div>`;
+    }).join('');
+    det=`<div class="card" id="dayDetail"><h2>${parse(ds).toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})}</h2>
+      ${fol.length?`<p class="small muted">De folga no ciclo: ${esc(fol.join(' e '))}</p>`:''}
+      ${grupos||'<p class="muted">Ninguém nesse filtro.</p>'}
+      <div class="row" style="margin-top:14px"><button class="btn sm grow" data-act="go-diario" data-d="${ds}">Ver no diário</button><button class="btn sm primary grow" data-act="go-escala" data-d="${ds}">Montar escala</button></div></div>`;
+  }
+  return `<div class="card">
+    <div class="cal-head"><button class="icon-btn" data-act="cal-step" data-n="-1" aria-label="Mês anterior">${ic('chevL')}</button>
+      <div class="cal-month">${esc(nome)}</div>
+      <button class="btn sm" data-act="cal-today">Hoje</button>
+      <button class="icon-btn" data-act="cal-step" data-n="1" aria-label="Próximo mês">${ic('chevR')}</button></div>
+    <div class="row" style="margin-bottom:12px">
+      <select class="grow" data-bind="calTurno" aria-label="Turno">${opts([['Todos','Todos os turnos'],...TURNOS],ui.calTurno)}</select>
+      <select class="grow" data-bind="calArea" aria-label="Área">${opts([['Todas','Todas as áreas'],...AREAS],ui.calArea)}</select>
+    </div>
+    <div class="cal">${cells}</div>
+    <div class="legend"><span class="chip s-trabalho">Trabalho</span><span class="chip s-extra">Extra</span><span class="chip s-folga">Folga</span><span class="chip s-ferias">Férias</span><span class="chip s-falta">Ausência</span></div>
+  </div>${det}`;
+}
+
+function vDiario(){
+  const d=ui.agData;
+  const gente=ativos().filter(f=>areaOk(ui.agArea,f)&&(ui.agTurno==='Todos'||f.turno===ui.agTurno)).map(f=>({f,r:statusNoDia(d,f)}));
+  const resumo=GRUPOS.map(([c,l])=>{const n=gente.filter(x=>x.r.c===c).length;return n?`<span class="chip s-${c}">${l}: ${n}</span>`:'';}).join('');
+  const grupos=GRUPOS.map(([c,l])=>{
+    const ps=gente.filter(x=>x.r.c===c);if(!ps.length)return '';
+    return `<div class="card"><h2>${l} <span class="muted">(${ps.length})</span></h2><ul class="list">${ps.map(({f,r})=>`<li class="item"><div class="main"><div class="t">${esc(f.nome)}</div><div class="m">DRT ${esc(f.drt)}, ${esc(f.turno)}, ${esc(turmaNoDia(d,f)||'sem turma')} ${areaChip(f)}</div></div><span class="chip s-${c}">${esc(r.status)}</span></li>`).join('')}</ul></div>`;
+  }).join('');
+  return `<h1>Diário</h1><div class="card">
+    <div class="row" style="flex-wrap:nowrap;margin-bottom:8px"><button class="icon-btn" data-act="ag-step" data-n="-1" aria-label="Dia anterior">${ic('chevL')}</button>
+      <input type="date" id="agData" data-bind="agData" data-req="1" value="${d}" aria-label="Data">
+      <button class="icon-btn" data-act="ag-step" data-n="1" aria-label="Próximo dia">${ic('chevR')}</button></div>
+    <p class="small muted" style="text-transform:capitalize;margin-bottom:10px">${esc(diaSemana(d))}${d===hojeStr()?', hoje':''}</p>
+    <div class="row" style="margin-bottom:10px">
+      <select class="grow" data-bind="agTurno" aria-label="Turno">${opts([['Todos','Todos os turnos'],...TURNOS],ui.agTurno)}</select>
+      <select class="grow" data-bind="agArea" aria-label="Área">${opts([['Todas','Todas as áreas'],...AREAS],ui.agArea)}</select>
+    </div>
+    <div class="row">${resumo||'<span class="muted small">Ninguém nesse filtro.</span>'}</div>
+  </div>${grupos}`;
+}
+
+function vEscala(){
+  ensureZap();
+  const ws=zapWorkers();
+  ws.forEach(f=>{if(!zap.linhas[String(f.drt)])zap.linhas[String(f.drt)]=[{maq:'',tro:''}];});
+  const maqO=v=>`<option value="">Máquina</option>`+opts(S.maquinas,v);
+  const troO=v=>`<option value="">Troca</option>`+opts(S.tiposTroca.map(t=>t.sigla),v);
+  const salva=!!S.historicoZap[zap.key];
+  const workers=ws.length?ws.map(f=>{
+    const id=String(f.drt),ex=statusNoDia(zap.data,f).status==='Extra';
+    const rows=zap.linhas[id].map((l,j)=>`<div class="mrow">
+      <select data-zap="maq" data-drt="${esc(id)}" data-j="${j}" aria-label="Máquina de ${esc(f.nome)}">${maqO(l.maq)}</select>
+      <select data-zap="tro" data-drt="${esc(id)}" data-j="${j}" aria-label="Troca de ${esc(f.nome)}">${troO(l.tro)}</select>
+      ${j===0?`<button type="button" class="icon-btn" data-act="zap-addline" data-drt="${esc(id)}" aria-label="Adicionar outra máquina para ${esc(f.nome)}">${ic('plus')}</button>`
+             :`<button type="button" class="icon-btn danger" data-act="zap-delline" data-drt="${esc(id)}" data-j="${j}" aria-label="Remover máquina">${ic('x')}</button>`}
+    </div>`).join('');
+    return `<div class="wk${ex?' extra':''}"><div class="nm">${esc(f.nome)}${ex?' <span class="chip s-extra">Extra</span>':''}</div>${rows}</div>`;
+  }).join(''):`<div class="empty"><p>Ninguém da Troca de Moldes trabalha neste dia e turno.</p><p class="small">Confira as turmas e o turno de cada colaborador em Mais.</p></div>`;
+  const bloco=(k,label)=>{
+    const mk=k+'Maq',tk=k+'Tro';
+    return `<div class="blk"><h3>${label}</h3><div class="mrow">
+      <select data-zap="pend" data-f="${mk}" aria-label="Máquina para ${label}">${maqO(zap.pend[mk])}</select>
+      <select data-zap="pend" data-f="${tk}" aria-label="Troca para ${label}">${troO(zap.pend[tk])}</select>
+      <button type="button" class="icon-btn add" data-act="zap-add" data-k="${k}" aria-label="Adicionar em ${label}">${ic('plus')}</button></div>
+      <div class="tags">${zap[k].map((v,j)=>`<span class="tag">${esc(v)}<button type="button" data-act="zap-deltag" data-k="${k}" data-j="${j}" aria-label="Remover ${esc(v)}">${ic('x')}</button></span>`).join('')}</div></div>`;
+  };
+  const tars=zapTarefas();
+  return `<div class="titlebar"><h1>Escala</h1>${salva?'<span class="chip s-trabalho">Já salva</span>':''}</div>
+  <div class="card">
+    <label class="fld"><span>Data</span><input type="date" id="zapData" data-zap="data" value="${zap.data}"></label>
+    ${seg('zapTurno',TURNOS,zap.turno)}
+  </div>
+  <div class="card"><h2>Troca de Moldes</h2>${!S.maquinas.length?'<p class="small muted">Cadastre as máquinas em Mais para preencher a escala.</p>':''}${workers}</div>
+  <div class="card">${bloco('prod','Produção')}${bloco('am','Amostra')}</div>
+  ${tars.length?`<div class="card"><h2>Lembretes e tarefas</h2><p class="small muted">Marque o que deve entrar na mensagem.</p>${tars.map(t=>`<label class="check"><input type="checkbox" data-zap="tar" value="${esc(t.id)}"${zap.tarefas.includes(t.id)?' checked':''}><span><b>${esc(t.maquina||'Lembrete')}</b>: ${esc(t.descricao)}${periodo(t)?` <span class="muted small">(${esc(periodo(t))})</span>`:''}</span></label>`).join('')}</div>`:''}
+  <div class="card"><label class="fld" style="margin:0"><span>Observações do dia</span><textarea id="zapNotas" data-zap="notas" placeholder="Algo importante para esta escala">${esc(zap.notas)}</textarea></label></div>
+  <div class="card"><h2>Mensagem</h2><pre class="bubble" id="preview"></pre>
+    <div class="actions"><button type="button" class="btn primary block" data-act="zap-save">Salvar e copiar</button>
+    <a class="btn block" id="waLink" href="#" target="_blank" rel="noopener" data-act="zap-wa">Salvar e abrir no WhatsApp</a></div></div>`;
+}
+
+function vTarefas(){
+  const list=S.tarefas.map((t,i)=>({t,i})).filter(x=>ui.tarFiltro==='Todas'||x.t.status===ui.tarFiltro);
+  return `<div class="titlebar"><h1>Tarefas</h1><button class="btn primary sm" data-act="new" data-t="tarefa">${ic('plus')} Nova</button></div>
+  <div style="margin-bottom:12px">${seg('tarFiltro',[['Aberta','Abertas'],['Concluida','Concluídas'],['Todas','Todas']],ui.tarFiltro)}</div>
+  <div class="card">${list.length?`<ul class="list">${list.map(({t,i})=>{const ab=t.status==='Aberta';return `<li class="item"><div class="main">
+      <div class="t${ab?'':' done'}">${esc(t.descricao)}</div>
+      <div class="m"><span class="chip neutral">${esc(t.maquina||'Lembrete')}</span>${periodo(t)?esc(periodo(t)):''}</div></div>
+      <div class="acts"><button class="icon-btn" data-act="tar-toggle" data-i="${i}" aria-label="${ab?'Concluir':'Reabrir'}" title="${ab?'Concluir':'Reabrir'}">${ic(ab?'done':'undo')}</button>
+      <button class="icon-btn" data-act="edit" data-t="tarefa" data-i="${i}" aria-label="Editar">${ic('edit')}</button>
+      <button class="icon-btn danger" data-act="del" data-t="tarefa" data-i="${i}" aria-label="Excluir">${ic('trash')}</button></div></li>`;}).join('')}</ul>`
+    :`<div class="empty"><p>${ui.tarFiltro==='Concluida'?'Nenhuma tarefa concluída.':'Nenhuma tarefa aberta.'}</p></div>`}</div>
+  <p class="small muted">Tarefas com data aparecem na escala daquele dia. Sem data, aparecem quando a máquina dela está na escala.</p>`;
+}
+
+const MENU=[
+  ['extras','Trabalho extra','Quem veio trabalhar na folga',()=>S.extras.length],
+  ['ausencias','Ausências','Férias, faltas, afastamentos e folgas de acerto',()=>S.eventos.length],
+  ['equipe','Equipe','Colaboradores, área, turno e turma',()=>ativos().length],
+  ['turmas','Turmas','Ciclos 6x2 e onde cada um começa',()=>S.escalas.length],
+  ['mudanca','Mudança de turma','Troca de turma a partir de uma data',()=>S.trocasTurma.length],
+  ['maquinas','Máquinas','Lista usada na escala e nas tarefas',()=>S.maquinas.length],
+  ['siglas','Siglas de troca','Siglas e legenda da mensagem',()=>S.tiposTroca.length],
+  ['sistema','Backup e dados','Exportar, importar ou apagar',()=>'']
+];
+function vMais(){
+  return `<h1>Mais</h1><div class="menu">${MENU.map(([k,t,d,n])=>`<button type="button" data-act="open" data-v="${k}"><div class="tx"><b>${t}</b><span>${d}</span></div><span class="ct">${n()}</span>${ic('chevR')}</button>`).join('')}</div>`;
+}
+const subHead=(titulo,novo,label='Novo')=>`<button class="btn ghost sm" data-act="back">${ic('chevL')} Mais</button>
+  <div class="titlebar"><h1>${titulo}</h1>${novo?`<button class="btn primary sm" data-act="new" data-t="${novo}">${ic('plus')} ${label}</button>`:''}</div>`;
+const acts=(t,i,edit=true)=>`<div class="acts">${edit?`<button class="icon-btn" data-act="edit" data-t="${t}" data-i="${i}" aria-label="Editar">${ic('edit')}</button>`:''}<button class="icon-btn danger" data-act="del" data-t="${t}" data-i="${i}" aria-label="Excluir">${ic('trash')}</button></div>`;
+const vazio=(msg)=>`<div class="empty"><p>${msg}</p></div>`;
+const byDrt=d=>S.funcionarios.find(f=>String(f.drt)===String(d));
+
+const SUBS={
+  extras(){
+    const list=S.extras.map((e,i)=>({e,i,f:byDrt(e.drt)})).filter(x=>x.f&&areaOk(ui.exArea,x.f)).sort((a,b)=>b.e.data.localeCompare(a.e.data));
+    return subHead('Trabalho extra','extra','Registrar')+`<div style="margin-bottom:12px"><select data-bind="exArea" aria-label="Área">${opts([['Todas','Todas as áreas'],...AREAS],ui.exArea)}</select></div>
+    <div class="card">${list.length?`<ul class="list">${list.map(({e,i,f})=>`<li class="item"><div class="main"><div class="t">${esc(f.nome)}</div><div class="m">${br(e.data)}, ${esc(f.turno)} ${areaChip(f)}</div></div>${acts('extra',i,false)}</li>`).join('')}</ul>`:vazio('Nenhum extra registrado.')}</div>`;
+  },
+  ausencias(){
+    const list=S.eventos.map((e,i)=>({e,i,f:byDrt(e.drt)})).filter(({e,f})=>f&&areaOk(ui.evArea,f)&&(ui.evTipo==='Todos'||e.tipo===ui.evTipo)&&(ui.evTurno==='Todos'||f.turno===ui.evTurno)&&(!ui.evDesde||e.fim>=ui.evDesde)).sort((a,b)=>b.e.inicio.localeCompare(a.e.inicio));
+    const nFil=[ui.evTipo!=='Todos',ui.evTurno!=='Todos',ui.evArea!=='Todas',!!ui.evDesde].filter(Boolean).length;
+    const cls=t=>{t=(t||'');if(t.toLowerCase().includes('fér'))return 'ferias';if(t==='Folga Acerto')return 'folga';return 'falta';};
+    return subHead('Ausências','evento')+`<div class="row" style="margin-bottom:12px"><button class="btn sm" data-act="ev-filtros" aria-expanded="${ui.evFiltros}">Filtros${nFil?` (${nFil})`:''}</button>${nFil?'<button class="btn sm ghost" data-act="ev-limpar">Limpar filtros</button>':''}</div>
+    ${ui.evFiltros?`<div class="card"><div class="grid2">
+      ${fld('Tipo',`<select data-bind="evTipo">${opts([['Todos','Todos'],...TIPOS],ui.evTipo)}</select>`)}
+      ${fld('Turno',`<select data-bind="evTurno">${opts([['Todos','Todos'],...TURNOS],ui.evTurno)}</select>`)}
+      ${fld('Área',`<select data-bind="evArea">${opts([['Todas','Todas'],...AREAS],ui.evArea)}</select>`)}
+      ${fld('Ainda valendo em',`<input type="date" data-bind="evDesde" value="${ui.evDesde}">`)}</div></div>`:''}
+    <div class="card">${list.length?`<ul class="list">${list.map(({e,i,f})=>`<li class="item"><div class="main"><div class="t">${esc(f.nome)}</div><div class="m"><span class="chip s-${cls(e.tipo)}">${esc(e.tipo)}</span>${e.inicio===e.fim?br(e.inicio):`${br(e.inicio)} a ${br(e.fim)}`}, ${esc(f.turno)}</div></div>${acts('evento',i)}</li>`).join('')}</ul>`:vazio('Nenhuma ausência encontrada.')}</div>`;
+  },
+  equipe(){
+    const q=ui.fBusca.trim().toLowerCase();
+    const list=S.funcionarios.map((f,i)=>({f,i})).filter(({f})=>areaOk(ui.fArea,f)&&(!q||String(f.nome).toLowerCase().includes(q)||String(f.drt).includes(q))).sort((a,b)=>(a.f.ativo===false)-(b.f.ativo===false)||String(a.f.nome).localeCompare(String(b.f.nome),'pt-BR'));
+    return subHead('Equipe','funcionario')+`<div class="row" style="margin-bottom:12px">
+      <input class="grow" id="fBusca" data-live="fBusca" type="search" placeholder="Buscar por nome ou DRT" value="${esc(ui.fBusca)}" aria-label="Buscar">
+      <select class="grow" data-bind="fArea" aria-label="Área">${opts([['Todas','Todas as áreas'],...AREAS],ui.fArea)}</select></div>
+    <div class="card">${list.length?`<ul class="list">${list.map(({f,i})=>`<li class="item"><div class="main"><div class="t">${esc(f.nome)}${f.ativo===false?' <span class="chip neutral">Inativo</span>':''}</div><div class="m">DRT ${esc(f.drt)}, ${esc(f.turno)}, ${esc(turmaOrig(f)||'sem turma')} ${areaChip(f)}</div></div>${acts('funcionario',i)}</li>`).join('')}</ul>`:vazio(S.funcionarios.length?'Ninguém encontrado.':'Nenhum colaborador cadastrado.')}</div>`;
+  },
+  turmas(){
+    const hoje=hojeStr();
+    const info=e=>{
+      if(!e.inicio)return '';
+      const df=diffDays(e.inicio,hoje);
+      if(df<0)return `Ciclo começa em ${br(e.inicio)}`;
+      const p=df%8;
+      return p<6?`Hoje: ${p+1}º dia de trabalho. Folga a partir de ${brCurto(addDays(hoje,6-p))}`:`Hoje: folga. Volta em ${brCurto(addDays(hoje,8-p))}`;
     };
+    return subHead('Turmas','turma','Nova')+`<div class="card">${S.escalas.length?`<ul class="list">${S.escalas.map((e,i)=>`<li class="item"><div class="main"><div class="t">${esc(e.nome)}</div><div class="m">Ciclo desde ${br(e.inicio)}</div><div class="m">${esc(info(e))}</div></div>${acts('turma',i)}</li>`).join('')}</ul>`:vazio('Nenhuma turma cadastrada.')}</div>
+    <p class="small muted">Cada turma segue 6 dias de trabalho e 2 de folga, contando a partir do início do ciclo.</p>`;
+  },
+  mudanca(){
+    const list=S.trocasTurma.map((t,i)=>({t,i,f:byDrt(t.drt)})).filter(x=>x.f&&areaOk(ui.ttArea,x.f)).sort((a,b)=>(b.t.dataInicio||'').localeCompare(a.t.dataInicio||''));
+    return subHead('Mudança de turma','mudanca','Nova')+`<div style="margin-bottom:12px"><select data-bind="ttArea" aria-label="Área">${opts([['Todas','Todas as áreas'],...AREAS],ui.ttArea)}</select></div>
+    <div class="card">${list.length?`<ul class="list">${list.map(({t,i,f})=>`<li class="item"><div class="main"><div class="t">${esc(f.nome)}</div>
+      <div class="m">${esc(turmaOrig(f)||'sem turma')} para <b>${esc(t.novaEscala)}</b></div>
+      <div class="m">${t.dataFim?`${br(t.dataInicio)} a ${br(t.dataFim)}`:`A partir de ${br(t.dataInicio)}, sem fim`}${t.folgaAcerto?` <span class="chip s-folga">Folga acerto ${br(t.folgaAcerto)}</span>`:''}</div></div>${acts('mudanca',i)}</li>`).join('')}</ul>`:vazio('Nenhuma mudança registrada.')}</div>`;
+  },
+  maquinas(){
+    return subHead('Máquinas','maquina','Nova')+`<div class="card">${S.maquinas.length?`<ul class="list">${S.maquinas.map((m,i)=>`<li class="item"><div class="main"><div class="t">${esc(m)}</div></div>${acts('maquina',i)}</li>`).join('')}</ul>`:vazio('Nenhuma máquina cadastrada.')}</div>`;
+  },
+  siglas(){
+    return subHead('Siglas de troca','sigla','Nova')+`<div class="card">${S.tiposTroca.length?`<ul class="list">${S.tiposTroca.map((t,i)=>`<li class="item"><div class="main"><div class="t">${esc(t.sigla)}</div><div class="m">${esc(t.desc)} <span class="chip ${t.mostrarLegenda!==false?'s-trabalho':'neutral'}">${t.mostrarLegenda!==false?'Na legenda':'Fora da legenda'}</span></div></div>${acts('sigla',i)}</li>`).join('')}</ul>`:vazio('Nenhuma sigla cadastrada.')}</div>`;
+  },
+  sistema(){
+    return subHead('Backup e dados')+`<div class="card"><h2>Neste aparelho</h2>
+      <p class="small muted">Os dados ficam salvos neste navegador. Exporte um backup de vez em quando para não perder nada.</p>
+      <p>${S.funcionarios.length} colaboradores, ${S.escalas.length} turmas, ${S.eventos.length} ausências, ${S.extras.length} extras, ${S.tarefas.length} tarefas e ${Object.keys(S.historicoZap).length} escalas salvas.</p>
+      <div class="actions"><button class="btn primary block" data-act="export">Exportar backup</button><button class="btn block" data-act="import">Importar backup</button></div></div>
+      <div class="card"><h2>Apagar tudo</h2><p class="small muted">Remove todos os dados deste aparelho. Não dá para desfazer.</p><button class="btn danger block" data-act="clear-all">Apagar todos os dados</button></div>`;
+  }
+};
 
-    document.getElementById('formFunc').onsubmit = (e) => {
-        e.preventDefault();
-        const idx = parseInt(document.getElementById('editFuncIdx').value);
-        const escVal = document.getElementById('fEscala').value;
-        const novo = { 
-            drt: document.getElementById('fDrt').value, 
-            nome: document.getElementById('fNome').value, 
-            area: document.getElementById('fArea').value || 'Troca de Moldes',
-            turno: document.getElementById('fTurno').value, 
-            escalaNome: escVal,
-            escala: escVal,
-            ativo: document.getElementById('fStatus').value === 'true'
-        };
-        if (idx === -1) funcionarios.push(novo); else funcionarios[idx] = novo;
-        cancelarEdicao('Func'); salvar(); renderizarTudo(); e.target.reset();
-    };
+function render(){
+  const a=document.activeElement;
+  const fid=a&&a.id&&$('#app').contains(a)?a.id:null;
+  let ss=null;try{ss=fid?a.selectionStart:null;}catch(e){}
+  let html;
+  if(ui.tab==='mais'&&ui.sub&&SUBS[ui.sub])html=SUBS[ui.sub]();
+  else html={calendario:vCalendario,diario:vDiario,escala:vEscala,tarefas:vTarefas,mais:vMais}[ui.tab]();
+  $('#app').innerHTML=html;
+  renderTabbar();
+  if(ui.tab==='escala')updatePreview();
+  if(fid){const n=document.getElementById(fid);if(n){n.focus();try{if(ss!=null)n.setSelectionRange(ss,ss);}catch(e){}}}
+}
+const top0=()=>window.scrollTo(0,0);
 
-    document.getElementById('formExtra').onsubmit = (e) => {
-        e.preventDefault();
-        extras.push({ drt: document.getElementById('exFunc').value, data: document.getElementById('exData').value });
-        salvar(); renderizarTudo(); e.target.reset(); document.getElementById('exFunc').disabled = true;
-    };
+/* ---------- painel e formulários ---------- */
+const sheet=$('#sheet');
+let onCancel=null;
+function openSheet({title,body,submitLabel='Salvar',danger=false,submit,mount,cancel}){
+  sheet.innerHTML=`<form class="sheet" id="sheetForm" role="dialog" aria-modal="true" aria-labelledby="shT"><div class="grab"></div>
+    <div class="sheet-h"><h2 id="shT">${esc(title)}</h2><button type="button" class="icon-btn" data-act="sheet-close" aria-label="Fechar">${ic('x')}</button></div>
+    <div>${body}</div><p class="err" id="sheetErr" hidden></p>
+    <div class="sheet-f"><button type="button" class="btn" data-act="sheet-close">Cancelar</button><button type="submit" class="btn ${danger?'danger solid':'primary'}">${esc(submitLabel)}</button></div></form>`;
+  sheet.hidden=false;onCancel=cancel||null;
+  const form=$('#sheetForm');
+  if(mount)mount(form);
+  form.addEventListener('submit',e=>{
+    e.preventDefault();
+    const err=submit(new FormData(form),form);
+    if(err){const p=$('#sheetErr');p.textContent=err;p.hidden=false;}else{onCancel=null;closeSheet();}
+  });
+}
+function closeSheet(){sheet.hidden=true;sheet.innerHTML='';if(onCancel){const c=onCancel;onCancel=null;c();}}
+function confirmar(msg,label,onYes,danger=true){openSheet({title:'Confirmar',body:`<p>${esc(msg)}</p>`,submitLabel:label,danger,submit:()=>{onYes();}});}
+sheet.addEventListener('click',e=>{if(e.target===sheet)closeSheet();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!sheet.hidden)closeSheet();});
 
-    document.getElementById('formEscala').onsubmit = (e) => {
-        e.preventDefault();
-        const idx = parseInt(document.getElementById('editEscalaIdx').value);
-        const novo = { nome: document.getElementById('escNome').value, inicio: document.getElementById('escInicio').value };
-        if (idx === -1) escalas.push(novo); else escalas[idx] = novo;
-        cancelarEdicao('Escala'); salvar(); renderizarTudo();
-    };
+const funcOpts=(area,sel,extra)=>{
+  const list=S.funcionarios.filter(f=>(f.ativo!==false||String(f.drt)===String(sel))&&areaOk(area,f));
+  return '<option value="">Selecione</option>'+list.map(f=>`<option value="${esc(f.drt)}"${String(f.drt)===String(sel)?' selected':''}>${esc(f.nome)} (${esc(areaOf(f))}${extra?', '+esc(f.turno):''})</option>`).join('');
+};
+const turmaOpts=sel=>'<option value="">Selecione</option>'+opts(S.escalas.map(e=>e.nome),sel);
+const g=(fd,k)=>String(fd.get(k)??'').trim();
 
-    document.getElementById('formTrocaTurma').onsubmit = (e) => {
-        e.preventDefault();
-        const idx = parseInt(document.getElementById('editTrocaTurmaIdx').value);
-        const novo = {
-            drt: document.getElementById('ttFunc').value,
-            novaEscala: document.getElementById('ttNovaEscala').value,
-            dataInicio: document.getElementById('ttDataInicio').value,
-            dataFim: document.getElementById('ttDataFim').value || '',
-            folgaAcerto: document.getElementById('ttDataFolga').value || ''
-        };
-        if (idx === -1) trocasTurma.push(novo); else trocasTurma[idx] = novo;
-        cancelarEdicao('TrocaTurma'); salvar(); renderizarTudo(); e.target.reset();
-    };
+function renomearDrt(de,para){
+  ['eventos','extras','trocasTurma'].forEach(k=>S[k].forEach(x=>{if(String(x.drt)===de)x.drt=para;}));
+  Object.values(S.historicoZap).forEach(h=>{const c=h&&h.colaboradores;if(c&&c[de]!==undefined){c[para]=c[de];delete c[de];}});
+}
 
-    document.getElementById('formMaq').onsubmit = (e) => {
-        e.preventDefault();
-        const idx = parseInt(document.getElementById('editMaqIdx').value);
-        const nome = document.getElementById('maqNome').value;
-        if (idx === -1) maquinas.push(nome); else maquinas[idx] = nome;
-        cancelarEdicao('Maq'); salvar(); renderizarTudo();
-    };
-
-    document.getElementById('formTroca').onsubmit = (e) => {
-        e.preventDefault();
-        const idx = parseInt(document.getElementById('editTrocaIdx').value);
-        const novo = { 
-            sigla: document.getElementById('trocaSigla').value, 
-            desc: document.getElementById('trocaDesc').value,
-            mostrarLegenda: document.getElementById('trocaLegenda').checked
-        };
-        if (idx === -1) tiposTroca.push(novo); else tiposTroca[idx] = novo;
-        cancelarEdicao('Troca'); salvar(); renderizarTudo();
-    };
-
-    document.getElementById('formTarefa').onsubmit = (e) => {
-        e.preventDefault();
-        const idx = parseInt(document.getElementById('editTarefaIdx').value);
-        const maq = document.getElementById('tarMaq').value;
-        const desc = document.getElementById('tarDesc').value;
-        const dIn = document.getElementById('tarDataInicio').value;
-        const dFi = document.getElementById('tarDataFim').value;
-        
-        if (idx === -1) {
-            tarefas.push({ id: generateId(), maquina: maq, descricao: desc, dataInicio: dIn, dataFim: dFi, status: 'Aberta' });
-        } else {
-            tarefas[idx].maquina = maq;
-            tarefas[idx].descricao = desc;
-            tarefas[idx].dataInicio = dIn;
-            tarefas[idx].dataFim = dFi;
-            document.getElementById('editTarefaIdx').value = "-1";
+const COL={funcionario:'funcionarios',evento:'eventos',extra:'extras',turma:'escalas',mudanca:'trocasTurma',maquina:'maquinas',sigla:'tiposTroca',tarefa:'tarefas'};
+const FORMS={
+  funcionario:{
+    title:i=>i<0?'Novo colaborador':'Editar colaborador',
+    body:r=>`<div class="grid2">${fld('DRT',`<input name="drt" required inputmode="numeric" value="${esc(r.drt)}">`)}${fld('Situação',`<select name="ativo">${opts([['true','Ativo'],['false','Inativo']],r.ativo===false?'false':'true')}</select>`)}</div>
+      ${fld('Nome',`<input name="nome" required autocomplete="off" value="${esc(r.nome)}">`)}
+      <div class="grid2">${fld('Área',`<select name="area">${opts(AREAS,r.area?areaOf(r):'Troca de Moldes')}</select>`)}${fld('Turno',`<select name="turno">${opts(TURNOS,r.turno)}</select>`)}</div>
+      ${fld('Turma',`<select name="escala" required>${turmaOpts(r.drt!==undefined?turmaOrig(r):'')}</select>`)}
+      ${!S.escalas.length?'<p class="small muted">Cadastre uma turma antes, em Mais › Turmas.</p>':''}`,
+    submit(fd,i){
+      const drt=g(fd,'drt'),nome=g(fd,'nome'),t=g(fd,'escala');
+      if(S.funcionarios.some((f,j)=>j!==i&&String(f.drt)===drt))return `Já existe alguém com o DRT ${drt}.`;
+      const novo={drt,nome,area:g(fd,'area'),turno:g(fd,'turno'),escalaNome:t,escala:t,ativo:g(fd,'ativo')==='true'};
+      if(i<0)S.funcionarios.push(novo);
+      else{const old=String(S.funcionarios[i].drt);if(old!==drt)renomearDrt(old,drt);S.funcionarios[i]=novo;}
+    }
+  },
+  evento:{
+    title:i=>i<0?'Nova ausência':'Editar ausência',
+    body:r=>`${fld('Colaborador',`<select name="drt" required>${funcOpts('Todas',r.drt)}</select>`)}
+      ${fld('Tipo',`<select name="tipo">${opts(TIPOS,r.tipo)}</select>`)}
+      <div class="grid2">${fld('Início',`<input type="date" name="inicio" required value="${esc(r.inicio)}">`)}${fld('Fim',`<input type="date" name="fim" required value="${esc(r.fim)}">`)}</div>`,
+    mount(form){const a=form.elements.inicio,b=form.elements.fim;a.addEventListener('change',()=>{if(a.value&&(!b.value||b.value<a.value))b.value=a.value;});},
+    submit(fd,i){
+      const n={drt:g(fd,'drt'),tipo:g(fd,'tipo'),inicio:g(fd,'inicio'),fim:g(fd,'fim')};
+      if(n.fim<n.inicio)return 'A data final vem antes da inicial.';
+      if(i<0)S.eventos.push(n);else S.eventos[i]=n;
+    }
+  },
+  extra:{
+    title:()=>'Registrar extra',
+    body:()=>`${fld('Data',`<input type="date" name="data" required>`)}${fld('Quem estava de folga',`<select name="drt" required disabled><option value="">Escolha a data primeiro</option></select>`)}`,
+    mount(form){
+      const d=form.elements.data,s=form.elements.drt;
+      d.addEventListener('change',()=>{
+        if(!d.value){s.disabled=true;return;}
+        const fs=ativos().filter(f=>statusNoDia(d.value,f).status==='Folga');
+        s.innerHTML=fs.length?'<option value="">Selecione</option>'+fs.map(f=>`<option value="${esc(f.drt)}">${esc(f.nome)} (${esc(areaOf(f))}, ${esc(f.turno)})</option>`).join(''):'<option value="">Ninguém de folga nesse dia</option>';
+        s.disabled=!fs.length;
+      });
+    },
+    submit(fd){
+      const n={drt:g(fd,'drt'),data:g(fd,'data')};
+      if(!n.drt)return 'Escolha quem fez o extra.';
+      if(S.extras.some(e=>String(e.drt)===n.drt&&e.data===n.data))return 'Esse extra já está registrado.';
+      S.extras.push(n);
+    }
+  },
+  turma:{
+    title:i=>i<0?'Nova turma':'Editar turma',
+    body:r=>`${fld('Nome da turma',`<input name="nome" required placeholder="Ex.: Turma A" value="${esc(r.nome)}">`)}${fld('Primeiro dia de trabalho do ciclo',`<input type="date" name="inicio" required value="${esc(r.inicio)}">`)}`,
+    submit(fd,i){
+      const nome=g(fd,'nome'),inicio=g(fd,'inicio');
+      if(S.escalas.some((e,j)=>j!==i&&e.nome===nome))return `Já existe uma turma chamada ${nome}.`;
+      if(i>=0){
+        const old=S.escalas[i].nome;
+        if(old!==nome){
+          S.funcionarios.forEach(f=>{if(turmaOrig(f)===old){f.escalaNome=nome;f.escala=nome;}});
+          S.trocasTurma.forEach(t=>{if(t.novaEscala===old)t.novaEscala=nome;});
         }
-        cancelarEdicao('Tarefa'); salvar(); renderizarTudo(); e.target.reset();
-    };
-
-    function navegar(aba) {
-        document.querySelectorAll('section').forEach(s => s.style.display = 'none');
-        document.getElementById('sec-' + aba).style.display = 'block';
-        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-        document.getElementById('tab-' + aba)?.classList.add('active');
-        
-        if (aba === 'whatsapp') {
-            definirDataTurnoAutomatico();
-        }
-        
-        renderizarTudo();
+        S.escalas[i]={nome,inicio};
+      }else S.escalas.push({nome,inicio});
     }
-
-    function definirDataTurnoAutomatico() {
-        const agora = new Date();
-        const hora = agora.getHours();
-        
-        let turnoAutomatico = 'Manhã';
-        let dataAlvo = new Date(agora);
-
-        if (hora >= 4 && hora < 12) {
-            turnoAutomatico = 'Manhã';
-        } else if (hora >= 12 && hora < 20) {
-            turnoAutomatico = 'Tarde';
-        } else {
-            turnoAutomatico = 'Noite';
-            if (hora >= 0 && hora < 4) {
-                dataAlvo.setDate(dataAlvo.getDate() - 1);
-            }
-        }
-
-        const dataStr = dataAlvo.toLocaleDateString('en-CA');
-        const zapDataEl = document.getElementById('zapData');
-        const zapTurnoEl = document.getElementById('zapTurno');
-
-        if (zapDataEl && !zapDataEl.value) zapDataEl.value = dataStr;
-        if (zapTurnoEl) zapTurnoEl.value = turnoAutomatico;
+  },
+  mudanca:{
+    title:i=>i<0?'Nova mudança de turma':'Editar mudança de turma',
+    body:r=>`${fld('Filtrar por área',`<select name="_area">${opts([['Todas','Todas as áreas'],...AREAS],'Todas')}</select>`)}
+      ${fld('Colaborador',`<select name="drt" required>${funcOpts('Todas',r.drt)}</select>`)}
+      ${fld('Nova turma',`<select name="novaEscala" required>${turmaOpts(r.novaEscala)}</select>`)}
+      <div class="grid2">${fld('A partir de',`<input type="date" name="dataInicio" required value="${esc(r.dataInicio)}">`)}${fld('Até (opcional)',`<input type="date" name="dataFim" value="${esc(r.dataFim)}">`)}</div>
+      ${fld('Folga de acerto (opcional)',`<input type="date" name="folgaAcerto" value="${esc(r.folgaAcerto)}">`)}`,
+    mount(form){const a=form.elements._area,s=form.elements.drt;a.addEventListener('change',()=>{const cur=s.value;s.innerHTML=funcOpts(a.value,cur);});},
+    submit(fd,i){
+      const n={drt:g(fd,'drt'),novaEscala:g(fd,'novaEscala'),dataInicio:g(fd,'dataInicio'),dataFim:g(fd,'dataFim'),folgaAcerto:g(fd,'folgaAcerto')};
+      if(n.dataFim&&n.dataFim<n.dataInicio)return 'A data final vem antes da inicial.';
+      if(i<0)S.trocasTurma.push(n);else S.trocasTurma[i]=n;
     }
-
-    function obterEscalaNoDia(dataStr, f) {
-        const fDrt = String(f.drt);
-        const trocasValidas = trocasTurma.filter(t => {
-            if (String(t.drt) !== fDrt) return false;
-            if (t.dataInicio && dataStr < t.dataInicio) return false;
-            if (t.dataFim && dataStr > t.dataFim) return false;
-            return true;
-        });
-
-        if (trocasValidas.length > 0) {
-            trocasValidas.sort((a, b) => (b.dataInicio || '').localeCompare(a.dataInicio || ''));
-            return trocasValidas[0].novaEscala;
-        }
-
-        return f.escalaNome || f.escala || '';
+  },
+  maquina:{
+    title:i=>i<0?'Nova máquina':'Editar máquina',
+    body:(r,i)=>fld('Nome',`<input name="nome" required placeholder="Ex.: M13" value="${i>=0?esc(S.maquinas[i]):''}">`),
+    submit(fd,i){
+      const nome=g(fd,'nome');
+      if(S.maquinas.some((m,j)=>j!==i&&m===nome))return `A máquina ${nome} já existe.`;
+      if(i<0)S.maquinas.push(nome);
+      else{const old=S.maquinas[i];S.tarefas.forEach(t=>{if(t.maquina===old)t.maquina=nome;});S.maquinas[i]=nome;}
     }
-
-    function obterStatusNoDia(dataStr, f) {
-        const fDrt = String(f.drt);
-        const ex = extras.find(e => String(e.drt) === fDrt && e.data === dataStr);
-        if (ex) return { status: 'Extra', classe: 'ev-extra' };
-        
-        const ev = eventos.find(e => String(e.drt) === fDrt && dataStr >= e.inicio && dataStr <= e.fim);
-        if (ev) {
-            let classe = 'ev-falta';
-            if(ev.tipo.toLowerCase().includes('fér')) classe = 'ev-ferias';
-            if(ev.tipo === 'Afastado') classe = 'ev-afastado';
-            if(ev.tipo === 'Folga Acerto') classe = 'ev-folga';
-            return { status: ev.tipo, classe: classe };
-        }
-
-        const folgaTt = trocasTurma.find(t => String(t.drt) === fDrt && t.folgaAcerto === dataStr);
-        if (folgaTt) return { status: 'Folga Acerto', classe: 'ev-folga' };
-        
-        const escNome = obterEscalaNoDia(dataStr, f);
-        const esc = escalas.find(e => e.nome === escNome);
-        if (esc && esc.inicio) {
-            const dInicio = new Date(esc.inicio + 'T00:00:00');
-            const dAlvo = new Date(dataStr + 'T00:00:00');
-            const diff = Math.floor((dAlvo - dInicio) / 86400000);
-            if (diff >= 0 && (diff % 8) < 6) return { status: 'Trabalhando', classe: 'ev-trabalho' };
-        }
-        return { status: 'Folga', classe: 'ev-folga' };
+  },
+  sigla:{
+    title:i=>i<0?'Nova sigla':'Editar sigla',
+    body:r=>`<div class="grid2">${fld('Sigla',`<input name="sigla" required placeholder="Ex.: TC" value="${esc(r.sigla)}">`)}${fld('Descrição',`<input name="desc" required placeholder="Ex.: Troca de cor" value="${esc(r.desc)}">`)}</div>
+      <label class="switch"><input type="checkbox" name="leg"${r.mostrarLegenda===false?'':' checked'}> Mostrar na legenda da mensagem</label>`,
+    submit(fd,i){
+      const n={sigla:g(fd,'sigla'),desc:g(fd,'desc'),mostrarLegenda:fd.get('leg')==='on'};
+      if(S.tiposTroca.some((t,j)=>j!==i&&t.sigla===n.sigla))return `A sigla ${n.sigla} já existe.`;
+      if(i<0)S.tiposTroca.push(n);else S.tiposTroca[i]=n;
     }
-
-    function popularSelectExtra() {
-        const dataStr = document.getElementById('exData').value;
-        const select = document.getElementById('exFunc');
-        if(!dataStr) { select.disabled = true; return; }
-        select.innerHTML = '<option value="">Selecione o funcionário...</option>';
-        
-        const folguistas = funcionarios.filter(f => f.ativo !== false && obterStatusNoDia(dataStr, f).status === 'Folga');
-        if(folguistas.length === 0) { select.innerHTML = '<option value="">Ninguém de folga!</option>'; } 
-        else { folguistas.forEach(f => { select.innerHTML += `<option value="${f.drt}">${f.nome} (${f.area || 'Troca de Moldes'}) - ${f.turno}</option>`; }); select.disabled = false; }
+  },
+  tarefa:{
+    title:i=>i<0?'Nova tarefa':'Editar tarefa',
+    body:r=>`${fld('Máquina',`<select name="maquina">${opts([['','Nenhuma (só lembrete)'],['Geral','Geral'],...S.maquinas],r.maquina||'')}</select>`)}
+      ${fld('O que precisa ser feito',`<textarea name="descricao" required>${esc(r.descricao)}</textarea>`)}
+      <div class="grid2">${fld('Início (opcional)',`<input type="date" name="dataInicio" value="${esc(r.dataInicio||r.data)}">`)}${fld('Fim (opcional)',`<input type="date" name="dataFim" value="${esc(r.dataFim)}">`)}</div>`,
+    submit(fd,i){
+      const n={maquina:g(fd,'maquina'),descricao:g(fd,'descricao'),dataInicio:g(fd,'dataInicio'),dataFim:g(fd,'dataFim')};
+      if(n.dataInicio&&n.dataFim&&n.dataFim<n.dataInicio)return 'A data final vem antes da inicial.';
+      if(i<0)S.tarefas.push({id:uid(),...n,status:'Aberta'});
+      else{const t=S.tarefas[i];delete t.data;Object.assign(t,n);}
     }
+  }
+};
+function openForm(t,i){
+  const F=FORMS[t];if(!F)return;
+  const r=i>=0&&t!=='maquina'?S[COL[t]][i]:{};
+  openSheet({title:F.title(i),body:F.body(r||{},i),mount:F.mount,submit:(fd,form)=>{
+    const err=F.submit(fd,i,form);if(err)return err;
+    save();render();toast(i<0?'Salvo.':'Alterações salvas.');
+  }});
+}
+function delItem(t,i){
+  let msg='Excluir este registro?';
+  if(t==='funcionario')msg=`Excluir ${S.funcionarios[i].nome}? As ausências, extras e mudanças de turma dessa pessoa também serão apagadas.`;
+  if(t==='turma'){const n=S.escalas[i].nome,uso=S.funcionarios.filter(f=>turmaOrig(f)===n).length;msg=uso?`A ${n} está ligada a ${uso} colaborador(es), que ficarão sem turma. Excluir mesmo assim?`:`Excluir a ${n}?`;}
+  if(t==='maquina')msg=`Excluir a máquina ${S.maquinas[i]}?`;
+  confirmar(msg,'Excluir',()=>{
+    if(t==='funcionario'){const d=String(S.funcionarios[i].drt);['eventos','extras','trocasTurma'].forEach(k=>{S[k]=S[k].filter(x=>String(x.drt)!==d);});}
+    S[COL[t]].splice(i,1);save();render();toast('Excluído.');
+  });
+}
 
-    // --- FUNÇÕES DE MÚLTIPLAS MÁQUINAS NA ESCALA ---
-    window.novaLinhaMaquinaZap = function(btn, nome) {
-        const container = btn.closest('.linhas-container');
-        const mOpts = '<option value="">Máquina...</option>' + maquinas.map(m => `<option value="${m}">${m}</option>`).join('');
-        const tOpts = '<option value="">Troca...</option>' + tiposTroca.map(t => `<option value="${t.sigla}">${t.sigla}</option>`).join('');
-        
-        const div = document.createElement('div');
-        div.className = 'row g-1 mb-1 linha-maq-zap mt-1';
-        div.innerHTML = `
-            <div class="col-5">
-                <select class="form-select form-select-sm maq-zap-input" onchange="renderTarefasEscala()" data-nome="${nome}">
-                    ${mOpts}
-                </select>
-            </div>
-            <div class="col-5">
-                <select class="form-select form-select-sm troca-zap-input" onchange="atualizarPreviewZap()">
-                    ${tOpts}
-                </select>
-            </div>
-            <div class="col-2">
-                <button type="button" class="btn btn-sm btn-outline-danger w-100 fw-bold" onclick="removerLinhaMaquinaZap(this)">X</button>
-            </div>
-        `;
-        container.appendChild(div);
-        atualizarPreviewZap();
-    }
+/* ---------- backup ---------- */
+async function exportar(){
+  const data=JSON.stringify({escalas:S.escalas,funcionarios:S.funcionarios,eventos:S.eventos,extras:S.extras,maquinas:S.maquinas,tiposTroca:S.tiposTroca,historicoZap:S.historicoZap,tarefas:S.tarefas,trocasTurma:S.trocasTurma});
+  const name=`GE_Backup_${hojeStr()}.json`;
+  if(dl){
+    try{await dl.save({filename:name,data});toast('Backup exportado.');}
+    catch(e){if(e&&e.code==='declined')return;toast('Não foi possível exportar o backup aqui.');}
+    return;
+  }
+  try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));a.download=name;document.body.appendChild(a);a.click();a.remove();}
+  catch(e){toast('Não foi possível exportar o backup aqui.');}
+}
+function importar(input){
+  const file=input.files&&input.files[0];input.value='';if(!file)return;
+  const fr=new FileReader();
+  fr.onload=()=>{
+    let d;try{d=JSON.parse(fr.result);}catch(e){toast('Esse arquivo não é um JSON válido.');return;}
+    if(!d||typeof d!=='object'||!Array.isArray(d.funcionarios)){toast('Esse arquivo não parece um backup do GE Wheaton.');return;}
+    const resumo=`${d.funcionarios.length} colaboradores, ${(d.escalas||[]).length} turmas e ${(d.eventos||[]).length} ausências`;
+    confirmar(`Importar ${resumo}? Os dados atuais deste aparelho serão substituídos.`,'Importar',()=>{
+      ARR.forEach(k=>{S[k]=Array.isArray(d[k])?d[k]:[];});
+      S.historicoZap=(d.historicoZap&&typeof d.historicoZap==='object'&&!Array.isArray(d.historicoZap))?d.historicoZap:{};
+      S.tarefas.forEach(t=>{if(!t.id)t.id=uid();});
+      save();zap=null;render();toast('Backup importado.');
+    },false);
+  };
+  fr.onerror=()=>toast('Não foi possível ler o arquivo.');
+  fr.readAsText(file);
+}
 
-    window.removerLinhaMaquinaZap = function(btn) {
-        btn.closest('.linha-maq-zap').remove();
-        atualizarPreviewZap();
-        renderTarefasEscala();
-    }
+/* ---------- eventos ---------- */
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]');if(!b)return;
+  const d=b.dataset;
+  switch(d.act){
+    case 'nav':ui.tab=d.v;ui.sub=null;render();top0();break;
+    case 'open':ui.sub=d.v;render();top0();break;
+    case 'back':ui.sub=null;render();top0();break;
+    case 'goto':ui.tab=d.tab;ui.sub=d.sub||null;render();top0();break;
+    case 'seg':
+      if(d.k==='zapTurno'){zapLoad(zap.data,d.v);}else ui[d.k]=d.v;
+      render();break;
+    case 'cal-step':{const [y,m]=ui.mes.split('-').map(Number);ui.mes=ymd(new Date(y,m-1+Number(d.n),1)).slice(0,7);render();break;}
+    case 'cal-today':ui.mes=hojeStr().slice(0,7);ui.calSel=hojeStr();render();break;
+    case 'cal-day':ui.calSel=d.d;render();{const el=$('#dayDetail');if(el)el.scrollIntoView({behavior:reduced()?'auto':'smooth',block:'nearest'});}break;
+    case 'go-diario':ui.agData=d.d;ui.tab='diario';render();top0();break;
+    case 'go-escala':zapLoad(d.d,zap?zap.turno:autoTurno().turno);ui.tab='escala';render();top0();break;
+    case 'ag-step':ui.agData=addDays(ui.agData,Number(d.n));render();break;
+    case 'new':openForm(d.t,-1);break;
+    case 'edit':openForm(d.t,Number(d.i));break;
+    case 'del':delItem(d.t,Number(d.i));break;
+    case 'tar-toggle':{const t=S.tarefas[Number(d.i)];t.status=t.status==='Aberta'?'Concluida':'Aberta';save();render();toast(t.status==='Aberta'?'Tarefa reaberta.':'Tarefa concluída.');break;}
+    case 'ev-filtros':ui.evFiltros=!ui.evFiltros;render();break;
+    case 'ev-limpar':ui.evTipo='Todos';ui.evTurno='Todos';ui.evArea='Todas';ui.evDesde='';render();break;
+    case 'zap-addline':zap.linhas[d.drt].push({maq:'',tro:''});render();break;
+    case 'zap-delline':zap.linhas[d.drt].splice(Number(d.j),1);render();break;
+    case 'zap-add':{const it=pendItem(d.k);if(!it){toast('Escolha uma máquina primeiro.');break;}if(!zap[d.k].includes(it))zap[d.k].push(it);zap.pend[d.k+'Maq']='';zap.pend[d.k+'Tro']='';render();break;}
+    case 'zap-deltag':zap[d.k].splice(Number(d.j),1);render();break;
+    case 'zap-save':{const txt=zapPersist();render();copiar(txt).then(ok=>toast(ok?'Escala salva e copiada.':'Escala salva. Para copiar, toque e segure no texto da mensagem.'));break;}
+    case 'zap-wa':zapPersist();toast('Escala salva.');setTimeout(render,400);break;
+    case 'export':exportar();break;
+    case 'import':$('#fileImport').click();break;
+    case 'clear-all':confirmar('Apagar todos os dados deste aparelho? Isso não pode ser desfeito.','Apagar tudo',()=>{try{Object.values(KEYS).forEach(k=>localStorage.removeItem(k));}catch(e){}load();zap=null;render();toast('Dados apagados.');});break;
+    case 'sheet-close':closeSheet();break;
+  }
+});
+document.addEventListener('change',e=>{
+  const el=e.target;
+  if(el.id==='fileImport'){importar(el);return;}
+  if(el.closest('#sheet'))return;
+  if(el.dataset.bind){if(el.type==='date'&&el.dataset.req&&!el.value){render();return;}ui[el.dataset.bind]=el.value;render();return;}
+  const z=el.dataset.zap;if(!z||!zap)return;
+  if(z==='data'){if(el.value){zapLoad(el.value,zap.turno);render();}return;}
+  if(z==='maq'||z==='tro'){const l=zap.linhas[el.dataset.drt][Number(el.dataset.j)];l[z]=el.value;render();return;}
+  if(z==='pend'){zap.pend[el.dataset.f]=el.value;updatePreview();return;}
+  if(z==='tar'){const id=el.value;zap.tarefas=el.checked?[...new Set([...zap.tarefas,id])]:zap.tarefas.filter(x=>x!==id);updatePreview();}
+});
+document.addEventListener('input',e=>{
+  const el=e.target;
+  if(el.dataset.live){ui[el.dataset.live]=el.value;render();}
+  else if(el.dataset.zap==='notas'&&zap){zap.notas=el.value;updatePreview();}
+});
 
-    function salvarECopiarZap() {
-        const dataStr = document.getElementById('zapData').value; 
-        const t = document.getElementById('zapTurno').value; 
-        if(!dataStr) return alert("Selecione data!"); 
-        
-        if (document.getElementById('selProdMaq').value) addItemZap('producao');
-        if (document.getElementById('selAmMaq').value) addItemZap('amostra');
+/* ---------- relógio ---------- */
+function tick(){
+  const n=new Date();
+  $('#hora').textContent=n.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  $('#data').textContent=n.toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'2-digit'});
+}
 
-        const chave = `${dataStr}-${t}`; 
-        const tarefasMarcadas = Array.from(document.querySelectorAll('.tarefa-zap-check:checked')).map(c => c.value);
-
-        historicoZap[chave] = {
-            colaboradores: {},
-            pArr: tempProducao,
-            aArr: tempAmostra,
-            notas: document.getElementById('zapNotas').value,
-            tarefasSalvas: tarefasMarcadas
-        }; 
-        
-        document.querySelectorAll('#listaTrabalhando .linha-maq-zap').forEach(row => { 
-            const mS = row.querySelector('.maq-zap-input'); 
-            const tS = row.querySelector('.troca-zap-input'); 
-            if(mS) {
-                const nomeColaborador = mS.dataset.nome;
-                if (!historicoZap[chave].colaboradores[nomeColaborador]) {
-                    historicoZap[chave].colaboradores[nomeColaborador] = [];
-                }
-                historicoZap[chave].colaboradores[nomeColaborador].push({ maq: mS.value, tro: tS.value });
-            }
-        }); 
-        
-        salvar(); 
-        
-        const texto = atualizarPreviewZap();
-        navigator.clipboard.writeText(texto).then(() => {
-            alert("✅ Escala salva e copiada com sucesso!");
-        }).catch(() => {
-            alert("⚠️ Escala salva, mas não foi possível copiar para a área de transferência.");
-        });
-    }
-
-    function renderWhatsAppList() {
-        const dataStr = document.getElementById('zapData').value;
-        const turno = document.getElementById('zapTurno').value;
-        const container = document.getElementById('listaTrabalhando');
-        if(!container || !dataStr) return; container.innerHTML = '';
-        
-        const chave = `${dataStr}-${turno}`;
-        const dadosSalvos = historicoZap[chave] || { colaboradores: {}, notas: "", pArr: [], aArr: [], tarefasSalvas: [] };
-        
-        tempProducao = dadosSalvos.pArr || [];
-        tempAmostra = dadosSalvos.aArr || [];
-        document.getElementById('zapNotas').value = dadosSalvos.notas || "";
-
-        const mOpts = '<option value="">Máquina...</option>' + maquinas.map(m => `<option value="${m}">${m}</option>`).join('');
-        const trOpts = '<option value="">Troca...</option>' + tiposTroca.map(tr => `<option value="${tr.sigla}">${tr.sigla}</option>`).join('');
-        document.getElementById('selProdMaq').innerHTML = mOpts;
-        document.getElementById('selAmMaq').innerHTML = mOpts;
-        document.getElementById('selProdTroca').innerHTML = trOpts;
-        document.getElementById('selAmTroca').innerHTML = trOpts;
-        
-        const ativos = funcionarios.filter(f => f.ativo !== false && (f.area || 'Troca de Moldes') === 'Troca de Moldes' && f.turno === turno && (obterStatusNoDia(dataStr, f).status === 'Trabalhando' || obterStatusNoDia(dataStr, f).status === 'Extra'));
-        
-        ativos.forEach(f => {
-            const isExtra = obterStatusNoDia(dataStr, f).status === 'Extra';
-            let colabData = dadosSalvos.colaboradores[f.nome];
-            let arr = [];
-            
-            if (Array.isArray(colabData)) {
-                arr = colabData; 
-            } else if (colabData && typeof colabData === 'object') {
-                arr = [colabData]; 
-            } else {
-                arr = [{maq: "", tro: ""}]; 
-            }
-            
-            let selectLines = arr.map((item, idx) => `
-                <div class="row g-1 mb-1 linha-maq-zap">
-                    <div class="col-5">
-                        <select class="form-select form-select-sm maq-zap-input" onchange="renderTarefasEscala()" data-nome="${f.nome}">
-                            <option value="">Máquina...</option>${maquinas.map(m => `<option value="${m}" ${m===item.maq?'selected':''}>${m}</option>`).join('')}
-                        </select>
-                    </div>
-                    <div class="col-5">
-                        <select class="form-select form-select-sm troca-zap-input" onchange="atualizarPreviewZap()">
-                            <option value="">Troca...</option>${tiposTroca.map(t => `<option value="${t.sigla}" ${t.sigla===item.tro?'selected':''}>${t.sigla}</option>`).join('')}
-                        </select>
-                    </div>
-                    <div class="col-2">
-                        ${idx === 0 
-                            ? `<button type="button" class="btn btn-sm btn-outline-primary w-100 fw-bold" onclick="novaLinhaMaquinaZap(this, '${f.nome}')">+</button>`
-                            : `<button type="button" class="btn btn-sm btn-outline-danger w-100 fw-bold" onclick="removerLinhaMaquinaZap(this)">X</button>`
-                        }
-                    </div>
-                </div>
-            `).join('');
-
-            container.innerHTML += `
-                <div class="mb-2 border-bottom pb-2 ${isExtra ? 'bg-extra rounded p-2' : ''}">
-                    <div class="small fw-bold mb-1">${f.nome} ${isExtra ? '(Extra)' : ''}</div>
-                    <div class="linhas-container">
-                        ${selectLines}
-                    </div>
-                </div>
-            `;
-        });
-        
-        updateTagsZap();
-        renderTarefasEscala(dadosSalvos.tarefasSalvas);
-    }
-
-    function renderTarefasEscala(tarefasSalvasAnteriores = null) {
-        const bloco = document.getElementById('blocoTarefasEscala');
-        const container = document.getElementById('listaTarefasEscala');
-        const dataEscala = document.getElementById('zapData').value;
-        if(!bloco || !container) return;
-
-        const maquinasSelecionadas = Array.from(document.querySelectorAll('.maq-zap-input'))
-                                        .map(sel => sel.value)
-                                        .filter(v => v !== '');
-
-        const tarefasExibiveis = tarefas.filter(t => {
-            if (t.status !== 'Aberta') return false;
-            
-            const dIn = t.dataInicio || t.data; 
-            const dFi = t.dataFim;
-            
-            let temData = (dIn || dFi);
-            let estaNoPeriodo = false;
-
-            if (temData) {
-                if (dIn && !dFi) estaNoPeriodo = (dataEscala === dIn);
-                else if (!dIn && dFi) estaNoPeriodo = (dataEscala <= dFi);
-                else if (dIn && dFi) estaNoPeriodo = (dataEscala >= dIn && dataEscala <= dFi);
-            }
-
-            const isMaquinaValida = (!t.maquina || t.maquina === '' || t.maquina === 'Geral' || maquinasSelecionadas.includes(t.maquina));
-
-            if (temData && estaNoPeriodo) return true;
-            if (temData && !estaNoPeriodo) return false;
-            if (!temData && isMaquinaValida) return true;
-
-            return false;
-        });
-
-        if (tarefasExibiveis.length === 0) {
-            bloco.style.display = 'none';
-            container.innerHTML = '';
-        } else {
-            bloco.style.display = 'block';
-            
-            let checkedIds = [];
-            if (tarefasSalvasAnteriores) {
-                checkedIds = tarefasSalvasAnteriores;
-            } else {
-                checkedIds = Array.from(document.querySelectorAll('.tarefa-zap-check:checked')).map(c => c.value);
-            }
-
-            let html = '';
-            tarefasExibiveis.forEach(t => {
-                const isChecked = checkedIds.includes(t.id) ? 'checked' : '';
-                const tagMaq = t.maquina ? t.maquina : 'Lembrete';
-                
-                const dIn = t.dataInicio || t.data;
-                const dFi = t.dataFim;
-                let lblData = '';
-                if(dIn && dFi) lblData = ` <span class="text-muted">(Período: ${dIn.split('-').reverse().join('/')} a ${dFi.split('-').reverse().join('/')})</span>`;
-                else if(dIn) lblData = ` <span class="text-muted">(Data: ${dIn.split('-').reverse().join('/')})</span>`;
-                else if(dFi) lblData = ` <span class="text-muted">(Até: ${dFi.split('-').reverse().join('/')})</span>`;
-
-                html += `
-                <div class="form-check">
-                    <input class="form-check-input tarefa-zap-check" type="checkbox" value="${t.id}" id="chk_t_${t.id}" onchange="atualizarPreviewZap()" data-maquina="${t.maquina || ''}" data-desc="${t.descricao}" ${isChecked}>
-                    <label class="form-check-label small" for="chk_t_${t.id}">
-                        <strong class="text-primary">${tagMaq}</strong>: ${t.descricao}${lblData}
-                    </label>
-                </div>`;
-            });
-            container.innerHTML = html;
-        }
-        atualizarPreviewZap();
-    }
-
-    function addItemZap(tipo) {
-        const selMaq = document.getElementById(tipo === 'producao' ? 'selProdMaq' : 'selAmMaq');
-        const selTroca = document.getElementById(tipo === 'producao' ? 'selProdTroca' : 'selAmTroca');
-        
-        const m = selMaq.value;
-        const tr = selTroca.value;
-        
-        if(!m) return; 
-        
-        const item = m + (tr ? ` (${tr})` : "");
-        if(tipo === 'producao') {
-            if(!tempProducao.includes(item)) tempProducao.push(item);
-        } else {
-            if(!tempAmostra.includes(item)) tempAmostra.push(item);
-        }
-        
-        selMaq.value = '';
-        selTroca.value = '';
-        
-        updateTagsZap();
-    }
-
-    function delItemZap(tipo, idx) {
-        if(tipo === 'producao') tempProducao.splice(idx, 1); else tempAmostra.splice(idx, 1);
-        updateTagsZap();
-    }
-
-    function updateTagsZap() {
-        document.getElementById('contProd').innerHTML = tempProducao.map((v, i) => `<span class="item-tag">${v}<button type="button" class="btn-del-tag" onclick="delItemZap('producao', ${i})">x</button></span>`).join('');
-        document.getElementById('contAm').innerHTML = tempAmostra.map((v, i) => `<span class="item-tag">${v}<button type="button" class="btn-del-tag" onclick="delItemZap('amostra', ${i})">x</button></span>`).join('');
-        atualizarPreviewZap();
-    }
-
-    function atualizarPreviewZap() { 
-        const zapDataEl = document.getElementById('zapData'); 
-        const zapTurnoEl = document.getElementById('zapTurno');
-        const notasEl = document.getElementById('zapNotas');
-        if(!zapDataEl.value) return "";
-        
-        const d = zapDataEl.value.split('-').reverse().join('/'); 
-        const t = zapTurnoEl.value.toUpperCase(); 
-        let txt = `Escala - ${d} (${t})\n\n`; 
-        
-        document.querySelectorAll('#listaTrabalhando .linhas-container').forEach(container => { 
-            const nome = container.querySelector('.maq-zap-input')?.dataset.nome;
-            if (!nome) return;
-            
-            let maquinasDoFuncionario = [];
-            container.querySelectorAll('.linha-maq-zap').forEach(row => {
-                const mS = row.querySelector('.maq-zap-input'); 
-                const tS = row.querySelector('.troca-zap-input');
-                const m = mS?.value;
-                const tro = (tS && tS.value) ? ` (${tS.value})` : '';
-                
-                if (m) {
-                    maquinasDoFuncionario.push(`${m}${tro}`);
-                }
-            });
-            
-            if (maquinasDoFuncionario.length === 0) {
-                txt += `${nome} - ___\n`;
-            } else if (maquinasDoFuncionario.length === 1) {
-                txt += `${nome} - ${maquinasDoFuncionario[0]}\n`;
-            } else if (maquinasDoFuncionario.length === 2) {
-                txt += `${nome} - ${maquinasDoFuncionario.join(' e ')}\n`;
-            } else {
-                const ultima = maquinasDoFuncionario.pop();
-                txt += `${nome} - ${maquinasDoFuncionario.join(', ')} e ${ultima}\n`;
-            }
-        }); 
-
-        let prodList = [...tempProducao];
-        const currProdMaq = document.getElementById('selProdMaq')?.value;
-        const currProdTroca = document.getElementById('selProdTroca')?.value;
-        if (currProdMaq) {
-            const item = currProdMaq + (currProdTroca ? ` (${currProdTroca})` : '');
-            if(!prodList.includes(item)) prodList.push(item);
-        }
-
-        let amList = [...tempAmostra];
-        const currAmMaq = document.getElementById('selAmMaq')?.value;
-        const currAmTroca = document.getElementById('selAmTroca')?.value;
-        if (currAmMaq) {
-            const item = currAmMaq + (currAmTroca ? ` (${currAmTroca})` : '');
-            if(!amList.includes(item)) amList.push(item);
-        }
-
-        if (prodList.length > 0) {
-            txt += `\nProdução - ${prodList.join(', ')}\n`;
-        }
-        if (amList.length > 0) {
-            txt += `Amostra - ${amList.join(', ')}\n`;
-        }
-
-        const notas = notasEl.value.trim();
-        const tarefasSelecionadas = document.querySelectorAll('.tarefa-zap-check:checked');
-        
-        if (notas || tarefasSelecionadas.length > 0) {
-            txt += `\nOBS:\n`;
-            
-            tarefasSelecionadas.forEach(chk => {
-                const maq = chk.dataset.maquina;
-                if (maq && maq !== "undefined" && maq !== "") {
-                    txt += `- [${maq}]: ${chk.dataset.desc}\n`;
-                } else {
-                    txt += `- ${chk.dataset.desc}\n`;
-                }
-            });
-
-            if (notas) {
-                txt += `${notas}\n`;
-            }
-        }
-        
-        const trocasLegenda = tiposTroca.filter(t => t.mostrarLegenda !== false);
-        if (trocasLegenda.length > 0) {
-            txt += `\nLegenda:\n`; 
-            trocasLegenda.forEach(t => { txt += `${t.sigla} - ${t.desc}\n`; }); 
-        }
-        
-        const p = document.getElementById('previewZap'); 
-        if(p) p.innerText = txt; 
-        return txt; 
-    }
-
-    function renderCalendario() {
-        const grid = document.getElementById('calendarioGrid'); 
-        const mR = document.getElementById('mesFiltro')?.value; 
-        const tF = document.getElementById('turnoFiltroMensal')?.value; 
-        const aF = document.getElementById('filtroAreaMensal')?.value; 
-        if (!mR || !grid) return;
-
-        const [ano, mes] = mR.split('-').map(Number); 
-        const primDia = new Date(ano, mes-1, 1).getDay(); 
-        const ultDia = new Date(ano, mes, 0).getDate();
-        const hojeStr = new Date().toLocaleDateString('en-CA');
-        
-        grid.innerHTML = ''; 
-        ['DOM','SEG','TER','QUA','QUI','SEX','SÁB'].forEach(d => grid.innerHTML += `<div class="cal-header">${d}</div>`);
-        for (let i = 0; i < primDia; i++) grid.innerHTML += `<div class="cal-day out"></div>`;
-        
-        for (let d = 1; d <= ultDia; d++) {
-            const dStr = `${ano}-${String(mes).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-            const isToday = (dStr === hojeStr) ? 'today' : '';
-            let tFolga = escalas.filter(esc => { const dInic = new Date(esc.inicio + 'T00:00:00'); const dAlvo = new Date(dStr + 'T00:00:00'); const diff = Math.floor((dAlvo - dInic) / 86400000); return diff >= 0 && (diff % 8) >= 6; }).map(esc => esc.nome).join(' & ');
-            
-            let hEv = ''; 
-            funcionarios.forEach(f => { 
-                if(f.ativo === false) return;
-                if (!areaBate(aF, f.area)) return;
-                if (tF && tF !== 'Todos' && f.turno !== tF) return; 
-                
-                const res = obterStatusNoDia(dStr, f); 
-                hEv += `<div class="emp-event ${res.classe}">${f.nome.split(' ')[0]}</div>`; 
-            });
-            grid.innerHTML += `<div class="cal-day ${isToday}" onclick="irParaDia('${dStr}')"><div class="cal-day-top"><span class="cal-folga-indicador">${tFolga}</span><span class="cal-date">${d}</span></div>${hEv}</div>`;
-        }
-    }
-
-    function renderizarTudo() { 
-        renderMaquinas(); 
-        renderTrocas(); 
-        renderEscalas(); 
-        atualizarSelects(); 
-        renderFuncionarios(); 
-        renderTrocasTurma();
-        renderEventos(); 
-        renderExtras(); 
-        renderAgenda(); 
-        renderCalendario(); 
-        renderWhatsAppList(); 
-        renderTarefas(); 
-    }
-    
-    function exportarBackup() { const b = new Blob([JSON.stringify({escalas, funcionarios, eventos, extras, maquinas, tiposTroca, historicoZap, tarefas, trocasTurma})], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = "GE_Backup.json"; a.click(); }
-    function importarBackup(e) { const fr = new FileReader(); fr.onload = (v) => { const d = JSON.parse(v.target.result); escalas=d.escalas; funcionarios=d.funcionarios; maquinas=d.maquinas || []; tiposTroca=d.tiposTroca || []; eventos=d.eventos || []; extras=d.extras || []; historicoZap=d.historicoZap || {}; tarefas=d.tarefas || []; trocasTurma=d.trocasTurma || []; salvar(); location.reload(); }; fr.readAsText(e.target.files[0]); }
-    function remover(t, i) { if(confirm("Apagar?")) { if(t==='maquinas') maquinas.splice(i,1); if(t==='escalas') escalas.splice(i,1); if(t==='funcionarios') funcionarios.splice(i,1); if(t==='eventos') eventos.splice(i,1); if(t==='extras') extras.splice(i,1); if(t==='trocas') tiposTroca.splice(i,1); if(t==='tarefas') tarefas.splice(i,1); if(t==='trocasTurma') trocasTurma.splice(i,1); salvar(); renderizarTudo(); } }
-    
-    function toggleStatusTarefa(i) { tarefas[i].status = (tarefas[i].status === 'Aberta') ? 'Concluida' : 'Aberta'; salvar(); renderTarefas(); renderTarefasEscala(); }
-
-    function renderEscalas() { const corpo = document.getElementById('listaEscalasView'); if(!corpo) return; corpo.innerHTML = escalas.map((e, i) => `<tr><td>${e.nome}</td><td>${e.inicio.split('-').reverse().join('/')}</td><td class="text-end"><button onclick="editarEscala(${i})" class="btn btn-sm btn-outline-primary me-2">Editar</button><button onclick="remover('escalas', ${i})" class="btn btn-sm btn-link text-danger">X</button></td></tr>`).join(''); }
-    
-    function renderTarefas() {
-        const corpo = document.getElementById('listaTarefasView');
-        if(!corpo) return;
-        const filtro = document.getElementById('filtroStatusTarefa').value;
-        corpo.innerHTML = '';
-        
-        tarefas.forEach((t, i) => {
-            if(filtro !== 'Todas' && t.status !== filtro) return;
-            
-            const isAberta = t.status === 'Aberta';
-            const badgeClass = isAberta ? 'bg-danger' : 'bg-success';
-            const btnText = isAberta ? '✔ Concluir' : '↩ Reabrir';
-            const btnClass = isAberta ? 'btn-outline-success' : 'btn-outline-secondary';
-            
-            const dIn = t.dataInicio || t.data;
-            const dFi = t.dataFim;
-            let dataFmt = '-';
-            if(dIn && dFi) dataFmt = `${dIn.split('-').reverse().join('/')} a ${dFi.split('-').reverse().join('/')}`;
-            else if(dIn) dataFmt = `${dIn.split('-').reverse().join('/')}`;
-            else if(dFi) dataFmt = `Até ${dFi.split('-').reverse().join('/')}`;
-
-            corpo.innerHTML += `
-                <tr>
-                    <td><strong>${t.maquina || 'Lembrete'}</strong></td>
-                    <td class="small">${dataFmt}</td>
-                    <td class="${!isAberta ? 'text-decoration-line-through text-muted' : ''}">${t.descricao}</td>
-                    <td><span class="badge ${badgeClass}">${t.status}</span></td>
-                    <td class="text-end text-nowrap">
-                        <button onclick="editarTarefa(${i})" class="btn btn-sm btn-outline-primary me-2 py-0">Editar</button>
-                        <button onclick="toggleStatusTarefa(${i})" class="btn btn-sm ${btnClass} me-2 py-0">${btnText}</button>
-                        <button onclick="remover('tarefas', ${i})" class="btn btn-sm btn-link text-danger p-0">X</button>
-                    </td>
-                </tr>
-            `;
-        });
-    }
-
-    function renderFuncionarios() { 
-        const corpo = document.getElementById('listaFuncView'); 
-        if(!corpo) return; 
-        const fAreaTabela = document.getElementById('filtroAreaTabela')?.value;
-        
-        corpo.innerHTML = '';
-        funcionarios.forEach((f, i) => {
-            if (!areaBate(fAreaTabela, f.area)) return;
-            const fArea = f.area || 'Troca de Moldes';
-            const turmaNome = f.escalaNome || f.escala || '-';
-            
-            corpo.innerHTML += `
-                <tr class="${f.ativo === false ? 'table-light text-muted' : ''}">
-                    <td>${f.drt}</td>
-                    <td>${f.nome} ${f.ativo === false ? '<span class="badge bg-secondary ms-1">Inativo</span>' : ''}</td>
-                    <td><span class="badge ${fArea === 'Produção' ? 'bg-success' : 'bg-primary'}">${fArea}</span></td>
-                    <td>${f.turno}</td>
-                    <td>${turmaNome}</td>
-                    <td class="text-end">
-                        <button onclick="editarFunc(${i})" class="btn btn-sm btn-outline-primary me-2">Editar</button>
-                        <button onclick="remover('funcionarios', ${i})" class="btn btn-sm btn-link text-danger">X</button>
-                    </td>
-                </tr>
-            `;
-        });
-    }
-
-    function renderTrocasTurma() {
-        const corpo = document.getElementById('listaTrocasTurmaView');
-        if (!corpo) return;
-        const fAr = document.getElementById('filtroAreaTrocaTurma')?.value;
-        corpo.innerHTML = '';
-
-        trocasTurma.forEach((tt, i) => {
-            const f = funcionarios.find(fn => String(fn.drt) === String(tt.drt));
-            if (!f) return;
-            if (!areaBate(fAr, f.area)) return;
-
-            const fArea = f.area || 'Troca de Moldes';
-            const dIn = tt.dataInicio ? tt.dataInicio.split('-').reverse().join('/') : '-';
-            const dFi = tt.dataFim ? tt.dataFim.split('-').reverse().join('/') : 'Permanente';
-            const dFolga = tt.folgaAcerto ? tt.folgaAcerto.split('-').reverse().join('/') : '-';
-            const turmaOrigem = f.escalaNome || f.escala || '-';
-
-            corpo.innerHTML += `
-                <tr>
-                    <td><strong>${f.nome}</strong></td>
-                    <td><span class="badge ${fArea === 'Produção' ? 'bg-success' : 'bg-primary'}">${fArea}</span></td>
-                    <td>${turmaOrigem}</td>
-                    <td><strong class="text-primary">${tt.novaEscala}</strong></td>
-                    <td>${dIn}</td>
-                    <td>${dFi}</td>
-                    <td>${dFolga !== '-' ? '<span class="badge bg-folga">' + dFolga + '</span>' : dFolga}</td>
-                    <td class="text-end text-nowrap">
-                        <button onclick="editarTrocaTurma(${i})" class="btn btn-sm btn-outline-primary me-2 py-0">Editar</button>
-                        <button onclick="remover('trocasTurma', ${i})" class="btn btn-sm btn-link text-danger p-0 py-0">X</button>
-                    </td>
-                </tr>
-            `;
-        });
-    }
-
-    function renderExtras() {
-        const corpo = document.getElementById('listaExtrasView'); if(!corpo) return; corpo.innerHTML = '';
-        const fAreaExtra = document.getElementById('filtroAreaExtra')?.value;
-        
-        extras.forEach((ex, i) => {
-            const f = funcionarios.find(fn => String(fn.drt) === String(ex.drt));
-            if(!f) return;
-            if (!areaBate(fAreaExtra, f.area)) return;
-
-            const fArea = f.area || 'Troca de Moldes';
-            corpo.innerHTML += `<tr><td>${ex.data.split('-').reverse().join('/')}</td><td>${f.nome}</td><td><span class="badge ${fArea === 'Produção' ? 'bg-success' : 'bg-primary'}">${fArea}</span></td><td>${f.turno}</td><td class="text-end"><button onclick="remover('extras', ${i})" class="btn btn-sm btn-link text-danger">X</button></td></tr>`;
-        });
-    }
-
-    function renderAgenda() { 
-        const dStr = document.getElementById('agendaData')?.value; 
-        const fT = document.getElementById('filtroTurnoAgenda')?.value; 
-        const fA = document.getElementById('filtroAreaAgenda')?.value; 
-        const corpo = document.getElementById('listaAgenda'); 
-        if (!corpo) return; 
-        corpo.innerHTML = ''; 
-        
-        funcionarios.forEach(f => { 
-            if (f.ativo === false) return; 
-            if (!areaBate(fA, f.area)) return;
-            if (fT && fT !== 'Todos' && f.turno !== fT) return; 
-            
-            const res = obterStatusNoDia(dStr, f); 
-            const badgeC = res.classe.replace('ev-', 'bg-'); 
-            const fArea = f.area || 'Troca de Moldes';
-            const turmaEfetiva = obterEscalaNoDia(dStr, f) || '-';
-
-            corpo.innerHTML += `<tr><td>${f.drt}</td><td><strong>${f.nome}</strong></td><td><span class="badge ${fArea === 'Produção' ? 'bg-success' : 'bg-primary'}">${fArea}</span></td><td>${f.turno}</td><td>${turmaEfetiva}</td><td><span class="badge ${badgeC}">${res.status}</span></td></tr>`; 
-        }); 
-    }
-
-    function renderEventos() { 
-        const fT = document.getElementById('filtroTipoAusencia')?.value; 
-        const fTr = document.getElementById('filtroTurnoAusencia')?.value; 
-        const fAr = document.getElementById('filtroAreaAusencia')?.value; 
-        const fI = document.getElementById('filtroAusInicio')?.value; 
-        const corpo = document.getElementById('listaEventosView'); 
-        if(!corpo) return; corpo.innerHTML = ''; 
-        
-        eventos.forEach((ev, i) => { 
-            const f = funcionarios.find(fn => String(fn.drt) === String(ev.drt)); 
-            if (!f) return; 
-            if (!areaBate(fAr, f.area)) return;
-            if (fT && fT !== 'Todos' && ev.tipo !== fT) return; 
-            if (fTr && fTr !== 'Todos' && f.turno !== fTr) return; 
-            if (fI && ev.fim < fI) return; 
-            
-            const fArea = f.area || 'Troca de Moldes';
-            let badgeC = 'bg-falta';
-            if (ev.tipo.toLowerCase().includes('fér')) badgeC = 'bg-ferias';
-            if (ev.tipo === 'Folga Acerto') badgeC = 'bg-folga';
-
-            corpo.innerHTML += `<tr><td>${f.nome}</td><td><span class="badge ${fArea === 'Produção' ? 'bg-success' : 'bg-primary'}">${fArea}</span></td><td>${f.turno}</td><td><span class="badge ${badgeC}">${ev.tipo}</span></td><td>${ev.inicio.split('-').reverse().join('/')}</td><td>${ev.fim.split('-').reverse().join('/')}</td><td class="text-end"><button onclick="editarEvento(${i})" class="btn btn-sm btn-outline-primary me-1">Editar</button><button onclick="remover('eventos', ${i})" class="btn btn-sm btn-link text-danger">X</button></td></tr>`; 
-        }); 
-    }
-
-    function renderMaquinas() { document.getElementById('listaMaquinasView').innerHTML = maquinas.map((m, i) => `<tr><td class="fw-bold">${m}</td><td class="text-end"><button onclick="editarMaq(${i})" class="btn btn-sm btn-outline-primary me-1">Editar</button><button onclick="remover('maquinas', ${i})" class="btn btn-sm btn-link text-danger">X</button></td></tr>`).join(''); }
-    function renderTrocas() { 
-        document.getElementById('listaTrocasView').innerHTML = tiposTroca.map((t, i) => {
-            const badgeLegenda = t.mostrarLegenda !== false ? '<span class="badge bg-success">Sim</span>' : '<span class="badge bg-secondary">Não</span>';
-            return `<tr><td><b>${t.sigla}</b></td><td>${t.desc}</td><td class="text-center">${badgeLegenda}</td><td class="text-end text-nowrap"><button onclick="editarTroca(${i})" class="btn btn-sm btn-outline-primary me-2 py-0">Editar</button><button onclick="remover('trocas', ${i})" class="btn btn-sm btn-link text-danger p-0 py-0">X</button></td></tr>`;
-        }).join(''); 
-    }
-    
-    function atualizarSelects() { 
-        const optsEscala = '<option value="">Turma...</option>' + escalas.map(e => `<option value="${e.nome}">${e.nome}</option>`).join('');
-        document.getElementById('fEscala').innerHTML = optsEscala; 
-        if (document.getElementById('ttNovaEscala')) document.getElementById('ttNovaEscala').innerHTML = optsEscala;
-
-        const areaFiltroTT = document.getElementById('ttFiltroAreaForm')?.value || 'Todas';
-        const funcList = funcionarios.filter(f => f.ativo !== false);
-        
-        const optsFuncGeral = '<option value="">Quem?</option>' + funcList.map(f => `<option value="${f.drt}">${f.nome} (${f.area || 'Troca de Moldes'})</option>`).join('');
-        const optsFuncTT = '<option value="">Quem?</option>' + funcList.filter(f => areaBate(areaFiltroTT, f.area)).map(f => `<option value="${f.drt}">${f.nome} (${f.area || 'Troca de Moldes'})</option>`).join('');
-
-        document.getElementById('evFunc').innerHTML = optsFuncGeral; 
-        if (document.getElementById('ttFunc')) document.getElementById('ttFunc').innerHTML = optsFuncTT;
-        
-        const tarMaqEl = document.getElementById('tarMaq'); 
-        if(tarMaqEl) tarMaqEl.innerHTML = '<option value="">Nenhuma (Só Lembrete)</option><option value="Geral">Geral</option>' + maquinas.map(m => `<option value="${m}">${m}</option>`).join('');
-    }
-    
-    function editarEscala(i) { const e = escalas[i]; document.getElementById('editEscalaIdx').value = i; document.getElementById('escNome').value = e.nome; document.getElementById('escInicio').value = e.inicio; }
-    
-    function editarFunc(i) { 
-        const f = funcionarios[i]; 
-        document.getElementById('editFuncIdx').value = i; 
-        document.getElementById('fDrt').value = f.drt; 
-        document.getElementById('fNome').value = f.nome; 
-        document.getElementById('fArea').value = f.area || 'Troca de Moldes';
-        document.getElementById('fTurno').value = f.turno; 
-        document.getElementById('fEscala').value = f.escalaNome || f.escala || ''; 
-        document.getElementById('fStatus').value = f.ativo !== false ? 'true' : 'false';
-    }
-
-    function editarTrocaTurma(i) {
-        const tt = trocasTurma[i];
-        document.getElementById('editTrocaTurmaIdx').value = i;
-        document.getElementById('ttFunc').value = tt.drt;
-        document.getElementById('ttNovaEscala').value = tt.novaEscala;
-        document.getElementById('ttDataInicio').value = tt.dataInicio || '';
-        document.getElementById('ttDataFim').value = tt.dataFim || '';
-        document.getElementById('ttDataFolga').value = tt.folgaAcerto || '';
-    }
-
-    function editarEvento(i) { const ev = eventos[i]; document.getElementById('editEventoIdx').value = i; document.getElementById('evFunc').value = ev.drt; document.getElementById('evTipo').value = ev.tipo; document.getElementById('evInicio').value = ev.inicio; document.getElementById('evFim').value = ev.fim; }
-    function editarMaq(i) { document.getElementById('editMaqIdx').value = i; document.getElementById('maqNome').value = maquinas[i]; }
-    
-    function editarTroca(i) { 
-        const t = tiposTroca[i]; 
-        document.getElementById('editTrocaIdx').value = i; 
-        document.getElementById('trocaSigla').value = t.sigla; 
-        document.getElementById('trocaDesc').value = t.desc; 
-        document.getElementById('trocaLegenda').checked = t.mostrarLegenda !== false;
-    }
-    
-    function editarTarefa(i) { 
-        const t = tarefas[i]; 
-        document.getElementById('editTarefaIdx').value = i; 
-        document.getElementById('tarMaq').value = t.maquina || ''; 
-        document.getElementById('tarDesc').value = t.descricao; 
-        document.getElementById('tarDataInicio').value = t.dataInicio || t.data || ''; 
-        document.getElementById('tarDataFim').value = t.dataFim || ''; 
-    }
-
-    function cancelarEdicao(tipo) { 
-        const f = document.getElementById('form' + tipo); 
-        if(f) f.reset(); 
-        const idx = document.getElementById('edit' + tipo + 'Idx'); 
-        if(idx) idx.value = "-1"; 
-        
-        if (tipo === 'Troca') document.getElementById('trocaLegenda').checked = true;
-    }
-
-    function limparFiltrosAusencia() { document.getElementById('filtroTipoAusencia').value = 'Todos'; document.getElementById('filtroTurnoAusencia').value = 'Todos'; document.getElementById('filtroAreaAusencia').value = 'Todas'; document.getElementById('filtroAusInicio').value = ''; renderEventos(); }
-    function irParaDia(d) { document.getElementById('agendaData').value = d; document.getElementById('zapData').value = d; navegar('agenda'); }
-    function limparTudo() { if(confirm("Limpar dados?")) { localStorage.clear(); location.reload(); } }
-
-    const hj = new Date(); const hjL = hj.toLocaleDateString('en-CA');
-    document.getElementById('mesFiltro').value = hj.toISOString().slice(0, 7);
-    document.getElementById('agendaData').value = hjL; 
-    
-    navegar('mensal'); 
-    setInterval(() => document.getElementById('relogio').innerText = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString(), 1000);
+/* ---------- início ---------- */
+load();render();tick();setInterval(tick,15000);
+try{if(window.claude&&typeof window.claude.use==='function')window.claude.use('downloads').then(x=>{dl=x;}).catch(()=>{});}catch(e){}
+})();
 </script>
 </body>
 </html>
