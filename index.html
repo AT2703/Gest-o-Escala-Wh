@@ -16,6 +16,7 @@
   --v-bg:#FBEFC8; --v-fg:#7A5600; --v-bar:#D9A400;
   --a-bg:#F8DADA; --a-fg:#8B1E1E; --a-bar:#D14B4B;
   --x-bg:#E8DDFB; --x-fg:#5B2BA6; --x-bar:#8A5CD6;
+  --ag-troca:#9A5700; --ag-troca-bg:#FFEFD6; --ag-parada:#B3261E; --ag-parada-bg:#FCE4E2; --ag-amostra:#1F6B59; --ag-amostra-bg:#DCF1EA; --ag-nota:#6A3FA3; --ag-nota-bg:#EEE5FA; --ag-geral:#1D5FA6; --ag-geral-bg:#E0EBF8; --ag-outro:#4C5966; --ag-outro-bg:#E5E9ED;
   --font:"Barlow","Segoe UI",system-ui,-apple-system,Roboto,sans-serif;
   --cond:"Barlow Condensed","Arial Narrow","Roboto Condensed",system-ui,sans-serif;
   color-scheme:light;
@@ -29,6 +30,7 @@
     --primary:#6FA8DC; --primary-ink:#0E1A26; --primary-soft:#1D3044; --danger:#F07167; --bubble:#1E3A2B;
     --t-bg:#1E3A2A; --t-fg:#8FD6AA; --f-bg:#1C2D44; --f-fg:#9CC2EE; --v-bg:#3B3014; --v-fg:#F0CF6E;
     --a-bg:#43201F; --a-fg:#F1A3A0; --x-bg:#33264D; --x-fg:#C9B0F5;
+    --ag-troca:#F2A33A; --ag-troca-bg:#3A2A12; --ag-parada:#F2766C; --ag-parada-bg:#3D1B19; --ag-amostra:#52C7A6; --ag-amostra-bg:#13332B; --ag-nota:#B994F5; --ag-nota-bg:#2C2141; --ag-geral:#6EA9F0; --ag-geral-bg:#16293E; --ag-outro:#A9B4BE; --ag-outro-bg:#27313A;
     color-scheme:dark;
   }
 }
@@ -37,6 +39,7 @@
   --primary:#6FA8DC; --primary-ink:#0E1A26; --primary-soft:#1D3044; --danger:#F07167; --bubble:#1E3A2B;
   --t-bg:#1E3A2A; --t-fg:#8FD6AA; --f-bg:#1C2D44; --f-fg:#9CC2EE; --v-bg:#3B3014; --v-fg:#F0CF6E;
   --a-bg:#43201F; --a-fg:#F1A3A0; --x-bg:#33264D; --x-fg:#C9B0F5;
+  --ag-troca:#F2A33A; --ag-troca-bg:#3A2A12; --ag-parada:#F2766C; --ag-parada-bg:#3D1B19; --ag-amostra:#52C7A6; --ag-amostra-bg:#13332B; --ag-nota:#B994F5; --ag-nota-bg:#2C2141; --ag-geral:#6EA9F0; --ag-geral-bg:#16293E; --ag-outro:#A9B4BE; --ag-outro-bg:#27313A;
   color-scheme:dark;
 }
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
@@ -154,11 +157,74 @@ input[type=checkbox]{width:22px;height:22px;min-height:0;accent-color:var(--prim
 .menu .tx span{font-size:.85rem;color:var(--muted)}
 .menu .ct{font-family:var(--cond);font-weight:700;font-size:1.2rem;color:var(--muted)}
 .menu svg{width:18px;height:18px;color:var(--muted)}
+.menu .mi{width:42px;height:42px;flex:none;border-radius:10px;background:var(--primary-soft);color:var(--primary);display:flex;align-items:center;justify-content:center}
+.menu .mi svg{width:22px;height:22px;color:inherit}
+.dethead{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;margin-bottom:10px}
+.dethead h2{margin:0}
+.folga-chip{font-size:.85rem;padding:4px 10px}
+
+/* agenda */
+.k-troca{--c:var(--ag-troca);--cb:var(--ag-troca-bg)} .k-parada{--c:var(--ag-parada);--cb:var(--ag-parada-bg)}
+.k-amostra{--c:var(--ag-amostra);--cb:var(--ag-amostra-bg)} .k-t2{--c:var(--ag-nota);--cb:var(--ag-nota-bg)}
+.k-geral{--c:var(--ag-geral);--cb:var(--ag-geral-bg)} .k-outro{--c:var(--ag-outro);--cb:var(--ag-outro-bg)}
+.ktag{display:inline-flex;align-items:center;font-size:.74rem;font-weight:700;padding:3px 7px;border-radius:4px;background:var(--cb);color:var(--c);white-space:nowrap;line-height:1.2}
+.ktag.solid{background:var(--c);color:var(--surface)}
+.placa{display:block;width:100%;text-align:left;font:inherit;color:inherit;border-top:6px solid var(--c,var(--accent))}
+button.placa{cursor:pointer}
+.placa>span{display:block}
+.placa .pl-t{font-weight:600;color:var(--muted);font-size:.92rem;margin-bottom:6px}
+.placa .hora{font-family:var(--cond);font-weight:700;font-size:3.6rem;line-height:.95}
+.placa .quando{font-family:var(--cond);font-weight:600;font-size:1.2rem;margin-top:2px}
+.placa .maq{font-family:var(--cond);font-weight:700;font-size:1.9rem;line-height:1;margin-top:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.placa .oque{font-size:1.1rem;font-weight:600;margin-top:6px}
+.placa .pl-s{color:var(--muted);font-size:.92rem}
+.ev{display:grid;grid-template-columns:58px 46px minmax(0,1fr);gap:10px;align-items:start;width:100%;padding:10px 0;border:0;border-top:1px solid var(--line);background:none;text-align:left;font:inherit;color:inherit;cursor:pointer}
+.ev.nomq{grid-template-columns:58px minmax(0,1fr)}
+.card>h2+.ev,.card>h3+.ev,.forno-h+.ev,.maq-h+.ev{border-top:0}
+.ev .h{font-family:var(--cond);font-weight:700;font-size:1.2rem;line-height:1}
+.ev .h small{display:block;font-family:var(--font);font-weight:500;font-size:.72rem;color:var(--muted);margin-top:4px;line-height:1.2}
+.ev .mq{font-family:var(--cond);font-weight:700;font-size:1.2rem;line-height:1}
+.ev .d{min-width:0}
+.ev .l1{display:block;font-weight:600;overflow-wrap:anywhere}
+.ev .l2{display:block;font-size:.85rem;color:var(--muted)}
+.ev .fl{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
+.ev.passado{opacity:.5}
+.vis{display:block;width:100%;text-align:left;background:var(--ag-geral-bg);border:0;border-left:4px solid var(--ag-geral);border-radius:6px;padding:10px 12px;margin-top:8px;font:inherit;color:inherit;cursor:pointer}
+.vis>b{display:block;font-family:var(--cond);font-size:1.15rem}
+.vis>span{display:block;font-weight:600}
+.vis>small{display:block;color:var(--muted);font-size:.85rem}
+.dias{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;margin-bottom:12px}
+.dias button{position:relative;overflow:hidden;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 2px 6px;font:inherit;color:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
+.dias button span{font-size:.68rem;color:var(--muted)}
+.dias button b{font-family:var(--cond);font-size:1.15rem;line-height:1}
+.dias button i{font-style:normal;font-size:.7rem;font-weight:700;color:var(--ag-troca);min-height:1em}
+.dias button[aria-pressed="true"]{border-color:var(--primary);box-shadow:inset 0 0 0 1px var(--primary);background:var(--primary-soft)}
+.dias button.hoje::before{content:"";position:absolute;inset:0 0 auto;height:4px;background:repeating-linear-gradient(-45deg,var(--accent) 0 6px,#18222D 6px 12px)}
+.forno-h{font-family:var(--cond);font-weight:700;font-size:1.15rem;margin:14px 0 2px;padding-bottom:4px;border-bottom:2px solid var(--ink)}
+.maq-h{display:flex;align-items:center;gap:8px;font-family:var(--cond);font-weight:700;font-size:1.2rem;margin-top:10px}
+.togs{display:flex;flex-wrap:wrap;gap:6px}
+.tog{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font:inherit;font-size:.88rem;font-weight:600;color:var(--muted);cursor:pointer;min-height:36px;display:inline-flex;align-items:center;gap:6px}
+.tog i{width:9px;height:9px;border-radius:50%;background:var(--c)}
+.tog[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--surface)}
+.kv{display:grid;grid-template-columns:118px minmax(0,1fr);gap:6px 12px;margin:0 0 14px}
+.kv dt{color:var(--muted)} .kv dd{margin:0;font-weight:500;overflow-wrap:anywhere}
+.nums{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:6px;margin-bottom:14px}
+.nums div{background:var(--surface-2);border-radius:6px;padding:6px 8px}
+.nums span{display:block;color:var(--muted);font-size:.75rem}
+.nums b{font-family:var(--cond);font-size:1.15rem}
+.aviso{background:var(--primary-soft);border-left:4px solid var(--primary);padding:9px 12px;border-radius:6px;font-size:.92rem}
+.alerta{background:var(--a-bg);color:var(--a-fg);border-radius:8px;padding:9px 12px;font-weight:600;font-size:.9rem;margin:10px 0 0}
+details.mud summary{cursor:pointer;font-weight:600}
+details.mud ul{list-style:none;margin:10px 0 0;padding:0}
+details.mud li{padding:7px 0;border-top:1px solid var(--line);font-size:.92rem}
+details.mud li b{font-family:var(--cond);font-size:1.05rem}
+.riscado{text-decoration:line-through;color:var(--muted)}
+.sheet-f.one{grid-template-columns:1fr}
 
 /* barra inferior */
 .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
 .tabbar .in{display:flex;max-width:880px;margin:0 auto}
-.tabbar button{flex:1;border:0;background:none;font:inherit;font-size:.72rem;font-weight:600;color:var(--muted);padding:8px 2px;display:flex;flex-direction:column;align-items:center;gap:3px;min-height:60px;position:relative;cursor:pointer}
+.tabbar button{flex:1;border:0;background:none;font:inherit;font-size:.68rem;font-weight:600;color:var(--muted);padding:8px 1px;display:flex;flex-direction:column;align-items:center;gap:3px;min-height:60px;position:relative;cursor:pointer}
 .tabbar button svg{width:24px;height:24px}
 .tabbar button[aria-current="page"]{color:var(--primary)}
 .tabbar button[aria-current="page"]::before{content:"";position:absolute;top:0;left:26%;right:26%;height:3px;background:var(--accent);border-radius:0 0 3px 3px}
@@ -197,22 +263,28 @@ input[type=checkbox]{width:22px;height:22px;min-height:0;accent-color:var(--prim
 <div id="sheet" class="sheet-wrap" hidden></div>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 <input type="file" id="fileImport" accept=".json,application/json" hidden>
+<input type="file" id="agArq" accept=".pdf,application/pdf,.xlsx,.xls,.xlsm" hidden>
 
+<script>
+window.addEventListener('error',function(e){var a=document.getElementById('app');if(!a||a.childElementCount)return;a.innerHTML='<div class="card"><h2>O app não conseguiu abrir</h2><p class="small">Erro: '+String(e.message||'desconhecido').replace(/</g,'&lt;')+(e.lineno?' (linha '+e.lineno+')':'')+'</p><p class="small muted">Se você copiou o código para o GitHub, confira se o arquivo foi enviado inteiro: a última linha deve ser &lt;/html&gt;. Se continuar, envie um print desta tela.</p></div>';});
+</script>
 <script>
 (function(){
 'use strict';
 
 /* ---------- dados ---------- */
-const KEYS={escalas:'w_escalas',funcionarios:'w_funcs',eventos:'w_eventos',extras:'w_extras',maquinas:'w_maquinas',tiposTroca:'w_trocas',tarefas:'w_tarefas',trocasTurma:'w_trocas_turma',historicoZap:'w_historico_zap'};
+const KEYS={escalas:'w_escalas',funcionarios:'w_funcs',eventos:'w_eventos',extras:'w_extras',maquinas:'w_maquinas',tiposTroca:'w_trocas',tarefas:'w_tarefas',trocasTurma:'w_trocas_turma',historicoZap:'w_historico_zap',agVig:'w_agenda_vig',agAnt:'w_agenda_ant',agEv:'w_agenda_eventos'};
 const ARR=['escalas','funcionarios','eventos','extras','maquinas','tiposTroca','tarefas','trocasTurma'];
 const S={};
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,9);
 
 function load(){
-  ARR.forEach(k=>{let v=null;try{v=JSON.parse(localStorage.getItem(KEYS[k]))}catch(e){} S[k]=Array.isArray(v)?v:[];});
+  ARR.forEach(k=>{let v=null;try{v=JSON.parse(localStorage.getItem(KEYS[k]))}catch(e){} S[k]=Array.isArray(v)?(k==='maquinas'?v.filter(x=>typeof x==='string'||typeof x==='number').map(String):v.filter(x=>x&&typeof x==='object')):[];});
   let h=null;try{h=JSON.parse(localStorage.getItem(KEYS.historicoZap))}catch(e){}
   S.historicoZap=(h&&typeof h==='object'&&!Array.isArray(h))?h:{};
   S.tarefas.forEach(t=>{if(!t.id)t.id=uid();});
+  let ae=null;try{ae=JSON.parse(localStorage.getItem(KEYS.agEv))}catch(e){} S.agEv=Array.isArray(ae)?ae:[];
+  ['agVig','agAnt'].forEach(k=>{let o=null;try{o=JSON.parse(localStorage.getItem(KEYS[k]))}catch(e){} S[k]=(o&&typeof o==='object'&&Array.isArray(o.eventos))?o:null;});
 }
 function save(){
   try{Object.keys(KEYS).forEach(k=>localStorage.setItem(KEYS[k],JSON.stringify(S[k])));}
@@ -253,7 +325,16 @@ const IC={
   chevR:'<path d="m9 18 6-6-6-6"/>',
   x:'<path d="M6 6l12 12M18 6 6 18"/>',
   done:'<path d="m5 12 5 5 9-10"/>',
-  undo:'<path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/>'
+  agenda:'<rect x="5" y="4" width="14" height="17" rx="2"/><rect x="9" y="2.5" width="6" height="3" rx="1"/><path d="M9 11h6M9 15h6"/>',
+  undo:'<path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/>',
+  calx:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M10 13l4 4M14 13l-4 4"/>',
+  timer:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/>',
+  swap:'<rect x="2" y="2" width="20" height="20" rx="2.5" stroke-width="1.6"/><path d="M12 2v20M2 12h20" stroke-width="1.6"/><g fill="currentColor" stroke="none" font-family="Barlow Condensed,Arial Narrow,sans-serif" font-weight="700" font-size="8" text-anchor="middle" dominant-baseline="central"><text x="7" y="7.4">1</text><text x="17" y="7.4">2</text><text x="7" y="17.4">3</text><text x="17" y="17.4">4</text></g>',
+  cycle:'<path d="M17 2l4 4-4 4"/><path d="M3 11V9a3 3 0 0 1 3-3h15"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a3 3 0 0 1-3 3H3"/>',
+  users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6.5 6.5 0 0 1 3.5 6"/>',
+  gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1 7 17M17 7l2.1-2.1"/>',
+  tag:'<path d="M3 12V4a1 1 0 0 1 1-1h8l9 9-9 9z"/><circle cx="7.5" cy="7.5" r="1.5"/>',
+  db:'<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>'
 };
 const ic=n=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]}</svg>`;
 
@@ -264,7 +345,7 @@ const fld=(label,inner)=>`<label class="fld"><span>${label}</span>${inner}</labe
 const seg=(key,list,val)=>`<div class="seg" role="group">${list.map(o=>{const v=Array.isArray(o)?o[0]:o,l=Array.isArray(o)?o[1]:o;return `<button type="button" data-act="seg" data-k="${key}" data-v="${esc(v)}" aria-pressed="${String(v)===String(val)}">${esc(l)}</button>`;}).join('')}</div>`;
 const areaChip=f=>`<span class="chip area">${esc(areaOf(f))}</span>`;
 
-function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove('on'),2800);}
+function toast(m,ms=2800){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove('on'),ms);}
 
 /* ---------- regras de escala ---------- */
 function turmaNoDia(d,f){
@@ -286,13 +367,204 @@ function statusNoDia(d,f){
 function turmasDeFolga(d){
   return S.escalas.filter(e=>{if(!e.inicio)return false;const df=diffDays(e.inicio,d);return df>=0&&df%8>=6;}).map(e=>e.nome);
 }
+function folgaChip(d){
+  const fol=turmasDeFolga(d);if(!fol.length)return '';
+  return `<span class="chip s-folga folga-chip">${esc(fol.map(n=>/^turma/i.test(n)?n:'Turma '+n).join(' e '))} de folga</span>`;
+}
 const GRUPOS=[['trabalho','Trabalhando'],['extra','Extra'],['folga','Folga'],['ferias','Férias'],['falta','Ausência']];
 function periodo(t){const a=t.dataInicio||t.data,b=t.dataFim;if(a&&b)return `${br(a)} a ${br(b)}`;if(a)return br(a);if(b)return `até ${br(b)}`;return '';}
+
+/* ---------- agenda: planilha de trocas do PCP ---------- */
+const AQ=(()=>{
+  const norm=s=>String(s??'').trim();
+  const normCode=s=>norm(s).toUpperCase().replace(/\s+/g,'');
+  const num=s=>{const t=norm(s).replace(',','.');if(t==='')return null;const n=Number(t);return Number.isFinite(n)?n:null;};
+  const fornoDe=mq=>{const m=norm(mq).toUpperCase();if(!m)return null;return /^\d/.test(m)?'1':m[0];};
+  function serialToISO(n){return new Date(Math.round((n-25569)*86400000)).toISOString().slice(0,10);}
+  const MESES=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  function umaData(v){
+    if(/^\d{5}(\.0+)?$/.test(v)){const n=Number(v);if(n>40000&&n<60000)return serialToISO(n);}
+    let m=v.match(/\b(\d{1,2})\/(\d{1,2})\/(\d{4}|\d{2})\b/);if(m)return `${m[3].length===2?'20'+m[3]:m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`;
+    m=v.match(/^(\d{4})-(\d{2})-(\d{2})/);if(m)return `${m[1]}-${m[2]}-${m[3]}`;
+    m=v.toLowerCase().match(/(\d{1,2})\s+de\s+([a-zç]+)\s+de\s+(\d{4})/);if(m){const i=MESES.indexOf(m[2]);if(i>=0)return `${m[3]}-${String(i+1).padStart(2,'0')}-${m[1].padStart(2,'0')}`;}
+    return null;
+  }
+  function parseDateCell(cells){
+    const vals=cells.map(norm).filter(v=>v!=='');
+    if(vals.length===0||vals.length>3)return null;
+    for(const v of vals){const d=umaData(v);if(d)return d;}
+    return vals.length>1?umaData(vals.join(' ')):null;
+  }
+  function parseHora(v){
+    const t=norm(v);
+    if(/^qtd/i.test(t))return{hora:null,gatilho:'qtde'};
+    const m=t.match(/^(\d{1,2}):(\d{2})/);
+    if(m)return{hora:`${m[1].padStart(2,'0')}:${m[2]}`,gatilho:null};
+    const n=num(t);
+    if(n!==null&&n>0&&n<1){const mins=Math.round(n*1440);return{hora:`${String(Math.floor(mins/60)%24).padStart(2,'0')}:${String(mins%60).padStart(2,'0')}`,gatilho:null};}
+    return{hora:null,gatilho:null};
+  }
+  function horaDaNota(txt){
+    const m=txt.match(/\b[AÀ]S\s*(\d{1,2})(?:\s*[:H]\s*(\d{2}))?\s*H?\b/i);
+    if(!m)return null;const h=Number(m[1]);if(h>23)return null;
+    return `${String(h).padStart(2,'0')}:${m[2]||'00'}`;
+  }
+  function idxMap(h1,h2){
+    const f=(row,re,from=0)=>{for(let i=from;i<row.length;i++)if(re.test(norm(row[i])))return i;return -1;};
+    const iMQ=f(h2,/^MQ$/i),iSai=f(h2,/^Frasco$/i),iEnt=f(h2,/^Frasco$/i,iSai+1),iQtd=f(h2,/^Quantidades/i),iHoras=f(h2,/^Horas$/i),iQ1=f(h2,/^QTDE$/i);
+    return{mq:iMQ,saiFr:iSai,saiCor:iSai+1,saiProc:iSai+2,qmin:iQtd,qmax:iQtd+1,
+      hora:f(h1,/^Hor[áa]rio/i),tipo:f(h1,/^Tipo/i),entFr:iEnt,entCor:iEnt+1,entProc:iEnt+2,
+      sec:f(h1,/^Se[çc]/i),vel:f(h1,/^Vel/i),peso:f(h1,/^Peso/i),cot:f(h1,/^Cot/i),ext:f(h1,/^Ext/i),
+      horas:iHoras,dias:f(h2,/^Dias$/i),qd:iQ1,qp:f(h2,/^QTDE$/i,iQ1+1),desc:f(h2,/^Descri/i),emb:f(h2,/^Emb/i),cli:f(h2,/^CLIENTE$/i)};
+  }
+  function classificar(sai,ent){const E=ent.toUpperCase();if(/PARADA/.test(E))return 'parada';if(/AMOSTRA/.test(E))return 'amostra';return 'troca';}
+  function parsePlanilha(text){
+    let t=String(text||'').replace(/\r/g,'');
+    const s=t.search(/===\s*Sheet:\s*Troca\s*===/i);
+    if(s>=0){t=t.slice(s).replace(/^.*\n/,'');const e=t.search(/\n===\s*Sheet:/i);if(e>=0)t=t.slice(0,e);}
+    const lines=t.split('\n').map(l=>l.split('\t'));
+    const eventos=[],backups={},avisos=[];
+    let data=null,map=null,h1=null;
+    for(let i=0;i<lines.length;i++){
+      const c=lines[i];
+      const joined=c.map(norm).filter(Boolean).join(' ');
+      if(!joined)continue;
+      const d=parseDateCell(c);
+      if(d){data=d;continue;}
+      if(/Hor[áa]rio/i.test(joined)&&/Entrada/i.test(joined)){h1=c;continue;}
+      if(/^MQ\b/i.test(norm(c[0]))&&/Frasco/i.test(joined)){if(h1)map=idxMap(h1,c);continue;}
+      if(/^Min\.?\s+M[áa]x/i.test(joined)||/Progr\. \(h\)/i.test(joined))continue;
+      if(!data)continue;
+      const nm=joined.match(/^([A-Z]?\d{1,2})\s*:\s*(.+)$/i);
+      if(nm&&(!map||!norm(c[map.entFr]))){
+        const mq=nm[1].toUpperCase(),tit=nm[2].replace(/\s+/g,' ').trim();
+        const isT2=/\bT2\b|\bTIPO\b/i.test(tit);
+        const acao=/IN[IÍ]CIO/i.test(tit)?'inicio':/T[EÉ]RMINO|\bFIM\b/i.test(tit)?'fim':'';
+        const produto=(tit.match(/[A-Z]{2}\s*-\s*\d{3,4}-[A-Z0-9]+/i)||[''])[0];
+        eventos.push({origem:'planilha',kind:isT2?'t2':'nota',acao,produto,data,hora:horaDaNota(tit),gatilho:null,maquina:mq,forno:fornoDe(mq),titulo:tit,codigo:'',importante:true});
+        continue;
+      }
+      if(!map)continue;
+      const g=k=>(map[k]>=0?norm(c[map[k]]):'');
+      const mq=g('mq').toUpperCase(),sai=g('saiFr'),ent=g('entFr');
+      if(mq==='0'||/^0$/.test(sai))continue;
+      if(!mq){
+        if(!ent||/^BKP$/i.test(ent))continue;
+        (backups[data]=backups[data]||[]).push({frasco:ent,cor:g('entCor'),proc:g('entProc'),descricao:g('desc'),cliente:g('cli'),horas:num(g('horas')),qtdProg:num(g('qp'))});
+        continue;
+      }
+      if(!sai&&!ent)continue;
+      const h=parseHora(g('hora'));
+      const ev={origem:'planilha',kind:classificar(sai,ent),data,hora:h.hora,gatilho:h.gatilho,maquina:mq,forno:fornoDe(mq),codigo:g('tipo').toUpperCase(),
+        saida:{frasco:sai,cor:g('saiCor'),proc:g('saiProc'),qmin:num(g('qmin')),qmax:num(g('qmax'))},
+        entrada:{frasco:ent,cor:g('entCor'),proc:g('entProc'),secoes:num(g('sec')),vel:num(g('vel')),peso:num(g('peso')),cot:num(g('cot')),ext:num(g('ext')),
+          horas:num(g('horas')),dias:num(g('dias')),qtdDia:num(g('qd')),qtdProg:num(g('qp')),descricao:g('desc'),emb:g('emb'),cliente:g('cli')}};
+      ev.t2Total=/100\s*%\s*(T2|TIPO\s*2)\b/i.test(ev.entrada.descricao);
+      if(!h.hora&&!h.gatilho)avisos.push(`${mq} em ${data.split('-').reverse().join('/')}: sem horário na planilha`);
+      eventos.push(ev);
+    }
+    eventos.forEach(e=>{e.id=chave(e)+'|'+e.data;});
+    return{eventos,backups,avisos,periodo:periodo(eventos)};
+  }
+  function periodo(ev){const ds=ev.map(e=>e.data).sort();return ds.length?{de:ds[0],ate:ds[ds.length-1]}:null;}
+  function chave(e){
+    const alvo=(e.kind==='nota'||e.kind==='t2')?normCode(e.titulo).slice(0,40):normCode((e.entrada&&e.entrada.frasco)||'')+'<'+normCode((e.saida&&e.saida.frasco)||'');
+    return `${e.maquina}|${e.kind}|${alvo}`;
+  }
+  function diff(novos,antigos){
+    if(!antigos||!antigos.length)return[];
+    const ini=(periodo(novos)||{}).de||'0000';
+    const A=antigos.filter(e=>e.data>=ini);
+    const byKey=arr=>{const m=new Map();arr.forEach(e=>{const k=chave(e);if(!m.has(k))m.set(k,[]);m.get(k).push(e);});return m;};
+    const mn=byKey(novos),ma=byKey(A),out=[];
+    for(const [k,ns] of mn){
+      const as=ma.get(k)||[];
+      ns.forEach((n,i)=>{const a=as[i];
+        if(!a)out.push({tipo:'novo',ev:n});
+        else if(a.data!==n.data||(a.hora||'')!==(n.hora||'')||(a.gatilho||'')!==(n.gatilho||''))out.push({tipo:'alterado',ev:n,de:{data:a.data,hora:a.hora,gatilho:a.gatilho}});
+      });
+      as.slice(ns.length).forEach(a=>out.push({tipo:'removido',ev:a}));
+    }
+    for(const [k,as] of ma)if(!mn.has(k))as.forEach(a=>out.push({tipo:'removido',ev:a}));
+    return out.sort((x,y)=>(x.ev.data+(x.ev.hora||'')).localeCompare(y.ev.data+(y.ev.hora||'')));
+  }
+  return{parsePlanilha,diff,normCode,fornoDe};
+})();
+const AG_FORNOS=[{id:'A',nome:'Forno A'},{id:'B',nome:'Forno B'},{id:'C',nome:'Forno C',inativo:true,obs:'Sem produção'},{id:'1',nome:'Forno 1'}];
+const AG_COD={TP:'Troca de processo',TM:'Troca de molde',IP:'Início de produção'};
+const AG_TIPOS=[{id:'visita',nome:'Visita',k:'geral',va:true},{id:'auditoria',nome:'Auditoria',k:'geral',va:true},{id:'manutencao',nome:'Manutenção programada',k:'parada'},{id:'setup',nome:'Set-up ou troca extra',k:'troca'},{id:'teste',nome:'Teste ou amostra',k:'amostra'},{id:'treinamento',nome:'Treinamento',k:'outro'},{id:'outro',nome:'Outro',k:'outro'}];
+const AG_KINDS=[{id:'troca',nome:'Trocas',um:'Troca',k:'troca'},{id:'parada',nome:'Paradas',um:'Parada',k:'parada'},{id:'amostra',nome:'Amostras',um:'Amostra',k:'amostra'},{id:'t2',nome:'Tratamento T2',um:'T2',k:'t2'},{id:'visita',nome:'Visitas e auditorias',um:'Visita',k:'geral'},{id:'equipe',nome:'Outros eventos',um:'Evento',k:'outro'},{id:'nota',nome:'Outros avisos',um:'Aviso',k:'outro'}];
+const DIAS3=['dom','seg','ter','qua','qui','sex','sáb'];
+const agDt=(data,hora)=>{const [y,m,d]=data.split('-').map(Number);const [h,mi]=(hora||'00:00').split(':').map(Number);return new Date(y,m-1,d,h,mi);};
+const ddmm=s=>{const p=String(s).split('-');return `${p[2]}/${p[1]}`;};
+const diaNome=s=>DIAS3[parse(s).getDay()];
+const fmtN=n=>n==null?'–':Number(n).toLocaleString('pt-BR',{maximumFractionDigits:2});
+const fmtDH=s=>{if(!s)return '–';const d=new Date(s);return `${pad(d.getDate())}/${pad(d.getMonth()+1)} às ${pad(d.getHours())}:${pad(d.getMinutes())}`;};
+function relativo(d){const min=Math.round((d-new Date())/60000);if(Math.abs(min)<1)return 'agora';const a=Math.abs(min),h=Math.floor(a/60),m=a%60;const t=h>=48?`${Math.round(h/24)} dias`:h?`${h}h${m?pad(m):''}`:`${m} min`;return min>0?`em ${t}`:`há ${t}`;}
+function quandoTxt(s){const h=hojeStr();if(s===h)return 'hoje';if(s===addDays(h,1))return 'amanhã';if(s===addDays(h,-1))return 'ontem';return `${diaNome(s)}, ${ddmm(s)}`;}
+const natKey=m=>{const s=String(m||'');const o=AG_FORNOS.findIndex(x=>x.id===AQ.fornoDe(s));return [o<0?99:o,parseInt(s.replace(/^\D+/,''))||0];};
+const cmpMaq=(a,b)=>{const x=natKey(a),y=natKey(b);return x[0]-y[0]||x[1]-y[1]||String(a).localeCompare(String(b));};
+const agTipo=id=>AG_TIPOS.find(t=>t.id===id)||AG_TIPOS[AG_TIPOS.length-1];
+const agOrdem=e=>e.data+(e.hora||(e.gatilho?'24:00':'25:00'));
+const agFornoOk=f=>AG_FORNOS.some(x=>x.id===f);
+function agDiffMap(){const m=new Map();if(!S.agVig||!S.agAnt)return m;AQ.diff(S.agVig.eventos||[],S.agAnt.eventos||[]).forEach(d=>{if(d.tipo!=='removido')m.set(d.ev.id,d);});return m;}
+function agEventos(){
+  const D=agDiffMap();
+  const out=((S.agVig&&S.agVig.eventos)||[]).map(e=>({...e,k:e.kind==='nota'?'outro':e.kind,mud:D.get(e.id)||null}));
+  for(const m of S.agEv){
+    const t=agTipo(m.tipo),ate=m.dataFim&&m.dataFim>m.data?m.dataFim:m.data;
+    for(let d=m.data,i=0;d<=ate&&i<31;d=addDays(d,1),i++){
+      out.push({id:'m:'+m.id+':'+d,mid:m.id,origem:'equipe',kind:t.va?'visita':'equipe',k:t.k,quem:m.quem,preparo:m.preparo,areas:m.areas,tipoNome:t.nome,data:d,
+        hora:d===m.data?(m.hora||null):null,horaFim:d===ate?(m.horaFim||null):null,maquina:m.escopo==='maquina'?(m.maquina||'').toUpperCase():null,
+        forno:m.escopo==='forno'?m.forno:m.escopo==='maquina'?AQ.fornoDe(m.maquina):null,escopo:m.escopo,titulo:m.titulo,descricao:m.descricao,
+        responsavel:m.responsavel,importante:!!m.importante,raw:m});
+    }
+  }
+  return out;
+}
+function agVisivel(e){if(!ui.agKinds.has(e.kind))return false;if(!e.forno||!agFornoOk(e.forno))return ui.agFornos.has('geral');return ui.agFornos.has(e.forno);}
+function agRotulo(e){
+  if(e.kind==='troca')return `${e.codigo||'Troca'} ${e.entrada.frasco}`;
+  if(e.kind==='parada')return /MANUT/i.test(e.entrada.frasco)?'Parada para manutenção':'Parada';
+  if(e.kind==='amostra')return 'Amostra';
+  if(e.kind==='t2')return e.acao==='inicio'?`Início do T2${e.produto?` em ${e.produto}`:''}`:e.acao==='fim'?`Término do T2${e.produto?` em ${e.produto}`:''}`:e.titulo;
+  return e.titulo;
+}
+function agSub(e){
+  if(e.kind==='troca')return [/PARADA|AMOSTRA/i.test(e.saida.frasco)?`após ${e.saida.frasco.toLowerCase()}`:`sai ${e.saida.frasco}`,e.entrada.cliente].filter(Boolean).join(', ');
+  if(e.kind==='parada'||e.kind==='amostra')return `sai ${e.saida.frasco}`;
+  if(e.kind==='nota'||e.kind==='t2')return 'Rodapé da programação do PCP';
+  return [e.tipoNome,e.quem,e.escopo==='geral'?'Fábrica':e.escopo==='forno'?`Forno ${e.forno}`:null].filter(Boolean).join(', ');
+}
+function agHoraTxt(e){if(e.hora)return e.hora+(e.horaFim?`–${e.horaFim}`:'');if(e.gatilho==='qtde')return 'por qtde';return e.origem==='equipe'?'dia todo':'sem hora';}
+function agTag(e){return e.origem==='equipe'?e.tipoNome:(AG_KINDS.find(k=>k.id===e.kind)||{um:'Evento'}).um;}
+function agT2Ativo(maq){
+  const n=new Date(),agora=ymd(n)+n.toTimeString().slice(0,5);
+  const evs=((S.agVig&&S.agVig.eventos)||[]).filter(e=>e.maquina===maq).sort((a,b)=>agOrdem(a).localeCompare(agOrdem(b)));
+  const antes=evs.filter(e=>agOrdem(e)<=agora),depois=evs.filter(e=>agOrdem(e)>agora);
+  const prod=antes.filter(e=>e.kind==='troca').pop();
+  if(prod&&prod.t2Total)return true;
+  const ult=antes.filter(e=>e.kind==='t2'&&e.acao).pop(),prox=depois.find(e=>e.kind==='t2'&&e.acao);
+  if(ult)return ult.acao==='inicio';
+  return !!(prox&&prox.acao==='fim');
+}
+function agOnde(e){return e.maquina||(e.forno?`F${e.forno}`:'Geral');}
+function agPassou(e){const fim=e.hora?agDt(e.data,e.hora):agDt(addDays(e.data,1));return fim<new Date();}
+function agRetorno(e){
+  if(e.kind!=='parada')return null;const t0=agOrdem(e);
+  return ((S.agVig&&S.agVig.eventos)||[]).filter(x=>x.maquina===e.maquina&&agOrdem(x)>t0&&/PARADA/i.test((x.saida&&x.saida.frasco)||'')).sort((a,b)=>agOrdem(a).localeCompare(agOrdem(b)))[0]||null;
+}
+const agFlags=e=>e.t2Total?'<span class="ktag solid k-t2">100% T2</span>':'';
+function evRow(e,o={}){
+  const mq=o.mq!==false,qd=o.quando!==false,sb=agSub(e);
+  return `<button type="button" class="ev${mq?'':' nomq'}${agPassou(e)?' passado':''}" data-act="ag-ev" data-id="${esc(e.id)}"><span class="h">${esc(agHoraTxt(e))}${qd?`<small>${esc(quandoTxt(e.data))}</small>`:''}</span>${mq?`<span class="mq">${esc(agOnde(e))}</span>`:''}<span class="d"><span class="l1">${esc(agRotulo(e))}</span>${sb?`<span class="l2">${esc(sb)}</span>`:''}<span class="fl"><span class="ktag k-${e.k}">${esc(agTag(e))}</span>${agFlags(e)}${o.extra||''}</span></span></button>`;
+}
 
 /* ---------- estado da tela ---------- */
 const ui={tab:'calendario',sub:null,mes:hojeStr().slice(0,7),calSel:hojeStr(),calTurno:'Todos',calArea:'Todas',
   agData:hojeStr(),agTurno:'Todos',agArea:'Todas',tarFiltro:'Aberta',exArea:'Todas',
-  evTipo:'Todos',evTurno:'Todos',evArea:'Todas',evDesde:'',evFiltros:false,fArea:'Todas',fBusca:'',ttArea:'Todas'};
+  evTipo:'Todos',evTurno:'Todos',evArea:'Todas',evDesde:'',evFiltros:false,fArea:'Todas',fBusca:'',ttArea:'Todas',
+  agOff:0,agDiaSel:hojeStr(),agFiltros:false,agFornos:new Set(['geral','A','B','C','1']),agKinds:new Set(['troca','parada','amostra','t2','visita','equipe','nota'])};
 let zap=null;
 let dl=null;
 
@@ -379,7 +651,7 @@ async function copiar(txt){
 }
 
 /* ---------- telas ---------- */
-const TABS=[['calendario','Calendário','cal'],['diario','Diário','list'],['escala','Escala','send'],['tarefas','Tarefas','check'],['mais','Mais','grid']];
+const TABS=[['calendario','Calendário','cal'],['diario','Diário','list'],['agenda','Agenda','agenda'],['escala','Escala','send'],['tarefas','Tarefas','check'],['mais','Mais','grid']];
 function renderTabbar(){
   $('#tabbar').innerHTML=TABS.map(([k,l,i])=>`<button type="button" data-act="nav" data-v="${k}"${ui.tab===k?' aria-current="page"':''}>${ic(i)}<span>${l}</span></button>`).join('');
 }
@@ -414,8 +686,7 @@ function vCalendario(){
       if(!ps.length)return '';
       return `<div class="group"><h3>${l} <span class="muted">(${ps.length})</span></h3><div class="names">${ps.map(x=>`<span class="chip s-${c}" title="${esc(x.r.status)}">${esc(x.f.nome)}${x.r.status!==l&&c!=='trabalho'?` (${esc(x.r.status)})`:''}</span>`).join('')}</div></div>`;
     }).join('');
-    det=`<div class="card" id="dayDetail"><h2>${parse(ds).toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})}</h2>
-      ${fol.length?`<p class="small muted">De folga no ciclo: ${esc(fol.join(' e '))}</p>`:''}
+    det=`<div class="card" id="dayDetail"><div class="dethead"><h2>${parse(ds).toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})}</h2>${folgaChip(ds)}</div>
       ${grupos||'<p class="muted">Ninguém nesse filtro.</p>'}
       <div class="row" style="margin-top:14px"><button class="btn sm grow" data-act="go-diario" data-d="${ds}">Ver no diário</button><button class="btn sm primary grow" data-act="go-escala" data-d="${ds}">Montar escala</button></div></div>`;
   }
@@ -445,7 +716,7 @@ function vDiario(){
     <div class="row" style="flex-wrap:nowrap;margin-bottom:8px"><button class="icon-btn" data-act="ag-step" data-n="-1" aria-label="Dia anterior">${ic('chevL')}</button>
       <input type="date" id="agData" data-bind="agData" data-req="1" value="${d}" aria-label="Data">
       <button class="icon-btn" data-act="ag-step" data-n="1" aria-label="Próximo dia">${ic('chevR')}</button></div>
-    <p class="small muted" style="text-transform:capitalize;margin-bottom:10px">${esc(diaSemana(d))}${d===hojeStr()?', hoje':''}</p>
+    <div class="row" style="margin-bottom:10px"><span class="small muted" style="text-transform:capitalize">${esc(diaSemana(d))}${d===hojeStr()?', hoje':''}</span>${folgaChip(d)}</div>
     <div class="row" style="margin-bottom:10px">
       <select class="grow" data-bind="agTurno" aria-label="Turno">${opts([['Todos','Todos os turnos'],...TURNOS],ui.agTurno)}</select>
       <select class="grow" data-bind="agArea" aria-label="Área">${opts([['Todas','Todas as áreas'],...AREAS],ui.agArea)}</select>
@@ -483,8 +754,10 @@ function vEscala(){
   return `<div class="titlebar"><h1>Escala</h1>${salva?'<span class="chip s-trabalho">Já salva</span>':''}</div>
   <div class="card">
     <label class="fld"><span>Data</span><input type="date" id="zapData" data-zap="data" value="${zap.data}"></label>
+    ${folgaChip(zap.data)?`<div style="margin:-2px 0 12px">${folgaChip(zap.data)}</div>`:''}
     ${seg('zapTurno',TURNOS,zap.turno)}
   </div>
+  ${agEscalaCard()}
   <div class="card"><h2>Troca de Moldes</h2>${!S.maquinas.length?'<p class="small muted">Cadastre as máquinas em Mais para preencher a escala.</p>':''}${workers}</div>
   <div class="card">${bloco('prod','Produção')}${bloco('am','Amostra')}</div>
   ${tars.length?`<div class="card"><h2>Lembretes e tarefas</h2><p class="small muted">Marque o que deve entrar na mensagem.</p>${tars.map(t=>`<label class="check"><input type="checkbox" data-zap="tar" value="${esc(t.id)}"${zap.tarefas.includes(t.id)?' checked':''}><span><b>${esc(t.maquina||'Lembrete')}</b>: ${esc(t.descricao)}${periodo(t)?` <span class="muted small">(${esc(periodo(t))})</span>`:''}</span></label>`).join('')}</div>`:''}
@@ -509,17 +782,17 @@ function vTarefas(){
 }
 
 const MENU=[
-  ['extras','Trabalho extra','Quem veio trabalhar na folga',()=>S.extras.length],
-  ['ausencias','Ausências','Férias, faltas, afastamentos e folgas de acerto',()=>S.eventos.length],
-  ['equipe','Equipe','Colaboradores, área, turno e turma',()=>ativos().length],
-  ['turmas','Turmas','Ciclos 6x2 e onde cada um começa',()=>S.escalas.length],
-  ['mudanca','Mudança de turma','Troca de turma a partir de uma data',()=>S.trocasTurma.length],
-  ['maquinas','Máquinas','Lista usada na escala e nas tarefas',()=>S.maquinas.length],
-  ['siglas','Siglas de troca','Siglas e legenda da mensagem',()=>S.tiposTroca.length],
-  ['sistema','Backup e dados','Exportar, importar ou apagar',()=>'']
+  ['ausencias','Ausências','Férias, faltas, afastamentos e folgas de acerto',()=>S.eventos.length,'calx'],
+  ['extras','Trabalho extra','Quem veio trabalhar na folga',()=>S.extras.length,'timer'],
+  ['mudanca','Mudança de Turma','Troca de turma a partir de uma data',()=>S.trocasTurma.length,'swap'],
+  ['turmas','Turmas','Ciclos 6x2 e onde cada um começa',()=>S.escalas.length,'cycle'],
+  ['equipe','Equipe','Colaboradores, área, turno e turma',()=>ativos().length,'users'],
+  ['maquinas','Máquinas','Lista usada na escala e nas tarefas',()=>S.maquinas.length,'gear'],
+  ['siglas','Siglas de troca','Siglas e legenda da mensagem',()=>S.tiposTroca.length,'tag'],
+  ['sistema','Backup e dados','Exportar, importar ou apagar',()=>'','db']
 ];
 function vMais(){
-  return `<h1>Mais</h1><div class="menu">${MENU.map(([k,t,d,n])=>`<button type="button" data-act="open" data-v="${k}"><div class="tx"><b>${t}</b><span>${d}</span></div><span class="ct">${n()}</span>${ic('chevR')}</button>`).join('')}</div>`;
+  return `<h1>Mais</h1><div class="menu">${MENU.map(([k,t,d,n,i])=>`<button type="button" data-act="open" data-v="${k}"><span class="mi">${ic(i)}</span><div class="tx"><b>${t}</b><span>${d}</span></div><span class="ct">${n()}</span>${ic('chevR')}</button>`).join('')}</div>`;
 }
 const subHead=(titulo,novo,label='Novo')=>`<button class="btn ghost sm" data-act="back">${ic('chevL')} Mais</button>
   <div class="titlebar"><h1>${titulo}</h1>${novo?`<button class="btn primary sm" data-act="new" data-t="${novo}">${ic('plus')} ${label}</button>`:''}</div>`;
@@ -567,7 +840,7 @@ const SUBS={
   },
   mudanca(){
     const list=S.trocasTurma.map((t,i)=>({t,i,f:byDrt(t.drt)})).filter(x=>x.f&&areaOk(ui.ttArea,x.f)).sort((a,b)=>(b.t.dataInicio||'').localeCompare(a.t.dataInicio||''));
-    return subHead('Mudança de turma','mudanca','Nova')+`<div style="margin-bottom:12px"><select data-bind="ttArea" aria-label="Área">${opts([['Todas','Todas as áreas'],...AREAS],ui.ttArea)}</select></div>
+    return subHead('Mudança de Turma','mudanca','Nova')+`<div style="margin-bottom:12px"><select data-bind="ttArea" aria-label="Área">${opts([['Todas','Todas as áreas'],...AREAS],ui.ttArea)}</select></div>
     <div class="card">${list.length?`<ul class="list">${list.map(({t,i,f})=>`<li class="item"><div class="main"><div class="t">${esc(f.nome)}</div>
       <div class="m">${esc(turmaOrig(f)||'sem turma')} para <b>${esc(t.novaEscala)}</b></div>
       <div class="m">${t.dataFim?`${br(t.dataInicio)} a ${br(t.dataFim)}`:`A partir de ${br(t.dataInicio)}, sem fim`}${t.folgaAcerto?` <span class="chip s-folga">Folga acerto ${br(t.folgaAcerto)}</span>`:''}</div></div>${acts('mudanca',i)}</li>`).join('')}</ul>`:vazio('Nenhuma mudança registrada.')}</div>`;
@@ -587,13 +860,284 @@ const SUBS={
   }
 };
 
+/* ---------- agenda: telas ---------- */
+function agMudancas(){
+  if(!S.agVig||!S.agAnt)return '';
+  const d=AQ.diff(S.agVig.eventos||[],S.agAnt.eventos||[]),va=S.agAnt.versao||{};
+  if(!d.length)return `<div class="card"><p class="small muted" style="margin:0">Sem diferenças para a planilha anterior (importada em ${esc(fmtDH(va.sincronizadoEm))}).</p></div>`;
+  const qd=(dd,hh,gg)=>`${quandoTxt(dd)} ${hh||(gg==='qtde'?'por qtde':'sem hora')}`;
+  const li=d.map(x=>{
+    const e=x.ev,nome=`<b>${esc(e.maquina)}</b> ${esc(agRotulo(e))}`;
+    if(x.tipo==='novo')return `<li>${nome}: nova, ${esc(qd(e.data,e.hora,e.gatilho))}</li>`;
+    if(x.tipo==='removido')return `<li class="riscado">${nome}: saiu da programação (era ${esc(qd(e.data,e.hora,e.gatilho))})</li>`;
+    return `<li>${nome}: <span class="riscado">${esc(qd(x.de.data,x.de.hora,x.de.gatilho))}</span> passou para <b>${esc(qd(e.data,e.hora,e.gatilho))}</b></li>`;
+  }).join('');
+  return `<details class="card mud"><summary>${d.length} ${d.length===1?'diferença':'diferenças'} em relação à planilha anterior</summary><ul>${li}</ul></details>`;
+}
+function vAgenda(){
+  const v=S.agVig&&S.agVig.versao,hoje=hojeStr();
+  let fonte;
+  if(!S.agVig)fonte='Nenhuma planilha carregada. Importe a planilha de trocas do PCP em PDF (ou Excel) para ver as máquinas que vão trocar e os eventos programados.';
+  else{const p=S.agVig.periodo;fonte=`Planilha <b>${esc(v.anexo||'importada')}</b>${p?`, cobrindo ${ddmm(p.de)} a ${ddmm(p.ate)}`:''}. Importada em ${esc(fmtDH(v.sincronizadoEm))}.`;}
+  const velha=v&&v.recebidoEm&&(Date.now()-new Date(v.recebidoEm))>30*3600e3;
+  const avs=(S.agVig&&S.agVig.avisos)||[];
+  const nF=(ui.agFornos.size<AG_FORNOS.length+1?1:0)+(ui.agKinds.size<AG_KINDS.length?1:0);
+  const todos=agEventos().sort((a,b)=>agOrdem(a).localeCompare(agOrdem(b)));
+  const vis=todos.filter(agVisivel);
+  const agora=new Date(),lim=new Date(agora.getTime()+24*3600e3),amanha=addDays(hoje,1);
+  const prox=vis.filter(e=>e.hora).find(e=>agDt(e.data,e.hora)>=agora);
+  const janela=vis.filter(e=>e.hora?(agDt(e.data,e.hora)>=new Date(agora-3600e3)&&agDt(e.data,e.hora)<=lim):(e.data===hoje||e.data===amanha));
+
+  const filtros=ui.agFiltros?`<div class="card"><h3>Onde</h3><div class="togs" style="margin-bottom:12px">${[{id:'geral',nome:'Geral'},...AG_FORNOS].map(f=>`<button type="button" class="tog" data-act="ag-tf" data-v="${f.id}" aria-pressed="${ui.agFornos.has(f.id)}">${esc(f.nome)}</button>`).join('')}</div>
+    <h3>O que</h3><div class="togs">${AG_KINDS.map(k=>`<button type="button" class="tog k-${k.k}" data-act="ag-tk" data-v="${k.id}" aria-pressed="${ui.agKinds.has(k.id)}"><i></i>${k.nome}</button>`).join('')}</div></div>`:'';
+
+  const placa=prox?`<button type="button" class="card placa k-${prox.k}" data-act="ag-ev" data-id="${esc(prox.id)}"><span class="pl-t">Próximo evento</span>
+      <span class="hora">${esc(prox.hora)}</span><span class="quando">${esc(quandoTxt(prox.data))}, ${esc(relativo(agDt(prox.data,prox.hora)))}</span>
+      <span class="maq">${esc(agOnde(prox))} <span class="ktag k-${prox.k}">${esc(agTag(prox))}</span>${agFlags(prox)}</span>
+      <span class="oque">${esc(agRotulo(prox))}</span><span class="pl-s">${esc(agSub(prox))}</span></button>`
+    :`<div class="card placa"><span class="pl-t">Próximo evento</span><p class="muted" style="margin:0">${S.agVig?'Nenhum evento com horário à frente para os filtros escolhidos.':'Sem programação carregada.'}</p></div>`;
+
+  const lista=`<div class="card"><h2>Próximas 24 horas</h2>${janela.length?janela.map(e=>evRow(e)).join(''):'<p class="small muted" style="margin:0">Nada programado nas próximas 24 horas para os filtros escolhidos.</p>'}</div>`;
+
+  let visitas='';
+  if(ui.agKinds.has('visita')){
+    const ate=addDays(hoje,14),vistos=new Set();
+    const vs=todos.filter(e=>e.kind==='visita'&&e.data>=hoje&&e.data<=ate&&!agPassou(e)&&!vistos.has(e.mid)&&vistos.add(e.mid));
+    visitas=`<div class="card"><h2>Visitas e auditorias nos próximos 14 dias</h2>${vs.length?vs.map(e=>{const m=e.raw;
+      const q=`${quandoTxt(m.data<hoje?hoje:m.data)}${m.hora?`, ${m.hora}`:''}${m.horaFim?` às ${m.horaFim}`:''}${m.dataFim&&m.dataFim>m.data?` até ${ddmm(m.dataFim)}`:''}`;
+      const ond=m.escopo==='geral'?(m.areas||'Fábrica'):m.escopo==='forno'?`Forno ${m.forno}${m.areas?`, ${m.areas}`:''}`:`Máquina ${m.maquina}${m.areas?`, ${m.areas}`:''}`;
+      return `<button type="button" class="vis" data-act="ag-ev" data-id="${esc(e.id)}"><b>${esc(q)}</b><span>${esc(e.tipoNome)}: ${esc(m.titulo)}</span><small>${esc([m.quem,ond].filter(Boolean).join('. '))}</small>${m.preparo?`<small><b>Preparar:</b> ${esc(m.preparo)}</small>`:''}</button>`;}).join('')
+      :'<p class="small muted" style="margin:0">Nenhuma visita ou auditoria cadastrada. Use o botão Evento para cadastrar.</p>'}</div>`;
+  }
+
+  const ini=addDays(hoje,ui.agOff),dias=Array.from({length:7},(_,i)=>addDays(ini,i));
+  if(!dias.includes(ui.agDiaSel))ui.agDiaSel=dias.includes(hoje)?hoje:dias[0];
+  const sel=ui.agDiaSel;
+  const strip=dias.map(d=>{const n=vis.filter(e=>e.data===d&&(e.kind==='troca'||e.kind==='parada'||e.kind==='amostra')).length;
+    return `<button type="button" class="${d===hoje?'hoje':''}" data-act="ag-dia" data-d="${d}" aria-pressed="${d===sel}" aria-label="${esc(quandoTxt(d))}, ${n} trocas"><span>${diaNome(d)}</span><b>${d.slice(8)}</b><i>${n||''}</i></button>`;}).join('');
+  const doDia=vis.filter(e=>e.data===sel);
+  let corpo='';
+  const geral=doDia.filter(e=>!e.forno||!agFornoOk(e.forno));
+  if(geral.length)corpo+=`<div class="forno-h">Fábrica</div>`+geral.map(e=>evRow(e,{mq:false,quando:false})).join('');
+  for(const f of AG_FORNOS){
+    const fe=doDia.filter(e=>e.forno===f.id);if(!fe.length)continue;
+    corpo+=`<div class="forno-h">${esc(f.nome)}${f.obs?` <span class="small muted">${esc(f.obs)}</span>`:''}</div>`;
+    corpo+=fe.filter(e=>!e.maquina).map(e=>evRow(e,{mq:false,quando:false})).join('');
+    [...new Set(fe.filter(e=>e.maquina).map(e=>e.maquina))].sort(cmpMaq).forEach(m=>{
+      corpo+=`<div class="maq-h">${esc(m)}${sel===hoje&&agT2Ativo(m)?' <span class="ktag solid k-t2">T2 ativo</span>':''}</div>`+fe.filter(e=>e.maquina===m).map(e=>evRow(e,{mq:false,quando:false})).join('');
+    });
+  }
+  const bk=S.agVig&&S.agVig.backups&&S.agVig.backups[sel];
+  if(bk&&bk.length)corpo+=`<div class="forno-h">Backup</div><p class="small" style="margin:6px 0 0">${bk.map(x=>esc(x.frasco)).join(', ')}</p>`;
+  const porDia=`<div class="card"><div class="titlebar" style="margin-bottom:10px"><h2 style="margin:0">Dia por máquina</h2>
+      <div class="row" style="flex-wrap:nowrap"><button class="icon-btn" data-act="ag-sem" data-n="-7" aria-label="Semana anterior">${ic('chevL')}</button><button class="btn sm" data-act="ag-sem" data-n="0">Hoje</button><button class="icon-btn" data-act="ag-sem" data-n="7" aria-label="Próxima semana">${ic('chevR')}</button></div></div>
+    <div class="dias">${strip}</div>
+    <h3 style="text-transform:capitalize">${esc(parse(sel).toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'}))}</h3>
+    ${corpo||'<p class="small muted" style="margin:0">Nada programado neste dia para os filtros escolhidos.</p>'}</div>`;
+
+  const legenda=`<p class="small muted">${Object.entries(AG_COD).map(([k,t])=>`<b>${k}</b> ${esc(t)}`).join(', ')}. <b>T2</b> é o tratamento aplicado no frasco, que pode iniciar ou terminar durante a produção; <b>100% T2</b> é a produção toda com tratamento.</p>`;
+
+  return `<div class="titlebar"><h1>Agenda</h1><button class="btn primary sm" data-act="ag-novo">${ic('plus')} Evento</button></div>
+  <div class="card"><p class="small">${fonte}</p>
+    <div class="row"><button class="btn sm grow${S.agVig?'':' primary'}" data-act="ag-importar">Importar planilha</button><button class="btn sm grow" data-act="ag-filtros" aria-expanded="${ui.agFiltros}">Filtros${nF?` (${nF})`:''}</button></div>
+    ${velha?`<p class="alerta">A planilha carregada é de ${esc(fmtDH(v.recebidoEm))}. Pode haver uma versão mais nova do PCP.</p>`:''}
+    ${avs.length?`<details class="mud" style="margin-top:10px"><summary>${avs.length} ${avs.length===1?'aviso':'avisos'} na leitura da planilha</summary><ul>${avs.map(a=>`<li>${esc(a)}</li>`).join('')}</ul></details>`:''}
+  </div>${filtros}${placa}${lista}${visitas}${porDia}${agMudancas()}${legenda}`;
+}
+function agAbrir(id){
+  const e=agEventos().find(x=>x.id===id);if(!e)return;
+  const q=quandoTxt(e.data);
+  let h=`<p class="muted" style="margin-top:-4px">${esc(q)}${/^(hoje|amanhã|ontem)$/.test(q)?`, ${esc(ddmm(e.data))}`:''}, ${esc(agHoraTxt(e))}${e.hora?` (${esc(relativo(agDt(e.data,e.hora)))})`:''}</p>`;
+  if(e.mud&&e.mud.tipo==='alterado')h+=`<p class="aviso">Na planilha anterior estava para ${esc(quandoTxt(e.mud.de.data))} ${esc(e.mud.de.hora||(e.mud.de.gatilho==='qtde'?'por quantidade':'sem horário'))}.</p>`;
+  if(e.mud&&e.mud.tipo==='novo')h+=`<p class="aviso">Este evento não estava na planilha anterior.</p>`;
+  if(e.origem==='planilha'&&e.kind!=='nota'&&e.kind!=='t2'){
+    const cd=e.codigo&&(AG_COD[e.codigo]||(S.tiposTroca.find(t=>String(t.sigla).toUpperCase()===e.codigo)||{}).desc);const cod=e.codigo?`${e.codigo}${cd?` (${cd})`:''}`:'–';
+    const qs=e.saida.qmin!=null||e.saida.qmax!=null?`${fmtN(e.saida.qmin)} a ${fmtN(e.saida.qmax)}`:null;
+    const en=e.entrada;
+    h+=`<dl class="kv"><dt>Forno</dt><dd>${esc(e.forno)}</dd><dt>Tipo de troca</dt><dd>${esc(cod)}</dd>
+      <dt>Sai</dt><dd>${esc([e.saida.frasco,e.saida.cor,e.saida.proc].filter(Boolean).join(' '))}</dd>
+      ${qs?`<dt>Qtde mín. a máx.</dt><dd>${esc(qs)}</dd>`:''}
+      ${e.gatilho==='qtde'?'<dt>Quando</dt><dd>Ao atingir a quantidade da saída, sem horário fixo</dd>':''}
+      <dt>Entra</dt><dd>${esc([en.frasco,en.cor,en.proc].filter(Boolean).join(' '))}</dd>
+      ${en.cliente?`<dt>Cliente</dt><dd>${esc(en.cliente)}</dd>`:''}${en.descricao?`<dt>Descrição</dt><dd>${esc(en.descricao)}</dd>`:''}${en.emb?`<dt>Embalagem</dt><dd>${esc(en.emb)}</dd>`:''}</dl>`;
+    const nums=[['Seç.',en.secoes],['Vel',en.vel],['Peso',en.peso],['Cot.',en.cot],['Ext.',en.ext],['Horas progr.',en.horas],['Dias progr.',en.dias],['Qtde diária',en.qtdDia],['Qtde progr.',en.qtdProg]].filter(x=>x[1]!=null&&x[1]!==0);
+    if(nums.length)h+=`<h3>Dados da entrada, como na planilha</h3><div class="nums">${nums.map(([k,v])=>`<div><span>${k}</span><b>${fmtN(v)}</b></div>`).join('')}</div>`;
+    if(e.kind==='parada'){const r=agRetorno(e);h+=`<h3>Retorno</h3><p>${r?`Previsto ${esc(quandoTxt(r.data))} ${esc(r.hora||'sem horário')}, entrando ${esc(r.entrada.frasco)} (${esc(r.codigo||'troca')}).`:'O retorno não aparece no período desta planilha.'}</p>`;}
+  }
+  if(e.t2Total)h+=`<h3>Tratamento T2</h3><p>Item 100% T2: toda a produção é com o tratamento.</p>`;
+  if(e.kind==='t2')h+=`<p>${e.acao==='inicio'?'Início':'Término'} da aplicação do tratamento T2 no frasco${e.produto?` ${esc(e.produto)}`:''}, na máquina ${esc(e.maquina)}.</p><p class="small muted">Texto original no rodapé de ${esc(ddmm(e.data))}: ${esc(e.titulo)}</p>`;
+  if(e.kind==='nota')h+=`<p>Texto no rodapé da programação de ${esc(ddmm(e.data))}:</p><p style="font-family:var(--cond);font-weight:700;font-size:1.2rem">${esc(e.titulo)}</p><p class="small muted">Horário extraído do texto: ${esc(e.hora||'não identificado')}.</p>`;
+  if(e.origem==='equipe'){
+    const m=e.raw;
+    h+=`<dl class="kv"><dt>Tipo</dt><dd>${esc(e.tipoNome)}</dd><dt>Abrangência</dt><dd>${esc(m.escopo==='geral'?'Fábrica toda':m.escopo==='forno'?`Forno ${m.forno}`:`Máquina ${m.maquina}`)}</dd>
+      <dt>Quando</dt><dd>${esc(ddmm(m.data))}${m.hora?` ${esc(m.hora)}`:''}${m.dataFim&&m.dataFim>m.data?` até ${esc(ddmm(m.dataFim))}`:''}${m.horaFim?` ${m.dataFim&&m.dataFim>m.data?'':'até '}${esc(m.horaFim)}`:''}</dd>
+      ${m.quem?`<dt>Visitante ou empresa</dt><dd>${esc(m.quem)}</dd>`:''}${m.areas?`<dt>Áreas visitadas</dt><dd>${esc(m.areas)}</dd>`:''}
+      ${m.responsavel?`<dt>Responsável</dt><dd>${esc(m.responsavel)}</dd>`:''}${m.preparo?`<dt>Preparar</dt><dd>${esc(m.preparo)}</dd>`:''}</dl>
+      ${m.descricao?`<h3>Descrição</h3><p style="white-space:pre-wrap">${esc(m.descricao)}</p>`:''}
+      <div class="row"><button type="button" class="btn sm danger grow" data-act="ag-del" data-id="${esc(m.id)}">Excluir</button><button type="button" class="btn sm grow" data-act="ag-edit" data-id="${esc(m.id)}">Editar</button></div>`;
+  }
+  openSheet({title:`${agOnde(e)}: ${agRotulo(e)}`,body:h,submitLabel:'Fechar',noCancel:true,submit:()=>{}});
+}
+function agForm(m){
+  const v=m||{tipo:'visita',escopo:'geral',data:hojeStr(),importante:false};
+  const maqs=[...new Set(((S.agVig&&S.agVig.eventos)||[]).map(e=>e.maquina).filter(Boolean))].sort(cmpMaq);
+  const body=`${fld('Título',`<input name="titulo" required maxlength="120" value="${esc(v.titulo)}" placeholder="Ex.: Auditoria de cliente">`)}
+    <div class="grid2">${fld('Tipo',`<select name="tipo">${opts(AG_TIPOS.map(t=>[t.id,t.nome]),v.tipo)}</select>`)}${fld('Abrangência',`<select name="escopo">${opts([['geral','Fábrica toda'],['forno','Um forno'],['maquina','Uma máquina']],v.escopo)}</select>`)}</div>
+    <div data-sh="forno">${fld('Forno',`<select name="forno">${opts(AG_FORNOS.map(f=>[f.id,f.nome]),v.forno)}</select>`)}</div>
+    <div data-sh="maquina">${fld('Máquina',`<input name="maquina" list="agMaqs" maxlength="6" value="${esc(v.maquina)}" placeholder="Ex.: B7"><datalist id="agMaqs">${maqs.map(x=>`<option value="${esc(x)}">`).join('')}</datalist>`)}</div>
+    <div class="grid2">${fld('Data',`<input type="date" name="data" required value="${esc(v.data)}">`)}${fld('Hora início',`<input type="time" name="hora" value="${esc(v.hora)}">`)}</div>
+    <div class="grid2">${fld('Até (data)',`<input type="date" name="dataFim" value="${esc(v.dataFim)}">`)}${fld('Hora fim',`<input type="time" name="horaFim" value="${esc(v.horaFim)}">`)}</div>
+    <div data-sh="visita">${fld('Visitante ou empresa',`<input name="quem" maxlength="100" value="${esc(v.quem)}" placeholder="Ex.: auditor ISO 9001">`)}${fld('Áreas ou máquinas visitadas',`<input name="areas" maxlength="120" value="${esc(v.areas)}" placeholder="Ex.: Forno B, B7 e B8">`)}${fld('O que a operação deve preparar',`<input name="preparo" maxlength="200" value="${esc(v.preparo)}" placeholder="Ex.: 5S nas máquinas">`)}</div>
+    ${fld('Responsável',`<input name="responsavel" maxlength="80" value="${esc(v.responsavel)}" placeholder="Quem conduz ou acompanha">`)}
+    ${fld('Descrição',`<textarea name="descricao" maxlength="1500" placeholder="O que a operação precisa saber">${esc(v.descricao)}</textarea>`)}
+    <label class="switch"><input type="checkbox" name="importante"${v.importante?' checked':''}> Destacar como importante</label>`;
+  openSheet({title:m?'Editar evento':'Novo evento',body,submitLabel:m?'Salvar alterações':'Salvar evento',
+    mount(form){
+      const upd=()=>{const es=form.elements.escopo.value;form.querySelector('[data-sh=forno]').hidden=es!=='forno';form.querySelector('[data-sh=maquina]').hidden=es!=='maquina';form.querySelector('[data-sh=visita]').hidden=!agTipo(form.elements.tipo.value).va;};
+      form.elements.escopo.addEventListener('change',upd);form.elements.tipo.addEventListener('change',upd);upd();
+    },
+    submit(fd){
+      const d={titulo:g(fd,'titulo'),tipo:g(fd,'tipo'),escopo:g(fd,'escopo'),data:g(fd,'data'),hora:g(fd,'hora')||null,dataFim:g(fd,'dataFim')||null,horaFim:g(fd,'horaFim')||null,
+        responsavel:g(fd,'responsavel')||null,descricao:g(fd,'descricao')||null,importante:fd.get('importante')==='on'};
+      const va=agTipo(d.tipo).va;
+      d.quem=va?(g(fd,'quem')||null):null;d.areas=va?(g(fd,'areas')||null):null;d.preparo=va?(g(fd,'preparo')||null):null;
+      d.forno=d.escopo==='forno'?g(fd,'forno'):null;
+      d.maquina=d.escopo==='maquina'?g(fd,'maquina').toUpperCase():null;
+      if(d.escopo==='maquina'&&!/^[A-Z]?\d{1,3}$/.test(d.maquina||''))return 'Informe a máquina no formato da planilha, como B7 ou 12.';
+      if(d.dataFim&&d.dataFim<d.data)return 'A data final vem antes da inicial.';
+      if(m){const x=S.agEv.find(y=>y.id===m.id);if(x)Object.assign(x,d,{atualizadoEm:new Date().toISOString()});}
+      else S.agEv.push({id:uid(),...d,criadoEm:new Date().toISOString()});
+      save();render();toast(m?'Alterações salvas.':'Evento salvo.');
+    }});
+}
+let xlsxP=null,pdfP=null;
+function carregaPdf(){return pdfP||(pdfP=new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';s.onload=()=>{const L=window.pdfjsLib;if(!L){pdfP=null;no(new Error('pdf'));return;}L.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';ok(L);};s.onerror=()=>{pdfP=null;no(new Error('pdf'));};document.head.appendChild(s);}));}
+/* Lê o texto do PDF e agrupa em linhas pela posição na página */
+async function pdfLinhas(L,buf){
+  const doc=await L.getDocument({data:new Uint8Array(buf),isEvalSupported:false}).promise;
+  const linhas=[];
+  for(let n=1;n<=doc.numPages;n++){
+    const pg=await doc.getPage(n),vp=pg.getViewport({scale:1}),tc=await pg.getTextContent();
+    const its=tc.items.filter(i=>i.str&&i.str.trim()).map(i=>{const t=L.Util.transform(vp.transform,i.transform);return{s:i.str.trim(),x:t[4],y:t[5],w:i.width||0,h:Math.hypot(t[2],t[3])||8};});
+    its.sort((a,b)=>a.y-b.y||a.x-b.x);
+    const pls=[];
+    for(const it of its){const cur=pls[pls.length-1];if(cur&&Math.abs(cur.y-it.y)<=Math.max(2,Math.min(cur.h,it.h)*0.5))cur.items.push(it);else pls.push({y:it.y,h:it.h,items:[it]});}
+    pls.forEach(l=>{l.items.sort((a,b)=>a.x-b.x);l.pg=n;});
+    linhas.push(...pls);
+  }
+  return linhas;
+}
+/* Remonta as colunas da tabela a partir do cabeçalho (MQ, Frasco...) e gera o mesmo texto que o Excel geraria */
+const numBR=s=>/^-?\d{1,3}(\.\d{3})+(,\d+)?$/.test(s)?s.replace(/\./g,'').replace(',','.'):/^-?\d+,\d+$/.test(s)?s.replace(',','.'):s;
+function pdfParaTsv(linhas){
+  const T=l=>l.items.map(i=>i.s).join(' ').trim();
+  const ehH2=t=>/^MQ\b/i.test(t)&&/Frasco/i.test(t);
+  const NEED1=/^(Hor[áa]rio|Tipo|Se[çc]|Vel|Peso|Cot|Ext)/i,NEED2=/^(Horas|Dias|QTDE)$/i,QTD=/^Quantidade/i,MINMAX=/^(Min|M[áa]x)\.?$/i;
+  const LIXO=/P[áa]gina\s+\d+\s+de\s+\d+|Preparado por|^Para:|Laborat[óo]rio,\s*PCP|WHEATON BRASIL|Programa[çc][ãa]o das trocas|^\(\s*X\s*1\.000\s*\)$/i;
+  const MES={jan:1,fev:2,mar:3,abr:4,mai:5,jun:6,jul:7,ago:8,set:9,out:10,nov:11,dez:12};
+  const ctr=i=>i.x+i.w/2;
+  let ref=null;
+  for(const l of linhas){const t=T(l),m=t.match(/(\d{2})\/(\d{2})\/(\d{4})/);if(m&&/Preparado|P[áa]gina/i.test(t)){ref={a:+m[3],m:+m[2]};break;}}
+  if(!ref){const n=new Date();ref={a:n.getFullYear(),m:n.getMonth()+1};}
+  const anoDe=mes=>mes-ref.m>6?ref.a-1:ref.m-mes>6?ref.a+1:ref.a;
+  const cab=new Map(),pular=new Set();
+  linhas.forEach((l,i)=>{
+    if(!ehH2(T(l)))return;
+    const win=[];
+    for(let j=i-4;j<=i+2;j++){
+      if(j<0||j>=linhas.length||j===i)continue;const lj=linhas[j];
+      if(lj.pg===l.pg&&lj.y>=l.y-15&&lj.y<=l.y+7&&!ehH2(T(lj))){win.push(...lj.items);pular.add(j);}
+    }
+    cab.set(i,win);
+  });
+  let cols=null;const out=[];
+  const near=c=>{let k=0,b=Infinity;cols.forEach((x,j)=>{const d=Math.abs(x-c);if(d<b){b=d;k=j;}});return k;};
+  const place=(items,extra)=>{
+    const a=Array(cols.length).fill('');
+    [...items].sort((p,q)=>p.x-q.x).forEach(it=>{const c=ctr(it);let k=near(c);if(a[k]&&k+1<cols.length&&!a[k+1]&&c>cols[k])k++;a[k]=a[k]?a[k]+' '+it.s:it.s;});
+    if(extra)a.push(extra);return a.join('\t');
+  };
+  for(let i=0;i<linhas.length;i++){
+    if(pular.has(i))continue;
+    const l=linhas[i],t=T(l);
+    if(LIXO.test(t))continue;
+    const bd=t.replace(/\s+/g,'').toLowerCase().match(/(\d{1,2})\/(jan|fev|mar|abr|mai|jun|jul|ago|set|out|nov|dez)/);
+    if(bd&&/\*/.test(t)){const mes=MES[bd[2]];out.push(`${anoDe(mes)}-${pad(mes)}-${pad(+bd[1])}`);continue;}
+    if(cab.has(i)){
+      const hs=cab.get(i),m=[];
+      [...l.items,...hs.filter(it=>NEED1.test(it.s)||NEED2.test(it.s)||MINMAX.test(it.s))].map(ctr).sort((a,b)=>a-b).forEach(c=>{if(!m.length||c-m[m.length-1]>=4)m.push(c);});
+      cols=m;
+      out.push(place(hs.filter(it=>NEED1.test(it.s)),'Horário Entrada'));
+      out.push(place(l.items.concat(hs.filter(it=>NEED2.test(it.s)||QTD.test(it.s)))));
+      continue;
+    }
+    if(/^[A-Z]?\d{1,2}\s*:\s*\D/i.test(t)){out.push(t);continue;}
+    if(!cols){out.push(l.items.map(i=>i.s).join('\t'));continue;}
+    if(l.items.length<=3&&/\d{1,2}\/\d{1,2}\/\d{2,4}|\d{1,2}\s+de\s+[a-zç]+\s+de\s+\d{4}/i.test(t)){out.push(l.items.map(i=>i.s).join('\t'));continue;}
+    out.push(place(l.items.map(it=>({...it,s:numBR(it.s)}))));
+  }
+  return out.join('\n');
+}
+function carregaXlsx(){return xlsxP||(xlsxP=new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';s.onload=()=>ok(window.XLSX);s.onerror=()=>{xlsxP=null;no(new Error('xlsx'));};document.head.appendChild(s);}));}
+async function agImportar(input){
+  const f=input.files&&input.files[0];input.value='';if(!f)return;
+  toast('Lendo a planilha…',4000);
+  const ehPdf=/\.pdf$/i.test(f.name)||f.type==='application/pdf';
+  let p;
+  try{
+    if(ehPdf){
+      let L;try{L=await carregaPdf();}catch(e){toast('Não foi possível carregar o leitor de PDF. Confira a internet e tente de novo.',7000);return;}
+      let linhas;try{linhas=await pdfLinhas(L,await f.arrayBuffer());}catch(e){toast('Não consegui abrir o PDF. Confira se o arquivo não está protegido por senha.',8000);return;}
+      if(!linhas.length){toast('Esse PDF não tem texto para ler. Ele precisa ser gerado pelo Excel, não uma foto ou digitalização.',9000);return;}
+      p=AQ.parsePlanilha(pdfParaTsv(linhas));
+      if(!p.eventos.length){toast('Não encontrei trocas no PDF. Ele precisa ter a tabela de trocas com o cabeçalho MQ e Frasco.',9000);return;}
+    }else{
+      let X;try{X=await carregaXlsx();}catch(e){toast('Não foi possível carregar o leitor de Excel. Confira a internet e tente de novo.',7000);return;}
+      const wb=X.read(await f.arrayBuffer(),{type:'array'});
+      const nome=wb.SheetNames.find(n=>/^troca$/i.test(n.trim()))||wb.SheetNames.find(n=>/troca/i.test(n));
+      if(!nome){toast(`O arquivo não tem a aba Troca. Abas encontradas: ${wb.SheetNames.join(', ')}.`,8000);return;}
+      p=AQ.parsePlanilha(X.utils.sheet_to_csv(wb.Sheets[nome],{FS:'\t',rawNumbers:true}));
+      if(!p.eventos.length){toast('Não encontrei trocas na aba Troca. Confira se é o arquivo do PCP.',8000);return;}
+    }
+    const id=`upload:${f.name}:${f.size}:${f.lastModified}`;
+    const mesma=!!(S.agVig&&S.agVig.versao&&S.agVig.versao.emailId===id);
+    let nMud=null;
+    if(S.agVig&&!mesma){S.agAnt=S.agVig;nMud=AQ.diff(p.eventos,S.agAnt.eventos||[]).length;}
+    S.agVig={versao:{origem:'upload',emailId:id,recebidoEm:new Date(f.lastModified).toISOString(),sincronizadoEm:new Date().toISOString(),anexo:f.name},eventos:p.eventos,backups:p.backups,avisos:p.avisos,periodo:p.periodo};
+    ui.agOff=0;ui.agDiaSel=hojeStr();
+    save();render();
+    toast(mesma?'Este arquivo já é a versão carregada.':`Planilha importada: ${p.eventos.length} eventos${nMud!=null?`, ${nMud} mudanças em relação à anterior`:''}.`,7000);
+  }catch(e){toast('Não consegui ler o arquivo. Use o PDF ou o Excel da planilha de trocas do PCP.',8000);}
+}
+const normMaq=s=>String(s||'').toUpperCase().replace(/[^A-Z0-9]/g,'').replace(/^M(?=\d)/,'');
+function agEscalaCard(){
+  if(!S.agVig&&!S.agEv.length)return `<p class="small muted">Importe a planilha de trocas na aba Agenda para ver aqui as máquinas que vão trocar neste turno.</p>`;
+  const d=zap.data,t=zap.turno,dn=addDays(d,1);
+  const noTurno=e=>{if(!e.hora)return false;const h=e.hora;
+    if(t==='Manhã')return e.data===d&&h>='04:00'&&h<'12:00';
+    if(t==='Tarde')return e.data===d&&h>='12:00'&&h<'20:00';
+    return (e.data===d&&h>='20:00')||(e.data===dn&&h<'04:00');};
+  const evs=agEventos();
+  const com=evs.filter(noTurno).sort((a,b)=>agOrdem(a).localeCompare(agOrdem(b)));
+  const sem=evs.filter(e=>e.data===d&&!e.hora);
+  const usadas=new Set([...Object.values(zap.linhas).flat().map(l=>l.maq),...zap.prod,...zap.am].filter(Boolean).map(x=>normMaq(String(x).replace(/\s*\(.*\)$/,''))));
+  const row=e=>evRow(e,{quando:t==='Noite',extra:e.maquina&&usadas.has(normMaq(e.maquina))?'<span class="chip s-trabalho">Na escala</span>':''});
+  return `<div class="card"><h2>Programação do PCP no turno</h2>
+    ${com.length?com.map(row).join(''):'<p class="small muted" style="margin:0">Nenhum evento com horário neste turno.</p>'}
+    ${sem.length?`<h3 style="margin-top:14px">Sem horário fixo no dia</h3>${sem.map(row).join('')}`:''}</div>`;
+}
+
 function render(){
   const a=document.activeElement;
   const fid=a&&a.id&&$('#app').contains(a)?a.id:null;
   let ss=null;try{ss=fid?a.selectionStart:null;}catch(e){}
   let html;
-  if(ui.tab==='mais'&&ui.sub&&SUBS[ui.sub])html=SUBS[ui.sub]();
-  else html={calendario:vCalendario,diario:vDiario,escala:vEscala,tarefas:vTarefas,mais:vMais}[ui.tab]();
+  try{
+    if(ui.tab==='mais'&&ui.sub&&SUBS[ui.sub])html=SUBS[ui.sub]();
+    else html={calendario:vCalendario,diario:vDiario,agenda:vAgenda,escala:vEscala,tarefas:vTarefas,mais:vMais}[ui.tab]();
+  }catch(err){
+    html=`<div class="card"><h2>Esta tela não abriu</h2><p class="small">Erro: ${esc(err&&err.message||err)}</p><p class="small muted">Provavelmente algum dado salvo neste navegador está num formato diferente. As outras abas podem funcionar. Envie um print desta tela para corrigir.</p>${ui.tab==='mais'&&ui.sub==='sistema'?'':'<button class="btn block" data-act="goto" data-tab="mais" data-sub="sistema">Ir para Backup e dados</button>'}</div>`;
+  }
   $('#app').innerHTML=html;
   renderTabbar();
   if(ui.tab==='escala')updatePreview();
@@ -604,11 +1148,11 @@ const top0=()=>window.scrollTo(0,0);
 /* ---------- painel e formulários ---------- */
 const sheet=$('#sheet');
 let onCancel=null;
-function openSheet({title,body,submitLabel='Salvar',danger=false,submit,mount,cancel}){
+function openSheet({title,body,submitLabel='Salvar',danger=false,submit,mount,cancel,noCancel}){
   sheet.innerHTML=`<form class="sheet" id="sheetForm" role="dialog" aria-modal="true" aria-labelledby="shT"><div class="grab"></div>
     <div class="sheet-h"><h2 id="shT">${esc(title)}</h2><button type="button" class="icon-btn" data-act="sheet-close" aria-label="Fechar">${ic('x')}</button></div>
     <div>${body}</div><p class="err" id="sheetErr" hidden></p>
-    <div class="sheet-f"><button type="button" class="btn" data-act="sheet-close">Cancelar</button><button type="submit" class="btn ${danger?'danger solid':'primary'}">${esc(submitLabel)}</button></div></form>`;
+    <div class="sheet-f${noCancel?' one':''}">${noCancel?'':'<button type="button" class="btn" data-act="sheet-close">Cancelar</button>'}<button type="submit" class="btn ${danger?'danger solid':'primary'}">${esc(submitLabel)}</button></div></form>`;
   sheet.hidden=false;onCancel=cancel||null;
   const form=$('#sheetForm');
   if(mount)mount(form);
@@ -767,7 +1311,7 @@ function delItem(t,i){
 
 /* ---------- backup ---------- */
 async function exportar(){
-  const data=JSON.stringify({escalas:S.escalas,funcionarios:S.funcionarios,eventos:S.eventos,extras:S.extras,maquinas:S.maquinas,tiposTroca:S.tiposTroca,historicoZap:S.historicoZap,tarefas:S.tarefas,trocasTurma:S.trocasTurma});
+  const data=JSON.stringify({escalas:S.escalas,funcionarios:S.funcionarios,eventos:S.eventos,extras:S.extras,maquinas:S.maquinas,tiposTroca:S.tiposTroca,historicoZap:S.historicoZap,tarefas:S.tarefas,trocasTurma:S.trocasTurma,agendaVig:S.agVig,agendaAnt:S.agAnt,agendaEventos:S.agEv});
   const name=`GE_Backup_${hojeStr()}.json`;
   if(dl){
     try{await dl.save({filename:name,data});toast('Backup exportado.');}
@@ -788,6 +1332,9 @@ function importar(input){
       ARR.forEach(k=>{S[k]=Array.isArray(d[k])?d[k]:[];});
       S.historicoZap=(d.historicoZap&&typeof d.historicoZap==='object'&&!Array.isArray(d.historicoZap))?d.historicoZap:{};
       S.tarefas.forEach(t=>{if(!t.id)t.id=uid();});
+      if('agendaEventos' in d)S.agEv=Array.isArray(d.agendaEventos)?d.agendaEventos:[];
+      if('agendaVig' in d)S.agVig=d.agendaVig||null;
+      if('agendaAnt' in d)S.agAnt=d.agendaAnt||null;
       save();zap=null;render();toast('Backup importado.');
     },false);
   };
@@ -828,12 +1375,23 @@ document.addEventListener('click',e=>{
     case 'export':exportar();break;
     case 'import':$('#fileImport').click();break;
     case 'clear-all':confirmar('Apagar todos os dados deste aparelho? Isso não pode ser desfeito.','Apagar tudo',()=>{try{Object.values(KEYS).forEach(k=>localStorage.removeItem(k));}catch(e){}load();zap=null;render();toast('Dados apagados.');});break;
+    case 'ag-novo':agForm(null);break;
+    case 'ag-importar':$('#agArq').click();break;
+    case 'ag-filtros':ui.agFiltros=!ui.agFiltros;render();break;
+    case 'ag-tf':ui.agFornos.has(d.v)?ui.agFornos.delete(d.v):ui.agFornos.add(d.v);render();break;
+    case 'ag-tk':ui.agKinds.has(d.v)?ui.agKinds.delete(d.v):ui.agKinds.add(d.v);render();break;
+    case 'ag-ev':agAbrir(d.id);break;
+    case 'ag-dia':ui.agDiaSel=d.d;render();break;
+    case 'ag-sem':if(d.n==='0'){ui.agOff=0;ui.agDiaSel=hojeStr();}else{ui.agOff+=Number(d.n);ui.agDiaSel=addDays(ui.agDiaSel,Number(d.n));}render();break;
+    case 'ag-edit':{const m=S.agEv.find(x=>x.id===d.id);closeSheet();if(m)agForm(m);break;}
+    case 'ag-del':{const id=d.id,m=S.agEv.find(x=>x.id===id);closeSheet();if(m)confirmar(`Excluir o evento ${m.titulo}?`,'Excluir',()=>{S.agEv=S.agEv.filter(x=>x.id!==id);save();render();toast('Evento excluído.');});break;}
     case 'sheet-close':closeSheet();break;
   }
 });
 document.addEventListener('change',e=>{
   const el=e.target;
   if(el.id==='fileImport'){importar(el);return;}
+  if(el.id==='agArq'){agImportar(el);return;}
   if(el.closest('#sheet'))return;
   if(el.dataset.bind){if(el.type==='date'&&el.dataset.req&&!el.value){render();return;}ui[el.dataset.bind]=el.value;render();return;}
   const z=el.dataset.zap;if(!z||!zap)return;
@@ -849,14 +1407,16 @@ document.addEventListener('input',e=>{
 });
 
 /* ---------- relógio ---------- */
+let lastMin=-1;
 function tick(){
   const n=new Date();
+  if(n.getMinutes()!==lastMin){if(lastMin!==-1&&ui.tab==='agenda'&&sheet.hidden)render();lastMin=n.getMinutes();}
   $('#hora').textContent=n.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
   $('#data').textContent=n.toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'2-digit'});
 }
 
 /* ---------- início ---------- */
-load();render();tick();setInterval(tick,15000);
+tick();load();render();setInterval(tick,15000);
 try{if(window.claude&&typeof window.claude.use==='function')window.claude.use('downloads').then(x=>{dl=x;}).catch(()=>{});}catch(e){}
 })();
 </script>
