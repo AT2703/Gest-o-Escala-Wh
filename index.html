@@ -338,6 +338,8 @@ const areaOf=f=>f.area||'Troca de Moldes';
 const areaOk=(flt,f)=>!flt||flt==='Todas'||areaOf(f)===flt;
 const turmaOrig=f=>f.escalaNome||f.escala||'';
 const ativos=()=>S.funcionarios.filter(f=>f.ativo!==false);
+/* Inativo a partir de uma data: antes dela a pessoa continua contando (histórico preservado) */
+const ativoEm=(f,d)=>f.ativo!==false||(!!f.inativoDesde&&d<f.inativoDesde);
 const reduced=()=>window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const diaSemana=s=>parse(s).toLocaleDateString('pt-BR',{weekday:'long'});
 
@@ -410,7 +412,7 @@ function abaixoLimite(d,area,turno){
     const L=S.limites&&S.limites[a];if(!L||!L.ativo||!(L.min>0))return;
     TURNOS.forEach(t=>{
       if(turno&&turno!=='Todos'&&t!==turno)return;
-      const ps=ativos().filter(f=>areaOf(f)===a&&f.turno===t);if(!ps.length)return;
+      const ps=S.funcionarios.filter(f=>ativoEm(f,d)&&areaOf(f)===a&&f.turno===t);if(!ps.length)return;
       const n=ps.filter(f=>{const c=statusNoDia(d,f).c;return c==='trabalho'||c==='extra';}).length;
       if(n<L.min)out.push({a,t,n,min:L.min});
     });
@@ -617,7 +619,7 @@ function evRow(e,o={}){
 /* ---------- estado da tela ---------- */
 const ui={tab:'calendario',sub:null,mes:hojeStr().slice(0,7),calSel:hojeStr(),calTurno:autoTurno().turno,calArea:'Todas',
   agData:hojeStr(),agTurno:autoTurno().turno,agArea:'Todas',tarFiltro:'Aberta',exArea:'Todas',
-  evTipo:'Todos',evTurno:'Todos',evArea:'Todas',evDesde:'',evFiltros:false,fArea:'Todas',fBusca:'',ttArea:'Todas',
+  evTipo:'Todos',evTurno:'Todos',evArea:'Todas',evDesde:'',evFiltros:false,fArea:'Todas',fBusca:'',fTurno:'Todos',fSit:'Todos',ttArea:'Todas',
   agOff:0,agDiaSel:hojeStr(),agFiltros:false,agFornos:new Set(['geral','A','B','C','1']),agKinds:new Set(['troca','parada','amostra','t2','visita','equipe','nota'])};
 let zap=null;
 let dl=null;
@@ -631,7 +633,7 @@ function autoTurno(){
 }
 function zapWorkers(){
   if(!zap)return[];
-  return ativos().filter(f=>areaOf(f)==='Troca de Moldes'&&f.turno===zap.turno&&['Trabalhando','Extra'].includes(statusNoDia(zap.data,f).status));
+  return S.funcionarios.filter(f=>ativoEm(f,zap.data)&&areaOf(f)==='Troca de Moldes'&&f.turno===zap.turno&&['Trabalhando','Extra'].includes(statusNoDia(zap.data,f).status));
 }
 function zapLoad(data,turno){
   const key=`${data}-${turno}`,h=S.historicoZap[key]||{};
@@ -713,7 +715,7 @@ function vCalendario(){
   const first=new Date(y,m-1,1).getDay(),last=new Date(y,m,0).getDate();
   const nome=new Date(y,m-1,1).toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
   const hoje=hojeStr();
-  const gente=ativos().filter(f=>areaOk(ui.calArea,f)&&(ui.calTurno==='Todos'||f.turno===ui.calTurno));
+  const gente=S.funcionarios.filter(f=>(f.ativo!==false||(f.inativoDesde&&f.inativoDesde>ui.mes+'-01'))&&areaOk(ui.calArea,f)&&(ui.calTurno==='Todos'||f.turno===ui.calTurno));
   if(!S.funcionarios.length){
     return `<h1>Calendário</h1><div class="card empty"><p>Nenhum colaborador cadastrado ainda.</p><p class="small">Se você já tem um backup do app antigo, importe para trazer tudo de volta.</p><button class="btn primary" data-act="goto" data-tab="mais" data-sub="sistema">Importar backup</button></div>`;
   }
@@ -722,20 +724,21 @@ function vCalendario(){
   for(let d=1;d<=last;d++){
     const ds=`${y}-${pad(m)}-${pad(d)}`;
     const cnt={trabalho:0,extra:0,folga:0,ferias:0,falta:0};
-    gente.forEach(f=>{cnt[statusNoDia(ds,f).c]++;});
-    const tot=gente.length||1,trab=cnt.trabalho+cnt.extra;
+    const gd=gente.filter(f=>ativoEm(f,ds));
+    gd.forEach(f=>{cnt[statusNoDia(ds,f).c]++;});
+    const tot=gd.length||1,trab=cnt.trabalho+cnt.extra;
     const bar=['trabalho','extra','ferias','falta','folga'].filter(k=>cnt[k]).map(k=>`<i class="b-${k}" style="width:${cnt[k]/tot*100}%"></i>`).join('');
     const fol=turmasDeFolga(ds);
     const low=abaixoLimite(ds,ui.calArea,ui.calTurno);
     cells+=`<button type="button" class="day${ds===hoje?' today':''}${ds===ui.calSel?' sel':''}${low.length?' low':''}" data-act="cal-day" data-d="${ds}" aria-label="${d}, ${trab} trabalhando${low.length?', abaixo do limite':''}${fol.length?', folga de '+esc(fol.join(' e ')):''}">${low.length?'<span class="lowmark" aria-hidden="true">!</span>':''}
       <span class="n">${d}</span>${fol.length?`<span class="fol">${esc(fol.join('/'))}</span>`:''}
-      <span class="cnt">${trab}/${gente.length}</span><span class="bar">${bar}</span></button>`;
+      <span class="cnt">${trab}/${gd.length}</span><span class="bar">${bar}</span></button>`;
   }
   let det='';
   if(ui.calSel&&ui.calSel.slice(0,7)===ui.mes){
     const ds=ui.calSel,fol=turmasDeFolga(ds);
     const grupos=GRUPOS.map(([c,l])=>{
-      const ps=gente.map(f=>({f,r:statusNoDia(ds,f)})).filter(x=>x.r.c===c);
+      const ps=gente.filter(f=>ativoEm(f,ds)).map(f=>({f,r:statusNoDia(ds,f)})).filter(x=>x.r.c===c);
       if(!ps.length)return '';
       return `<div class="group"><h3>${l} <span class="muted">(${ps.length})</span></h3><div class="names">${ps.map(x=>`<span class="chip s-${c}" title="${esc(x.r.status)}">${esc(x.f.nome)}${x.r.status!==l&&c!=='trabalho'?` (${esc(x.r.status)})`:''}</span>`).join('')}</div></div>`;
     }).join('');
@@ -759,7 +762,7 @@ function vCalendario(){
 
 function vDiario(){
   const d=ui.agData;
-  const gente=ativos().filter(f=>areaOk(ui.agArea,f)&&(ui.agTurno==='Todos'||f.turno===ui.agTurno)).map(f=>({f,r:statusNoDia(d,f)}));
+  const gente=S.funcionarios.filter(f=>ativoEm(f,d)&&areaOk(ui.agArea,f)&&(ui.agTurno==='Todos'||f.turno===ui.agTurno)).map(f=>({f,r:statusNoDia(d,f)}));
   const resumo=GRUPOS.map(([c,l])=>{const n=gente.filter(x=>x.r.c===c).length;return n?`<span class="chip s-${c}">${l}: ${n}</span>`:'';}).join('');
   const grupos=GRUPOS.map(([c,l])=>{
     const ps=gente.filter(x=>x.r.c===c);if(!ps.length)return '';
@@ -877,11 +880,14 @@ const SUBS={
   },
   equipe(){
     const q=ui.fBusca.trim().toLowerCase();
-    const list=S.funcionarios.map((f,i)=>({f,i})).filter(({f})=>areaOk(ui.fArea,f)&&(!q||String(f.nome).toLowerCase().includes(q)||String(f.drt).includes(q))).sort((a,b)=>(a.f.ativo===false)-(b.f.ativo===false)||String(a.f.nome).localeCompare(String(b.f.nome),'pt-BR'));
+    const list=S.funcionarios.map((f,i)=>({f,i})).filter(({f})=>areaOk(ui.fArea,f)&&(ui.fTurno==='Todos'||f.turno===ui.fTurno)&&(ui.fSit==='Todos'||(ui.fSit==='Ativos')===ativoEm(f,hojeStr()))&&(!q||String(f.nome).toLowerCase().includes(q)||String(f.drt).includes(q))).sort((a,b)=>(a.f.ativo===false)-(b.f.ativo===false)||String(a.f.nome).localeCompare(String(b.f.nome),'pt-BR'));
     return subHead('Equipe','funcionario')+`<div class="row" style="margin-bottom:12px">
       <input class="grow" id="fBusca" data-live="fBusca" type="search" placeholder="Buscar por nome ou DRT" value="${esc(ui.fBusca)}" aria-label="Buscar">
       <select class="grow" data-bind="fArea" aria-label="Área">${opts([['Todas','Todas as áreas'],...AREAS],ui.fArea)}</select></div>
-    <div class="card">${list.length?`<ul class="list">${list.map(({f,i})=>`<li class="item"><div class="main"><div class="t">${esc(f.nome)}${f.ativo===false?' <span class="chip neutral">Inativo</span>':''}</div><div class="m">DRT ${esc(f.drt)}, ${esc(f.turno)}, ${esc(turmaOrig(f)||'sem turma')} ${areaChip(f)}</div></div>${acts('funcionario',i)}</li>`).join('')}</ul>`:vazio(S.funcionarios.length?'Ninguém encontrado.':'Nenhum colaborador cadastrado.')}</div>`;
+    <div class="row" style="margin:-4px 0 12px">
+      <select class="grow" data-bind="fTurno" aria-label="Turno">${opts([['Todos','Todos os turnos'],...TURNOS],ui.fTurno)}</select>
+      <select class="grow" data-bind="fSit" aria-label="Situação">${opts([['Todos','Todas as situações'],['Ativos','Ativos'],['Inativos','Inativos']],ui.fSit)}</select></div>
+    <div class="card">${list.length?`<ul class="list">${list.map(({f,i})=>`<li class="item"><div class="main"><div class="t">${esc(f.nome)}${f.ativo===false?` <span class="chip neutral">${f.inativoDesde?(f.inativoDesde>hojeStr()?'Inativo a partir de ':'Inativo desde ')+br(f.inativoDesde):'Inativo'}</span>`:''}</div><div class="m">DRT ${esc(f.drt)}, ${esc(f.turno)}, ${esc(turmaOrig(f)||'sem turma')} ${areaChip(f)}</div></div>${acts('funcionario',i)}</li>`).join('')}</ul>`:vazio(S.funcionarios.length?'Ninguém encontrado.':'Nenhum colaborador cadastrado.')}</div>`;
   },
   turmas(){
     const hoje=hojeStr();
@@ -1240,8 +1246,8 @@ sheet.addEventListener('click',e=>{if(e.target===sheet)closeSheet();});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!sheet.hidden)closeSheet();});
 
 const funcOpts=(area,sel,extra)=>{
-  const list=S.funcionarios.filter(f=>(f.ativo!==false||String(f.drt)===String(sel))&&areaOk(area,f));
-  return '<option value="">Selecione</option>'+list.map(f=>`<option value="${esc(f.drt)}"${String(f.drt)===String(sel)?' selected':''}>${esc(f.nome)} (${esc(areaOf(f))}${extra?', '+esc(f.turno):''})</option>`).join('');
+  const list=S.funcionarios.filter(f=>(f.ativo!==false||f.inativoDesde||String(f.drt)===String(sel))&&areaOk(area,f));
+  return '<option value="">Selecione</option>'+list.map(f=>`<option value="${esc(f.drt)}"${String(f.drt)===String(sel)?' selected':''}>${esc(f.nome)} (${esc(areaOf(f))}${extra?', '+esc(f.turno):''}${f.ativo===false?', inativo':''})</option>`).join('');
 };
 const turmaOpts=sel=>'<option value="">Selecione</option>'+opts(S.escalas.map(e=>e.nome),sel);
 const g=(fd,k)=>String(fd.get(k)??'').trim();
@@ -1259,11 +1265,19 @@ const FORMS={
       ${fld('Nome',`<input name="nome" required autocomplete="off" value="${esc(r.nome)}">`)}
       <div class="grid2">${fld('Área',`<select name="area">${opts(AREAS,r.area?areaOf(r):'Troca de Moldes')}</select>`)}${fld('Turno',`<select name="turno">${opts(TURNOS,r.turno)}</select>`)}</div>
       ${fld('Turma',`<select name="escala" required>${turmaOpts(r.drt!==undefined?turmaOrig(r):'')}</select>`)}
-      ${!S.escalas.length?'<p class="small muted">Cadastre uma turma antes, em Mais › Turmas.</p>':''}`,
+      ${!S.escalas.length?'<p class="small muted">Cadastre uma turma antes, em Mais › Turmas.</p>':''}
+      <div data-sh="inat">${fld('Inativo a partir de',`<input type="date" name="inativoDesde" value="${esc(r.inativoDesde||'')}">`)}<p class="small muted">Até a véspera dessa data a pessoa continua no calendário, no diário, na escala e nas ausências, preservando o histórico.</p></div>`,
+    mount(form){
+      const s=form.elements.ativo,dt=form.elements.inativoDesde;
+      const upd=()=>{const inat=s.value==='false';form.querySelector('[data-sh=inat]').hidden=!inat;dt.required=inat;if(inat&&!dt.value)dt.value=hojeStr();};
+      s.addEventListener('change',upd);upd();
+    },
     submit(fd,i){
       const drt=g(fd,'drt'),nome=g(fd,'nome'),t=g(fd,'escala');
       if(S.funcionarios.some((f,j)=>j!==i&&String(f.drt)===drt))return `Já existe alguém com o DRT ${drt}.`;
-      const novo={drt,nome,area:g(fd,'area'),turno:g(fd,'turno'),escalaNome:t,escala:t,ativo:g(fd,'ativo')==='true'};
+      const ativo=g(fd,'ativo')==='true';
+      const novo={drt,nome,area:g(fd,'area'),turno:g(fd,'turno'),escalaNome:t,escala:t,ativo};
+      if(!ativo){const dd=g(fd,'inativoDesde');if(!dd)return 'Informe a data a partir da qual a pessoa fica inativa.';novo.inativoDesde=dd;}
       if(i<0)S.funcionarios.push(novo);
       else{const old=String(S.funcionarios[i].drt);if(old!==drt)renomearDrt(old,drt);S.funcionarios[i]=novo;}
     }
@@ -1300,7 +1314,7 @@ const FORMS={
       const d=form.elements.data,s=form.elements.drt;
       d.addEventListener('change',()=>{
         if(!d.value){s.disabled=true;return;}
-        const fs=ativos().filter(f=>statusNoDia(d.value,f).status==='Folga');
+        const fs=S.funcionarios.filter(f=>ativoEm(f,d.value)&&statusNoDia(d.value,f).status==='Folga');
         s.innerHTML=fs.length?'<option value="">Selecione</option>'+fs.map(f=>`<option value="${esc(f.drt)}">${esc(f.nome)} (${esc(areaOf(f))}, ${esc(f.turno)})</option>`).join(''):'<option value="">Ninguém de folga nesse dia</option>';
         s.disabled=!fs.length;
       });
