@@ -226,6 +226,17 @@ details.mud li{padding:7px 0;border-top:1px solid var(--line);font-size:.92rem}
 details.mud li b{font-family:var(--cond);font-size:1.05rem}
 .riscado{text-decoration:line-through;color:var(--muted)}
 .sheet-f.one{grid-template-columns:1fr}
+.pt{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:10px}
+.pt .ev{padding:8px 0}
+.pt .pt-h+.ev{border-top:0}
+.pt-h{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px}
+.pt-h b{font-family:var(--cond);font-size:1.15rem}
+.pt-h span{font-size:.82rem;color:var(--muted)}
+.pt-h .chip{color:var(--t-fg)}
+.pt-h i{margin-left:auto;font-style:normal;font-family:var(--cond);font-weight:700;color:var(--muted)}
+.pt:not(.foco):not(.sem){opacity:.62}
+.pt.foco{border:2px solid var(--primary);background:var(--primary-soft)}
+.pt.foco .ev{border-top-color:color-mix(in srgb,var(--primary) 30%,var(--line))}
 
 /* barra inferior */
 .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -1167,18 +1178,25 @@ const normMaq=s=>String(s||'').toUpperCase().replace(/[^A-Z0-9]/g,'').replace(/^
 function agEscalaCard(){
   if(!S.agVig&&!S.agEv.length)return `<p class="small muted">Importe a planilha de trocas na aba Agenda para ver aqui as máquinas que vão trocar neste turno.</p>`;
   const d=zap.data,t=zap.turno,dn=addDays(d,1);
-  const noTurno=e=>{const r=evReal(e);if(!r)return false;const h=r.h;
-    if(t==='Manhã')return r.d===d&&h>='06:00'&&h<'14:00';
-    if(t==='Tarde')return r.d===d&&h>='14:00'&&h<'22:00';
+  const noTurno=(e,tt)=>{const r=evReal(e);if(!r)return false;const h=r.h;
+    if(tt==='Manhã')return r.d===d&&h>='06:00'&&h<'14:00';
+    if(tt==='Tarde')return r.d===d&&h>='14:00'&&h<'22:00';
     return (r.d===d&&h>='22:00')||(r.d===dn&&h<'06:00');};
+  const FAIXA={'Manhã':'06:00 às 13:59','Tarde':'14:00 às 21:59','Noite':'22:00 às 05:59'};
   const evs=agEventos();
-  const com=evs.filter(noTurno).sort((a,b)=>agOrdem(a).localeCompare(agOrdem(b)));
   const sem=evs.filter(e=>e.data===d&&!e.hora);
   const usadas=new Set([...Object.values(zap.linhas).flat().map(l=>l.maq),...Object.values(zap.blocos).flat()].filter(Boolean).map(x=>normMaq(String(x).replace(/\s*\(.*\)$/,''))));
-  const row=e=>evRow(e,{quando:t==='Noite',extra:e.maquina&&usadas.has(normMaq(e.maquina))?'<span class="chip s-trabalho">Na escala</span>':''});
-  return `<div class="card"><h2>Programação do PCP no turno</h2>
-    ${com.length?com.map(row).join(''):'<p class="small muted" style="margin:0">Nenhum evento com horário neste turno.</p>'}
-    ${sem.length?`<h3 style="margin-top:14px">Sem horário fixo no dia</h3>${sem.map(row).join('')}`:''}</div>`;
+  const row=(e,tt)=>evRow(e,{quando:tt==='Noite',extra:e.maquina&&usadas.has(normMaq(e.maquina))?'<span class="chip s-trabalho">Na escala</span>':''});
+  const total=evs.filter(e=>TURNOS.some(tt=>noTurno(e,tt))).length+sem.length;
+  const blocos=TURNOS.map(tt=>{
+    const l=evs.filter(e=>noTurno(e,tt)).sort((a,b)=>agOrdem(a).localeCompare(agOrdem(b)));
+    const foco=tt===t;
+    return `<div class="pt${foco?' foco':''}"><div class="pt-h"><b>${tt}</b><span>${FAIXA[tt]}</span>${foco?'<span class="chip s-trabalho">Turno da escala</span>':''}<i>${l.length||''}</i></div>
+      ${l.length?l.map(e=>row(e,tt)).join(''):'<p class="small muted" style="margin:4px 0 0">Nada programado com horário.</p>'}</div>`;
+  }).join('');
+  return `<div class="card"><h2>Programação do PCP no dia</h2>${total?'':'<p class="small muted">Nenhum evento da planilha neste dia.</p>'}
+    ${blocos}
+    ${sem.length?`<div class="pt sem"><div class="pt-h"><b>Sem horário fixo</b><span>no dia</span><i>${sem.length}</i></div>${sem.map(e=>row(e,'')).join('')}</div>`:''}</div>`;
 }
 
 function render(){
@@ -1426,7 +1444,7 @@ document.addEventListener('click',e=>{
   const b=e.target.closest('[data-act]');if(!b)return;
   const d=b.dataset;
   switch(d.act){
-    case 'nav':if(d.v==='diario'&&ui.tab!=='diario')ui.agTurno=ui.calTurno;ui.tab=d.v;ui.sub=null;render();top0();break;
+    case 'nav':if(d.v==='diario'&&ui.tab!=='diario'){ui.agTurno=ui.calTurno;ui.agArea=ui.calArea;}ui.tab=d.v;ui.sub=null;render();top0();break;
     case 'open':ui.sub=d.v;render();top0();break;
     case 'back':ui.sub=null;render();top0();break;
     case 'goto':ui.tab=d.tab;ui.sub=d.sub||null;render();top0();break;
@@ -1436,7 +1454,7 @@ document.addEventListener('click',e=>{
     case 'cal-step':{const [y,m]=ui.mes.split('-').map(Number);ui.mes=ymd(new Date(y,m-1+Number(d.n),1)).slice(0,7);render();break;}
     case 'cal-today':ui.mes=hojeStr().slice(0,7);ui.calSel=hojeStr();render();break;
     case 'cal-day':ui.calSel=d.d;render();{const el=$('#dayDetail');if(el)el.scrollIntoView({behavior:reduced()?'auto':'smooth',block:'nearest'});}break;
-    case 'go-diario':ui.agData=d.d;ui.agTurno=ui.calTurno;ui.tab='diario';render();top0();break;
+    case 'go-diario':ui.agData=d.d;ui.agTurno=ui.calTurno;ui.agArea=ui.calArea;ui.tab='diario';render();top0();break;
     case 'go-escala':zapLoad(d.d,zap?zap.turno:autoTurno().turno);ui.tab='escala';render();top0();break;
     case 'ag-step':ui.agData=addDays(ui.agData,Number(d.n));render();break;
     case 'new':openForm(d.t,-1);break;
